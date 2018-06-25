@@ -5,7 +5,7 @@ import sys
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Connect the socket to the port where the server is listening
-server_address = ('localhost', 10000)
+server_address = ('https://portal.eecs.wsu.edu/aiq/', 8080)
 print('connecting to %s port %s' % server_address)
 sock.connect(server_address)
 

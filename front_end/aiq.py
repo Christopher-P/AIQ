@@ -44,11 +44,20 @@ class AIQ():
 			self.mutex.release()
 	
 	def act(self, action):
+		'''
 		self.update_amt = 1
 		if(self.updating == False):
 			self.updating = True
 			Thread(target=self.update).start()
-		
+		'''
+		url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
+		data = {
+			"username"  : self.username,
+			"password"  : self.password,
+			"data"      : 1,
+			"test_name" : "CartPole-v0"
+		}
+		#print(requests.post(url, data=json.dumps(data)), self.update_amt)
 		self.observation, self.reward, self.done, self.info = self.env.step(action)
 	
 	def render(self):
