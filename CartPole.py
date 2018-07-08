@@ -1,9 +1,15 @@
-import _pickle as cPickle
 import yaml
 import datetime
 
 #Import username and password
 credentials = yaml.safe_load(open("credentials.yml"))
+
+# Example of yaml file
+# username:
+#    Joe_Smith
+#    
+# password:
+#    password123
 
 def main():
 	#Un Pickle our environment
