@@ -37,6 +37,23 @@ def main():
 		
 		print(iter + 1, ": score = ", AIQ_cart.reward_total)
 		
+		
+	# Submit a score (needs 20 runs)
+	AIQ_cart.submit()
+	for iter in range(20):
+	
+		#reset before each iteration
+		AIQ_cart.reset()
+		
+		for ___ in range(200):
+			AIQ_cart.render()
+			AIQ_cart.act(AIQ_cart.env.action_space.sample()) # take a random action
+			if AIQ_cart.done:
+				break
+		
+		print(iter + 1, ": score = ", AIQ_cart.reward_total)
+		
+	exit()
 	#***** Begin RPM Example **********#
 	
 	AIQ_RPM = RPM()

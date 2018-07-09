@@ -16,7 +16,9 @@ class AIQ():
 		self.password = None
 		self.username = None
 		self.updating = False
-
+		self.log = False
+		self.results = []
+		
 		# Used so we can send batches of data updates to aiq
 		self.mutex = Lock()
 		self.update_amt = 0
@@ -31,35 +33,29 @@ class AIQ():
 		self.reward_step = 0
 		self.reward_total = 0
 		self.done = False
+		self.log_res = True
 		self.env.reset()
 		
 	# Utility function for sending batch of data
-	def update(self, env_name):
-		
-		#Lock in-case of poor threading
-		self.mutex.acquire()
+	def update_aiq(self):
+		print("updating")
 		try:
-			if(self.update_amt == 0):
-				return None
-				
 			url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
 			data = {
 				"username"  : self.username,
 				"password"  : self.password,
-				"data"      : update_amt,
-				"test_name" : env_name
+				"data"      : self.update_amt,
+				"test_name" : "CartPole-v0"
 			}
 			# TODO 
 			# Make verbose option
-			print(requests.post(url, data=json.dumps(data)), self.update_amt)
+			self.update_amt = 0
+			print(requests.post(url, data=json.dumps(data)).text)
 			
 		finally:
 			self.updating = False
-			self.update_amt = 0
-			self.mutex.release()
 	
 	def act(self, action, env_name):
-		
 		# Whenever act gets called, increment update amount by one
 		# TODO
 		# Add separate metric for number of env calls (not just step based)
@@ -68,11 +64,40 @@ class AIQ():
 		# Begin thread to send of batch of data
 		if(self.updating == False):
 			self.updating = True
-			Thread(target=self.update).start()
+			Thread(target=self.update_aiq).start()
 		
 		#Update information based on results of action
 		self.observation, self.reward_step, self.done, self.info = self.env.step(action)
 		self.reward_total += self.reward_step
+		
+		if self.log and self.done:
+			self.results.append(self.reward_total)
+			if len(self.results) == 20:
+				self.log = False
+				self.util_submit()
+		
+	def util_submit(self):
+		avg_data = sum(self.results) / float(len(self.results))
+		try:
+			url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
+			data = {
+				"username"  : self.username,
+				"password"  : self.password,
+				"data"      : avg_data,
+				"test_name" : 'CartPole-v0_test'
+			}
+			# TODO 
+			# Make verbose option
+			data = requests.post(url, data=json.dumps(data)).text
+		except:
+			print("Failed to get data")
+		finally:
+			return data
+		
+	def submit(self):
+		self.log = True
+		self.results = []
+		print("Logging next 20 simulations")
 		
 	#Return true if connection and credentials are good
 	def connect(self):
