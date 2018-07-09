@@ -99,7 +99,11 @@ class CartPole(AIQ):
 	
 	def __init__(self):
 		super().__init__()
-		import gym
+		try:
+			import gym
+		except:
+			print("Failed to import gym, make sure you have OpenAI gym installed!")
+			
 		self.env = gym.make('CartPole-v0')
 		self.action_space = self.env.action_space
 	
@@ -119,12 +123,77 @@ class CartPole(AIQ):
 		super().reset()
 		self.env.reset()
 		
+class RPM(AIQ):
+		
+	def __init__(self):
+		super().__init__()
+		
+	def get_train(self, amt):
+		if amt > 750:
+			print("Cannot request more than 750 examples")
+			return None
+			
+		data = None
+		try:
+			url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
+			data = {
+				"username"  : self.username,
+				"password"  : self.password,
+				"data"      : amt,
+				"test_name" : '3_RPM_gen_train'
+			}
+			# TODO 
+			# Make verbose option
+			data = requests.post(url, data=json.dumps(data)).text
+		except:
+			print("Failed to get data")
+		finally:
+			return data
+			
+	def get_test(self):
+		data = None
+		try:
+			url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
+			data = {
+				"username"  : self.username,
+				"password"  : self.password,
+				"data"      : 10,
+				"test_name" : '3_RPM_gen_test'
+			}
+			# TODO 
+			# Make verbose option
+			data = requests.post(url, data=json.dumps(data)).text
+		except:
+			print("Failed to get data")
+		finally:
+			self.data = data
+			return data
+			
+	def submit(self, solution):
+		try:
+			url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
+			data = {
+				"username"  : self.username,
+				"password"  : self.password,
+				"data"      : '"[[0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0], [0,0,0]]"',
+				"test_name" : '3_RPM_evaluate'
+			}
+			# TODO 
+			# Make verbose option
+			data = requests.post(url, data=json.dumps(data)).text
+		except:
+			print("Failed to get data")
+		finally:
+			return data
+		
+	def connect(self):
+		return super().connect()
 		
 # Make a ViZDoom class (to be tested on linux system, windows is meh for it)
 #class ViZDoom(AIQ):
 	
 	
 
-#class RPM(AIQ):
+#
 
 
