@@ -2,11 +2,16 @@ import yaml
 
 from test_suite.CartPole import CartPole
 from test_suite.RPM import RPM
+from test_suite.benchmark import Benchmark
 
 #Import username and password
 credentials = yaml.safe_load(open("credentials.yml"))
 
 def main():
+
+    bench = Benchmark(['RPM'])
+    bench.begin()
+
 
     # Declare our AIQ object
     AIQ_cart = CartPole()
