@@ -1,7 +1,7 @@
 import yaml
 
-from test_suite import CartPole
-from test_suite import RPM
+from test_suite.CartPole import CartPole
+from test_suite.RPM import RPM
 
 #Import username and password
 credentials = yaml.safe_load(open("credentials.yml"))
@@ -24,7 +24,7 @@ def main():
         exit()
 
     # Run 10 times
-    for iter in range(10):
+    for iter in range(1):
     
         #reset before each iteration
         AIQ_cart.reset()
@@ -37,6 +37,7 @@ def main():
         
         print(iter + 1, ": score = ", AIQ_cart.reward_total)
         
+    
     #***** Begin RPM Example **********#
     
     AIQ_RPM = RPM()

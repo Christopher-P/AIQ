@@ -1,3 +1,4 @@
+from .util import AIQ
 
 # Make a cartpole AIQ class!
 class CartPole(AIQ):

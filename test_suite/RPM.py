@@ -2,6 +2,8 @@ import json
 import requests
 from threading import Thread, Lock
 
+from .util import AIQ
+
 class RPM(AIQ):
 		
 	def __init__(self):
