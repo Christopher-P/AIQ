@@ -2,6 +2,28 @@ import json
 import requests
 from threading import Thread, Lock
 
+# Define common header for all envs to use
+class Header():
+
+    def __init__(self, name, input_dim, output_dim, definition):
+        self.name = name
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.definition = definition
+    
+    def get_name(self):
+        return self.name
+        
+    def get_input_dim(self):
+        return self.input_dim
+        
+    def get_output_dim(self):
+        return self.output_dim
+    
+    def get_definition(self):
+        return self.definition
+
+
 # Not designed to do much
 # Will serve as a parent for other classes to inherent from
 class AIQ():

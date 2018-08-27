@@ -1,7 +1,7 @@
 from .util import AIQ
 
 # Make a cartpole AIQ class!
-class CartPole(AIQ):
+class MSPackMan(AIQ):
     
     def __init__(self):
         super().__init__()
@@ -10,7 +10,7 @@ class CartPole(AIQ):
         except:
             print("Failed to import gym, make sure you have OpenAI gym installed!")
             
-        self.env = gym.make('CartPole-v0')
+        self.env = gym.make('Acrobot-v1')
         self.action_space = self.env.action_space
     
     def get_header(self):
@@ -23,11 +23,10 @@ class CartPole(AIQ):
         self.env.render()
     
     def act(self, action):
-        return super().act(action, 'CartPole-v0')
+        return super().act(action, 'Acrobot-v1')
         
     def reset(self):
         super().reset()
         self.env.reset()
-        
         
         
