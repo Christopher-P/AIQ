@@ -123,11 +123,6 @@ def main():
         
         print(iter + 1, ": score = ", AIQ_cart.reward_total)
         
-    
-    
-    
-    
-    
 if __name__ == '__main__':
     main()
     
