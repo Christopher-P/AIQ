@@ -1,6 +1,6 @@
 from .util import AIQ
 from .Header_def import Header
-from AIQ.backend import Backend_DS
+from AIQ.backend import backend_handler
 
 class RPM(AIQ):
         
@@ -8,10 +8,12 @@ class RPM(AIQ):
         super().__init__()
         self.username = username
         self.password = password
+        self.env_name = '3-RPM'
+        self.test_name = ''
         
-        self.header = Header('3-RPM', 3*8, 3*1, '3-rpm test')
+        self.header = Header(self.env_name, 3*8, 3*1, '3-rpm test')
 
-        self.backend = Backend_DS(username, password)
+        self.backend = backend_handler(username, password, self.test_name, self.env_name)
         
     def get_header(self):
         return self.header

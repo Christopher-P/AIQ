@@ -13,11 +13,21 @@ def main():
 
     username = credentials['username']
     password = credentials['password']
+    data = "'username' 'christopher_Pereyda' 'BL_RPM' '1.0' 'hello' 'hi'"
+    test_name = "Not Connection"
 
-    back = backend_handler(username, password, "Connect", "")
-    back.connect()
+
+    back = backend_handler(username, password, "", "")
+    back.call_rest(username, password, data, test_name, env_name="")
+    print(back.response)
+    print(back.response.text)
 
     exit()
 
+
+
 if __name__ == '__main__':
     main()
+
+
+

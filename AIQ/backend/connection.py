@@ -2,27 +2,67 @@ import json
 import requests
 from threading import Thread, Lock
 
-class backend_connector():
+# Implement on RPM to test
+class backend_handler_RPM():
 
-    def call_rest(self, username, password, data, test_name):
-        t = Thread(target=self.sender, args=(username, password, data, test_name,))
-        t.start()
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+    '''
+    def get_train():
 
-    def sender(self, username, password, data, test_name):
+    def get_test():
+
+    def submit():
+
+    def connect():
+    '''
+
+# Implement generalized for other data
+class backend_handler():
+
+    def __init__(self, username, password, test_name, env_name):
+        self.username  = username
+        self.password  = password
+        self.test_name = test_name
+        self.env_name  = env_name
+        self.response  = "EMPTY"
+
+    def submit(self, data):
+        self.call_rest(self.username, self.password, data, self.test_name, self.env_name)
+
+    def connect(self):
+        results = self.call_rest(self.username, self.password, 1, "Connect", self.env_name)
+        print("here :" , self.response.text)
+
+        if(results == '\"Connection Successful\"'):
+            return True
+        else:
+            return False
+
+
+    def call_rest(self, username, password, data, test_name, env_name):
+        # t = Thread(target=self.sender, args=(username, password, data, test_name, env_name,))
+        # t.start()
+        self.sender(username, password, data, test_name, env_name)
+
+    def sender(self, username, password, data, test_name, env_name):
         url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
         data = {
             "username"  : username,
             "password"  : password,
             "data"      : data,
-            "test_name" : test_name
+            "test_name" : test_name,
+            "env_name"  : env_name
         }
         
-        self.data = requests.post(url, data=json.dumps(data)).text
-        self.response_handler()
+        self.response = requests.post(url, data=json.dumps(data))
+        # self.response_handler()
 
-    def response_handler(self):
-        print(self.data)
+    #def response_handler(self):
+        # print(self.data)
 
+'''
 class Backend_DS():
     
     def __init__(self, username, password):
@@ -131,3 +171,7 @@ class Backend_RL():
         finally:
             self.updating = False
         
+
+
+
+'''
