@@ -1,13 +1,18 @@
-from keras.datasets import mnist
+from __future__ import print_function
+import keras
+from keras.datasets import cifar10
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, Conv1D, MaxPooling1D
+from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D
+from keras import backend as K
 
 from keras.utils import np_utils
+
 from keras.datasets import mnist
 
 import csv
 
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
 x_train = x_train / 255
 x_test = x_test / 255
@@ -16,22 +21,25 @@ y_train = np_utils.to_categorical(y_train)
 y_test = np_utils.to_categorical(y_test)
 num_classes = y_test.shape[1]
 
+'''
 def logit(data):
-    with open('data_mnist.csv', 'a') as f:  # Just use 'w' mode in 3.x
+    with open('data_cifar.csv', 'a') as f:  # Just use 'w' mode in 3.x
         w = csv.writer(f, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         w.writerow(data)
-
+'''
 def gen_model(x,y):
 
     model = Sequential()
-    model.add(Conv1D(8,  kernel_size=(3), activation='relu', input_shape=x.shape))
-    model.add(Conv1D(16, kernel_size=(3), activation='relu'))
-    model.add(MaxPooling1D(pool_size=(2)))
+    model.add(Conv2D(8,  kernel_size=(3,3), activation='relu', input_shape=x.shape))
+    model.add(Conv2D(16, kernel_size=(3,3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
     model.add(Dropout(0.2))
-    model.add(Conv1D(8,  kernel_size=(3), activation='relu'))
+    model.add(Conv2D(16, kernel_size=(3,3), activation='relu'))
+    model.add(Conv2D(8,  kernel_size=(3,3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2,2)))
     model.add(Flatten())
+    model.add(Dense(64, activation='relu'))
     model.add(Dense(32, activation='relu'))
-    model.add(Dense(16, activation='relu'))
     model.add(Dense(y, activation='softmax'))
     return model
 
