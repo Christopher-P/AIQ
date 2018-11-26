@@ -19,12 +19,15 @@ def main():
     interface = AIQ(username, password)
     
     # Check login data
+    '''
     if not interface.connect():
         print("Invalid login Credentials")
         exit()
+    '''
 
     # Load test suite
-    interface.add('CartPole')
+    interface.add('CartPole_new')
+    interface.add('MSPackman')
     interface.add('RPM')
 
     # What if it is not in set?
@@ -32,33 +35,16 @@ def main():
 
     # Set our agent
     # Overloads agent class
-    interface.agent = agent_class()
+    #TODO add this
+    # interface.agent = agent_class()
 
     interface.evaluate()
     
     print(interface.results)
 
+    #TODO edit machine side to make work
     interface.submit()
     exit()
-
-    
-    # Request data from RPM generator (max 750)
-    results_train = AIQ_RPM.get_train([750, 4])
-    print(results_train)
-    
-    # Request data that needs a solution
-    results_test = AIQ_RPM.get_test(4)
-    print(results_test)
-    
-    #Submit a solution
-    data = '"[[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]"'
-    print(AIQ_RPM.submit(data))
-    
-
-
-
- 
-
 
 if __name__ == '__main__':
     main()

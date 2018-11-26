@@ -1,4 +1,4 @@
-class MSPackman():
+class CartPole_new():
 
     def __init__(self):
         # Initial setup
@@ -8,7 +8,7 @@ class MSPackman():
         self.done = None
         self.results = []
         self.info = None
-        self.name = "MSPackman"
+        self.name = "CartPole"
         self.rl = True
 
         try:
@@ -16,7 +16,7 @@ class MSPackman():
         except:
             print("Failed to import gym, make sure you have OpenAI gym installed!")
             
-        self.env = gym.make('MsPacman-v0')
+        self.env = gym.make('CartPole-v0')
         self.action_space = self.env.action_space
 
     
@@ -39,3 +39,6 @@ class MSPackman():
         self.reward_total = 0
         self.done = False
         self.env.reset()
+        
+        
+        
