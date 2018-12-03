@@ -34,7 +34,8 @@ def main():
     params = {}
     params['config'] = "../AIQ/test_suite/vizdoom_scenarios/basic.cfg"
     interface.add('ViZDoom', params=params)
-    #interface.add('RPM')
+    # interface.add('RPM',params={'username':username,
+    #                            'password':password})
 
     # What if it is not in set?
     interface.add('none_test')

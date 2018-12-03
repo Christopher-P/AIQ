@@ -64,12 +64,12 @@ class backend_handler():
 
 class backend_handler_new():
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, test_name="EMPTY", env_name="EMPTY", response="EMPTY"):
         self.username  = username
         self.password  = password
-        self.test_name = "EMPTY"
-        self.env_name  = "EMPTY"
-        self.response  = "EMPTY"
+        self.test_name = test_name
+        self.env_name  = env_name
+        self.response  = response
 
     def submit(self, data):
         self.call_rest(self.username, self.password, data, self.test_name, self.env_name)
