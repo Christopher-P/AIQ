@@ -26,24 +26,30 @@ def main():
     '''
 
     # Load test suite
-    interface.add('CartPole_new')
     interface.add('MSPackman')
-    interface.add('RPM')
+    interface.add('CartPole')
+    interface.add('AI2')
+
+    # TODO Change to relative import!!
+    params = {}
+    params['config'] = "../AIQ/test_suite/vizdoom_scenarios/basic.cfg"
+    interface.add('ViZDoom', params=params)
+    #interface.add('RPM')
 
     # What if it is not in set?
     interface.add('none_test')
 
     # Set our agent
     # Overloads agent class
-    #TODO add this
+    # TODO add this
     # interface.agent = agent_class()
 
     interface.evaluate()
     
     print(interface.results)
 
-    #TODO edit machine side to make work
-    interface.submit()
+    # TODO edit machine side to make work
+    print(interface.submit())
     exit()
 
 if __name__ == '__main__':

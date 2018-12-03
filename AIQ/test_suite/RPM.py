@@ -1,6 +1,8 @@
 from .util import AIQ
 from .Header_def import Header
 from AIQ.backend import backend_handler
+from .common import header
+from .common import desc
 
 class RPM(AIQ):
         
@@ -26,6 +28,4 @@ class RPM(AIQ):
         
     def submit(self, data):
         return self.backend.submit(data, '3_RPM_evaluate')
-    
-    def connect(self):
-        return self.backend.connect()
+

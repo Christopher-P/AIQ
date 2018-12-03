@@ -1,35 +1,43 @@
-from .util import AIQ
-from Header_def import Header
+from .common import header
+from .common import desc
 
-# Make a cartpole AIQ class!
-class CartPole(AIQ):
-    
+class CartPole(desc):
+
     def __init__(self):
+        # Gives common variables to all environments
         super().__init__()
+
         try:
             import gym
         except:
             print("Failed to import gym, make sure you have OpenAI gym installed!")
             
+        # Define header
+        self.header = header(env_name="CartPole", 
+                             input_dim=10, 
+                             output_dim=10,
+                             info="CartPole simulator provided by OpenAI",
+                             rl=True)
+
         self.env = gym.make('CartPole-v0')
         self.action_space = self.env.action_space
-    
-        self.header = Header(env_name = 'CartPole-v0')
-    
+
     def get_header(self):
-        print("hello world")
-        
-    def connect(self):
-        return super().connect()
+        return self.header
+
         
     def render(self):
         self.env.render()
     
     def act(self, action):
-        return super().act(action, 'CartPole-v0')
+        self.observation, self.reward_step, self.done, self.info = self.env.step(action)
+        self.reward_total += self.reward_step
         
     def reset(self):
-        super().reset()
+        self.observation = None
+        self.reward_step = 0
+        self.reward_total = 0
+        self.done = False
         self.env.reset()
         
         

@@ -20,13 +20,16 @@ class AIQ():
         return self.backend.connect()
 
     # Add a test to the test suite
-    def add(self, env_name):
+    def add(self, env_name, params=None):
         # https://stackoverflow.com/questions/547829/
         try:
             mod = __import__('AIQ.test_suite', fromlist=[env_name])
             klass = getattr(mod, env_name)
             kless = getattr(klass, env_name)
-            inst = kless()
+            if params == None:
+                inst = kless()
+            else:
+                inst = kless(params)
             self.test_suite.append(inst)
             print("{} was added to the suite!".format(env_name))
         except:
@@ -42,19 +45,19 @@ class AIQ():
             print("No tests defined")
 
         # Run BL for speed testing
-        
+        '''
         bl1 = bl_mnist()
         self.results['MNIST'] = bl1.run_bl()
         bl2 = bl_cifar10()
         self.results['CIFAR10'] = bl2.run_bl()
         print(self.results)
-        
+        '''
         for test in self.test_suite:
             # Seperate tests by RL or DS
-            if test.rl == True:
-                self.results[test.name] = self.rl_test(test)
+            if test.get_header().rl == True:
+                self.results[test.get_header().env_name] = self.rl_test(test)
             else:
-                self.results[test.name] = self.ds_test(test)
+                self.results[test.get_header().env_name] = self.ds_test(test)
                 
     # Send results to AIQ website
     def submit(self):
@@ -73,11 +76,23 @@ class AIQ():
                 action = self.agent.act(header, test.obs)
                 self.test(action)
                 '''
-                test.act(test.action_space.sample()) # take a random action
+                #TODO Make general accros all tests (proof of concept atm)
+                if test.get_header().env_name == "ViZDoom":
+                    test.act(test.random_action())
+                else:
+                    test.act(test.action_space.sample()) # take a random action
             score += test.reward_total
         return float(score/trials)
 
     def ds_test(self, test):
-        print("TODO")
+        # agent.fit(test.get_train(), test.get_dev())
+        # preds = agent.predict(test.get_test())
+
+        # proof of concept with AI2
+        preds = []
+        for i in test.get_test():
+            preds.append([0,1,2,3])
+        return test.evaluate(preds)
+
 
 
