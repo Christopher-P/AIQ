@@ -14,7 +14,7 @@ class MSPackman(desc):
                 print("Failed to import gym, make sure you have OpenAI gym installed!")
                 
             # Define header
-            self.header = header(env_name="MSPackman", 
+            self.header = header(env_name="MSPACKMAN", 
                                  input_dim=10, 
                                  output_dim=10,
                                  info="MSPackman simulator provided by ALE",

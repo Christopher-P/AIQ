@@ -13,8 +13,8 @@ def main():
 
     username = credentials['username']
     password = credentials['password']
-    data = "'username' 'christopher_Pereyda' 'BL_RPM' '1.0' 'hello' 'hi'"
-    test_name = "Not Connection"
+    data = "'username' 'christopher_Pereyda' 'AI2' '1.0' 'AIQ' '0.001'"
+    test_name = "Not_connection"
 
 
     back = backend_handler(username, password, "", "")

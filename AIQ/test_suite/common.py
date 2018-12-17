@@ -13,11 +13,13 @@ class desc():
 
 class header():
     
-    def __init__(self, env_name, input_dim, output_dim, info, rl):
+    def __init__(self, env_name, input_dim, output_dim, info, rl, env_min_score=0.0, env_max_score=1.0):
         self.env_name = env_name
         self.input_dim = input_dim
         self.output_dim = output_dim
         self.info = info
         self.rl = rl
+        self.env_min_score = env_min_score
+        self.env_max_score = env_max_score
 
     

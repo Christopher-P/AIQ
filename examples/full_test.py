@@ -1,12 +1,13 @@
-### Ideal functionality
 import yaml
-import time
 import sys
+
+#TODO: Finalize package to remove relative imports
 sys.path.insert(0, "/home/chris/Desktop/github/AIQ")
 
 ### Import AIQ package
 from AIQ.AIQ import AIQ
-# from AIQ import agent_class
+#TODO: Finish implementation
+# from AIQ.AIQ.agents import random_agent
 
 def main():
     #Import username and password
@@ -17,41 +18,44 @@ def main():
 
     # Single Call
     interface = AIQ(username, password)
+
+    # Dont run Baseline Tests
+    interface.bl = False
     
     # Check login data
-    '''
     if not interface.connect():
         print("Invalid login Credentials")
         exit()
-    '''
-
+    
     # Load test suite
     interface.add('MSPackman')
     interface.add('CartPole')
     interface.add('AI2')
 
+    # Sample for loading params into a test
     # TODO Change to relative import!!
     params = {}
     params['config'] = "../AIQ/test_suite/vizdoom_scenarios/basic.cfg"
+    params['subtest'] = "Basic"
     interface.add('ViZDoom', params=params)
-    # interface.add('RPM',params={'username':username,
-    #                            'password':password})
 
-    # What if it is not in set?
+    # Tests not in suite will display [test_name] was not found.
     interface.add('none_test')
 
     # Set our agent
     # Overloads agent class
     # TODO add this
-    # interface.agent = agent_class()
+    # interface.agent = random_agent()
 
+    # Run agent on test suite
     interface.evaluate()
     
+    # Print results (dictionary) from evaluation
     print(interface.results)
 
-    # TODO edit machine side to make work
+    # Submit and print server feedback
     print(interface.submit())
-    exit()
+
 
 if __name__ == '__main__':
     main()

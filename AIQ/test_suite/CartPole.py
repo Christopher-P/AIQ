@@ -13,10 +13,12 @@ class CartPole(desc):
             print("Failed to import gym, make sure you have OpenAI gym installed!")
             
         # Define header
-        self.header = header(env_name="CartPole", 
+        self.header = header(env_name="CARTPOLE", 
                              input_dim=10, 
                              output_dim=10,
                              info="CartPole simulator provided by OpenAI",
+                             env_min_score = 0.0,
+                             env_max_score = 200.0,
                              rl=True)
 
         self.env = gym.make('CartPole-v0')

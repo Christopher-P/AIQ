@@ -11,7 +11,7 @@ class AI2(desc):
             super().__init__()
 
             # Define header
-            self.header = header(env_name="AllenInstitute2", 
+            self.header = header(env_name="AI2", 
                                  input_dim=6, 
                                  output_dim=1,
                                  info="https://leaderboard.allenai.org/open_book_qa/submissions/about",

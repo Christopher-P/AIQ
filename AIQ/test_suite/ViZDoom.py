@@ -26,12 +26,14 @@ class ViZDoom(desc):
             print(DEFAULT_CONFIG)
     
         # Define header
-        self.header = header(env_name="ViZDoom", 
+        self.header = header(env_name="ViZDoom_" + params['subtest'], 
                              input_dim=len(self.env.get_available_buttons()), 
                              output_dim=[self.env.get_screen_height(), 
                                          self.env.get_screen_width(), 
                                          self.env.get_screen_channels()],
-                             info="ViZDoom simulator (rawr)",
+                             info="ViZDoom simulator",
+                             env_min_score = -200.0,
+                             env_max_score = 100.0,
                              rl=True)
 
     def get_header(self):
