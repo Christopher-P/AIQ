@@ -3,6 +3,7 @@ import requests
 
 class backend_handler():
 
+    # Username and password required for logging to AIQ website
     def __init__(self, username, password):
         self.username  = username
         self.password  = password
@@ -20,26 +21,27 @@ class backend_handler():
             str_data += str(values)
             str_data += "'"
             str_data += " "
+
         # Remove last space
         str_data = str_data[:-1]
 
         # Send information to rest handler
-        self.call_rest(self.username, self.password, "not_empy", str_data)
+        self.call_rest("not_empty", str_data)
         return self.response.text
 
     def connect(self):
-        self.call_rest(self.username, self.password, "Connect", 1)
+        self.call_rest("Connect", 1)
         if(self.response.text == '\"Connection Successful\"'):
             return True
         else:
             return False
 
 
-    def call_rest(self, username, password, option, data):
+    def call_rest(self, option, data):
         url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
         data = {
-            "username"  : username,
-            "password"  : password,
+            "username"  : self.username,
+            "password"  : self.password,
             "option"    : option,
             "data"      : data
         }

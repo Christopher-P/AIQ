@@ -9,7 +9,7 @@ class AIQ():
         self.username = username
         self.password = password
         self.bl       = True
-        self.backend = backend_handler(self.username, self.password)
+        self.backend  = backend_handler(self.username, self.password)
 
         self.agent = 1
         self.test_suite = []

@@ -1,4 +1,4 @@
-# Implement Random agent
+# Implemention of random agent
 # TODO Finish Implementation
 
 class Agent():
@@ -7,8 +7,8 @@ class Agent():
 
     # Called for RL type tests
     def act(self, header, data):
-        self.input_dim = input_dim
-        self.output_dim = output_dim
+
 
     # Called for DS type tests
-    def predict(self, header, data)
+    def predict(self, header, data):
+        

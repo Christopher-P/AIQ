@@ -26,6 +26,9 @@ def main():
     if not interface.connect():
         print("Invalid login Credentials")
         exit()
+
+    # Load server-side tests
+    interface.add('RPM')
     
     # Load test suite
     interface.add('MSPackman')
