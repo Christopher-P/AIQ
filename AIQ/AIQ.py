@@ -11,7 +11,7 @@ class AIQ():
         self.bl       = True
         self.backend  = backend_handler(self.username, self.password)
 
-        self.agent = 1
+        self.agent = None
         self.test_suite = []
         self.results = {}
 
@@ -51,6 +51,7 @@ class AIQ():
             bl2 = bl_cifar10()
             self.results['CIFAR10'] = bl2.run_bl()
 
+        # Run test suite using defined agent
         for test in self.test_suite:
             # Seperate tests by RL or DS
             if test.get_header().rl == True:
@@ -71,6 +72,18 @@ class AIQ():
     def submit(self):
         return self.backend.submit(self.results)
 
+    # Used to train an agent on a subset of the test suite
+    #TODO: Make work for 1 test
+    #TODO: Make work for n tests
+    def fit_to(self, test_name):
+        # Search test suite for test
+        inst = None
+        for test in self.test_suite:
+            if test_name == test.header.env_name:
+                inst = test
+
+        print(inst)
+
     # Helper functions to cleanup code
     def rl_test(self, test):
         score = 0.0
@@ -78,36 +91,39 @@ class AIQ():
         for i in range(trials):
             test.reset()
             while test.done == False:
-                #TODO: Make general accros all tests (proof of concept atm)
-                #TODO: This is here because creating an agent to handle many different inputs is hard
-                if test.get_header().env_name == "ViZDoom_Basic":
-                    test.act(test.random_action())
-                else:
-                    test.act(test.action_space.sample()) # take a random action
+                observation = test.observation
+                action = self.agent.act(test.header, observation)
+                test.act(action)
+
             score += test.reward_total
 
             f_score = self.norm(float(score/trials), 
                                 test.header.env_min_score, 
                                 test.header.env_max_score)
 
+            # catchall incase score doesnt get normalized
             if f_score > 1.0:
                 return 1.0
             else:
                 return f_score
 
+    # Called for dataset tests
     def ds_test(self, test):
-        preds = []
-        for i in test.get_test():
-            preds.append([0,1,2,3])
+        test_data = test.get_test()
+        predictions = self.agent.predict(test.header, test_data)
+        score = test.evaluate(predictions)
 
-        f_score = self.norm(test.evaluate(preds), 
+        f_score = self.norm(score, 
                             test.header.env_min_score, 
                             test.header.env_max_score)
+
+        # catchall incase score doesnt get normalized
         if f_score > 1.0:
             return 1.0
         else:
             return f_score
 
+    # Score normalization
     def norm(self, score, min_s, max_s):
         return (score - min_s) / (max_s - min_s)
 

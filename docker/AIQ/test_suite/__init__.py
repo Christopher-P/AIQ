@@ -1,1 +1,1 @@
-from .RPM import *
+from .common import *

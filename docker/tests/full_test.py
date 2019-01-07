@@ -1,14 +1,17 @@
-### Ideal functionality
 import yaml
-import time
 import sys
-sys.path.insert(0, "/home/chris/Desktop/github/AIQ")
+import os
+
+# Go to where AIQ is installed
+os.chdir('..')
+sys.path.insert(0, os.getcwd())
 
 ### Import AIQ package
 from AIQ.AIQ import AIQ
-# from AIQ import agent_class
+from AIQ.agents.random_agent import R_Agent
 
 def main():
+
     #Import username and password
     credentials = yaml.safe_load(open("credentials.yml"))
 
@@ -17,34 +20,52 @@ def main():
 
     # Single Call
     interface = AIQ(username, password)
+
+    # Dont run Baseline Tests
+    interface.bl = False 
     
-    # Check login data
-    '''
+    # Check login credentials
     if not interface.connect():
         print("Invalid login Credentials")
         exit()
-    '''
 
+    # Load server-side tests
+    # Pass in the backend handler
+    #TODO:  Maybe think of better way to send backend to test
+    #       Currently being sent this way so we dont store 
+    #       user/pass in more than one spot
+    #TODO: Fix RPM (broke in backend update)
+    #interface.add('RPM', interface.backend)
+    
     # Load test suite
-    interface.add('CartPole_new')
-    interface.add('MSPackman')
-    # interface.add('RPM')
-
-    # What if it is not in set?
+    #TODO: Make server-side DB dynamic on name
+    interface.add('OpenAIGym', {'name':'CARTPOLE', 'env_name':'CartPole-v0'})
+    #TODO: Can be used in test suite but not stored yet
+    interface.add('OpenAIGym', {'name':'MSPACKMAN', 'env_name':'Acrobot-v1'})
+    interface.add('ALE',       {'name':'MSPACKMAN', 'env_name':'MsPacman-v0'})
+    interface.add('AI2')
+    
+    # Sample for loading params into a test
+    params = {}
+    params['config'] = "../AIQ/test_suite/vizdoom_scenarios/basic.cfg"
+    params['subtest'] = "Basic"
+    interface.add('ViZDoom', params=params)
+    
+    # Tests not in suite will display [test_name] was not found.
     interface.add('none_test')
-
+    
     # Set our agent
-    # Overloads agent class
-    #TODO add this
-    # interface.agent = agent_class()
+    interface.agent = R_Agent()
 
+    # Run agent on test suite
     interface.evaluate()
     
+    # Print results (dictionary) from evaluation
     print(interface.results)
 
-    #TODO edit machine side to make work
-    interface.submit()
-    exit()
+    # Submit and print server feedback
+    print(interface.submit())
+
 
 if __name__ == '__main__':
     main()

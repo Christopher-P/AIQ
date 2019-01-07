@@ -1,31 +1,47 @@
-from .util import AIQ
-from .Header_def import Header
-from AIQ.backend import backend_handler
+from .common import header
+from .common import desc
 
-class RPM(AIQ):
+class RPM(desc):
         
-    def __init__(self, username, password):
-        super().__init__()
-        self.username = username
-        self.password = password
-        self.env_name = '3-RPM'
-        self.test_name = ''
-        
-        self.header = Header(self.env_name, 3*8, 3*1, '3-rpm test')
+    def __init__(self, backend):
+        try:
+            super().__init__()
+            self.env_name = '3-RPM'
+            self.header = header(env_name="rpm", 
+                                 input_dim=24, 
+                                 output_dim=3,
+                                 info="",
+                                 rl=False)
+            self.backend = backend
+            #TODO: maybe think of way to make this more dynamic??
+            self.amount = 750
+            self.train = None
+            self.test  = None
+            self.download_data()
 
-        self.backend = backend_handler(username, password, self.test_name, self.env_name)
+        except Exception as inst:
+            print(inst)
+
+    def download_data(self):
+        data = {'env':'3_RPM', 'option':'train', 'amt':self.amount}
+        self.train = self.backend.submit(data)
+        #TODO: Clean train data
+        data = {'env':'3_RPM', 'option':'test'}
+        self.test = self.backend.submit(data)
+        #TODO: Clean test data
         
     def get_header(self):
         return self.header
         
-    def get_test(self, amt):
-        return self.backend.get_test('3_RPM_gen_test', amt)
+    def get_test(self):
+        return self.test
     
-    def get_train(self, amt):
-        return self.backend.get_train(amt, '3_RPM_gen_train')
+    def get_train(self):
+        return self.train
         
-    def submit(self, data):
-        return self.backend.submit(data, '3_RPM_evaluate')
-    
-    def connect(self):
-        return self.backend.connect()
+    def evaluate(self, data):
+        data = {'env':'3_RPM', 'option':'evaluate', 'sol':data}
+        l = self.backend.submit(data)
+        print(l)
+        return l
+

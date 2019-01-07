@@ -1,35 +1,47 @@
-from .util import backend_handler_new
 from .common import header
 from .common import desc
 
 class RPM(desc):
         
-    def __init__(self, params):
+    def __init__(self, backend):
         try:
             super().__init__()
-            self.username = params['username']
-            self.password = params['password']
             self.env_name = '3-RPM'
-            self.test_name = ''
-            
             self.header = header(env_name="rpm", 
                                  input_dim=24, 
                                  output_dim=3,
                                  info="",
                                  rl=False)
-            self.backend = backend_handler_new(username, password, self.test_name, self.env_name)
+            self.backend = backend
+            #TODO: maybe think of way to make this more dynamic??
+            self.amount = 750
+            self.train = None
+            self.test  = None
+            self.download_data()
+
         except Exception as inst:
             print(inst)
+
+    def download_data(self):
+        data = {'env':'3_RPM', 'option':'train', 'amt':self.amount}
+        self.train = self.backend.submit(data)
+        #TODO: Clean train data
+        data = {'env':'3_RPM', 'option':'test'}
+        self.test = self.backend.submit(data)
+        #TODO: Clean test data
         
     def get_header(self):
         return self.header
         
     def get_test(self):
-        return self.backend.get_test('3_RPM_gen_test', 750)
+        return self.test
     
     def get_train(self):
-        return self.backend.get_train(750, '3_RPM_gen_train')
+        return self.train
         
-    def submit(self, data):
-        return self.backend.submit(data, '3_RPM_evaluate')
+    def evaluate(self, data):
+        data = {'env':'3_RPM', 'option':'evaluate', 'sol':data}
+        l = self.backend.submit(data)
+        print(l)
+        return l
 

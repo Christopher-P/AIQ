@@ -1,3 +1,5 @@
 *.yml
 *.pyc
 __pycache__/
+_vizdoom/
+_vizdoom.ini
