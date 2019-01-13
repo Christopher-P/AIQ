@@ -31,9 +31,16 @@ class AIQ():
             else:
                 inst = kless(params)
             self.test_suite.append(inst)
-            print("{} was added to the suite!".format(env_name))
+            if params is not None and 'env_name' in params:
+                print("{}: {} was added to the suite!".format(env_name, params['env_name']))
+            else:
+                print("{} was added to the suite!".format(env_name))
         except:
-            print("{} was not found in the test_suite directory!".format(env_name))
+            if params is not None and 'env_name' in params:
+                print("{}: {} was not found in the test_suite directory!".format(env_name, params['env_name']))
+            else:
+                print("{}  was not found in the test_suite directory!".format(env_name))
+                
 
 
 

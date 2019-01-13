@@ -18,9 +18,9 @@ class AI2(desc):
                                  info="https://leaderboard.allenai.org/open_book_qa/submissions/about",
                                  rl=False)
 
-            self.train_X, self.train_Y = self.load_data("../AIQ/test_suite/AI2_data/train_complete.jsonl")
-            self.dev_X, self.dev_Y   = self.load_data("../AIQ/test_suite/AI2_data/dev_complete.jsonl")
-            self.test_X, self.test_Y  = self.load_data("../AIQ/test_suite/AI2_data/test_complete.jsonl")
+            self.train_X, self.train_Y = self.load_data("AIQ/test_suite/AI2_data/train_complete.jsonl")
+            self.dev_X, self.dev_Y   = self.load_data("AIQ/test_suite/AI2_data/dev_complete.jsonl")
+            self.test_X, self.test_Y  = self.load_data("AIQ/test_suite/AI2_data/test_complete.jsonl")
         except Exception as inst:
             print(inst)
 
