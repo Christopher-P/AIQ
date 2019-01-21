@@ -2,4 +2,4 @@ keras
 tensorflow
 gym
 gym[atari]
-
+vizdoom

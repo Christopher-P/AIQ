@@ -14,7 +14,6 @@ class OpenAIGym(desc):
             
         # Handle Parameters
         env_name = params['env_name']
-        name = params['name']
 
         # Create GYM instance
         self.env = gym.make(env_name)
@@ -24,7 +23,7 @@ class OpenAIGym(desc):
         # Define header
         #TODO: Check all open ai gym envs to see if action space works the same
         #       Workout num_classes based on action_space type
-        self.header = header(env_name=name, 
+        self.header = header(env_name=env_name, 
                              input_dim=self.observation_space.shape, 
                              output_dim=self.action_space.n,
                              num_classes=2,

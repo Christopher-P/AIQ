@@ -2,10 +2,6 @@ import yaml
 import sys
 import os
 
-# Go to where AIQ is installed
-os.chdir('..')
-sys.path.insert(0, os.getcwd())
-
 ### Import AIQ package
 from AIQ.AIQ import AIQ
 from AIQ.agents.random_agent import R_Agent
@@ -38,17 +34,15 @@ def main():
     #interface.add('RPM', interface.backend)
     
     # Load test suite
-    #TODO: Make server-side DB dynamic on name
-    interface.add('OpenAIGym', {'name':'CARTPOLE', 'env_name':'CartPole-v0'})
-    #TODO: Can be used in test suite but not stored yet
-    interface.add('OpenAIGym', {'name':'MSPACKMAN', 'env_name':'Acrobot-v1'})
-    interface.add('ALE',       {'name':'MSPACKMAN', 'env_name':'MsPacman-v0'})
+    interface.add('OpenAIGym', {'env_name':'CartPole-v0'})
+    interface.add('OpenAIGym', {'env_name':'Acrobot-v1'})
+    interface.add('ALE',       {'env_name':'MsPacman-v0'})
     interface.add('AI2')
     
     # Sample for loading params into a test
     params = {}
-    params['config'] = "../AIQ/test_suite/vizdoom_scenarios/basic.cfg"
-    params['subtest'] = "Basic"
+    params['config'] = "AIQ/test_suite/vizdoom_scenarios/basic.cfg"
+    params['subtest'] = "basic"
     interface.add('ViZDoom', params=params)
     
     # Tests not in suite will display [test_name] was not found.

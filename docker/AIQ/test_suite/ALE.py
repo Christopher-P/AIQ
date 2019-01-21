@@ -22,14 +22,14 @@ class ALE(desc):
                          OpenAI gym installed and atari dependencies!""")
             # Handle Parameters
             env_name = params['env_name']
-            name = params['name']
+
             # Create ALE instance
             self.env = gym.make(env_name)
             self.action_space = self.env.action_space
             self.observation_space = self.env.observation_space
   
             # Define header
-            self.header = header(env_name=name, 
+            self.header = header(env_name=env_name, 
                                  input_dim=self.action_space, 
                                  output_dim=self.observation_space,
                                  info="Simulators gotten from ALE",

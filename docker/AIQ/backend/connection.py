@@ -36,7 +36,6 @@ class backend_handler():
         else:
             return False
 
-
     def call_rest(self, option, data):
         url = 'https://portal.eecs.wsu.edu/aiq/index.php/rest/'
         data = {
