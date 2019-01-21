@@ -13,7 +13,7 @@ We recommend utilizing the docker files located in this repo to run AIQ.
 
 Navigate to the docker file, then execute the following:
 
-'''Shell
+'''bash
 docker build
 
 '''
