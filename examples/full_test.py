@@ -7,10 +7,12 @@ os.chdir('..')
 sys.path.insert(0, os.getcwd())
 
 ### Import AIQ package
-from AIQ.AIQ import AIQ
+import AIQ
 from AIQ.agents.random_agent import R_Agent
 
 def main():
+
+    exit()
 
     #Import username and password
     credentials = yaml.safe_load(open("credentials.yml"))

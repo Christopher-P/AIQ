@@ -3,10 +3,104 @@ The Artificial Intelligence Quotient is an open source testing frameworkd used f
 # Installation
 Clone this repository
 
+PyPi Coming soon!
+
 # How to run
+
+1. Follow Tutorial
+2. Build with Docker
+
+
+## Tutorial
+
+1. To begin rename sample.yml located in the docker to credentials.yml and
+put in your username. Because this process will store your information in
+plain text we recommend that you **do not use this password anywhere else**!
+
+We will later provide a more secure method (or you may utilize your own)
+for this, until then assume your information is not secured.
+
+2. Import the AIQ interface
+```python
+import AIQ
+```
+
+
+3. Send login information to the interface
+```python
+interface = AIQ(username, password)
+```
+Dummy information can be passed instead to utilize AIQ locally only.
+Remove any references to connection and submission.
+
+4. Verify credentials work
+  * **This currently sends the plain-text username and password.** This is sent via a secure connection but we are still working on sending fully encrypted data.
+```python
+# returns True if credentials match our system
+interface.connect()
+```
+
+5. Add tests to test suite
+  * Simple Test
+```python
+interface.add('[name]')
+```
+
+  * Subtest in package
+```python
+# Example: [package] = OpenAIGym, [subtest] = CartPole-v0
+interface.add('[package]', {'env_name':'[subtest]'})
+```
+
+  * Subtest in package with parameters
+```python
+# Example: [package] = VizDoom, [subtest] = basic
+    params = {}
+    params['config'] = "path_to_config"
+    params['subtest'] = [subtest]
+    interface.add('[package]', params=params)
+```
+
+
+6. Add an agent
+AIQ provides an agent which randomly selects from the possible actions given
+by the test with knowledge of each test.
+```python
+from AIQ.agents.random_agent import R_Agent
+interface.agent = R_Agent()
+```
+
+
+7. Evaluate the agent on the test suite
+```python
+interface.evaluate()
+```
+
+
+8. The results can then be seen and submitted to the AIQ leaderboard.
+
+This will result in an unvalidated but public score. We are currently working on
+creating a submission process to verify each submission.
+
+```python
+# Print results (dictionary) from evaluation
+print(interface.results)
+
+# Submit and print server feedback
+print(interface.submit())
+```
+
+9. All of this can be found within the full_test file inside the examples directory.
 
 ## Docker
 We recommend utilizing the docker files located in this repo to run AIQ.
+
+To begin, run the following command
+
+```bash
+sudo apt-get install -y squid-deb-proxy
+```
+This will create a proxy listening on 8000. This will be used to cache the debian packages so we do not need to download them again, after the initial run.
 
 Navigate to the docker file, then execute the following:
 
@@ -39,6 +133,7 @@ instructions for the following packages:
 
 Specifics can be found inside the Dockerfile inside the docker directory.
 
+
 # Results
 Results can be submitted to our website to be logged and displayed on a public leaderboard!
 Visit the [AIQ Website](https://portal.eecs.wsu.edu/aiq/).
@@ -48,7 +143,7 @@ Visit the [AIQ Website](https://portal.eecs.wsu.edu/aiq/).
 ViZDoom:
 Michał Kempka, Marek Wydmuch, Grzegorz Runc, Jakub Toczek & Wojciech Jaśkowski, ViZDoom: A Doom-based AI Research Platform for Visual Reinforcement Learning, IEEE Conference on Computational Intelligence and Games, pp. 341-348, Santorini, Greece, 2016	(arXiv:1605.02097)
 
-AI2: 
+AI2:
 http://data.allenai.org/arc/
 
 OpenAIGym:
@@ -58,10 +153,3 @@ OpenAIGym:
   Year = {2016},
   Eprint = {arXiv:1606.01540},
 }
-
-
-
-
-
-
-

@@ -1,7 +1,15 @@
 from .backend import backend_handler
 from .test_suite.bl_mnist import bl_mnist
 from .test_suite.bl_cifar10 import bl_cifar10
+
+# Used for loading tests into test suite
 import importlib
+
+# Used for animations
+import itertools
+import threading
+import time
+import sys
 
 class AIQ():
 
@@ -40,12 +48,10 @@ class AIQ():
                 print("{}: {} was not found in the test_suite directory!".format(env_name, params['env_name']))
             else:
                 print("{}  was not found in the test_suite directory!".format(env_name))
-                
-
-
 
     # Evaluate test suite and given agent
     def evaluate(self):
+        # TODO: Do users need to define agent?
         if self.agent == None:
             print("No agent defiend")
         if len(self.test_suite) == 0:
@@ -53,18 +59,25 @@ class AIQ():
 
         # Run BL for speed testing
         if self.bl:
+            self.animation('Running Baselines', 'Baselines finished!')
             bl1 = bl_mnist()
             self.results['MNIST'] = bl1.run_bl()
             bl2 = bl_cifar10()
             self.results['CIFAR10'] = bl2.run_bl()
+            self.stop_animation()
 
         # Run test suite using defined agent
+        self.animation('Running test suite', 'Finished Test Suite')
         for test in self.test_suite:
+            test_name = test.get_header().env_name
+
             # Seperate tests by RL or DS
             if test.get_header().rl == True:
-                self.results[test.get_header().env_name] = self.rl_test(test)
+                self.results[test_name] = self.rl_test(test)
             else:
-                self.results[test.get_header().env_name] = self.ds_test(test)
+                self.results[test_name] = self.ds_test(test)
+            
+        self.stop_animation()
 
         # For now simple average computed client side
         # TODO Move to server side
@@ -74,7 +87,7 @@ class AIQ():
             AIQ += val
         AIQ = AIQ / len(self.results)
         self.results['AIQ'] = AIQ
-                
+
     # Send results to AIQ website
     def submit(self):
         return self.backend.submit(self.results)
@@ -133,4 +146,24 @@ class AIQ():
     # Score normalization
     def norm(self, score, min_s, max_s):
         return (score - min_s) / (max_s - min_s)
+
+    # Fun animation!
+    def animation(self, start_text, end_text):
+        t = threading.Thread(target=self.util_animation, 
+                             args=(start_text, end_text,))
+        t.start()
+
+    # Fun animation (thread function)
+    def util_animation(self, start_text, end_text):
+        self.stop_animation_bool = False  
+        for c in itertools.cycle(['|', '/', '-', '\\']):
+            if self.stop_animation_bool:
+                break
+            print('\r' + start_text + ' ' + c, end='')
+            time.sleep(0.15)
+        print('\r' + end_text + ' ', end='')
+        self.stop_animation_bool = False      
+
+    def stop_animation(self):
+        self.stop_animation_bool = True 
 
