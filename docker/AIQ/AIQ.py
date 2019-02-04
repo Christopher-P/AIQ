@@ -59,15 +59,15 @@ class AIQ():
 
         # Run BL for speed testing
         if self.bl:
-            self.animation('Running Baselines', 'Baselines finished!')
+            #self.animation('Running Baselines', 'Baselines finished!')
             bl1 = bl_mnist()
             self.results['MNIST'] = bl1.run_bl()
             bl2 = bl_cifar10()
             self.results['CIFAR10'] = bl2.run_bl()
-            self.stop_animation()
+            #self.stop_animation()
 
         # Run test suite using defined agent
-        self.animation('Running test suite', 'Finished Test Suite')
+        #self.animation('Running test suite', 'Finished Test Suite')
         for test in self.test_suite:
             test_name = test.get_header().env_name
 
@@ -77,7 +77,7 @@ class AIQ():
             else:
                 self.results[test_name] = self.ds_test(test)
             
-        self.stop_animation()
+        #self.stop_animation()
 
         # For now simple average computed client side
         # TODO Move to server side

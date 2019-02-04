@@ -14,11 +14,7 @@ PyPi Coming soon!
 ## Tutorial
 
 1. To begin rename sample.yml located in the docker to credentials.yml and
-put in your username. Because this process will store your information in
-plain text we recommend that you **do not use this password anywhere else**!
-
-We will later provide a more secure method (or you may utilize your own)
-for this, until then assume your information is not secured.
+put in your username and password. 
 
 2. Import the AIQ interface
 ```python
@@ -34,7 +30,7 @@ Dummy information can be passed instead to utilize AIQ locally only.
 Remove any references to connection and submission.
 
 4. Verify credentials work
-  * **This currently sends the plain-text username and password.** This is sent via a secure connection but we are still working on sending fully encrypted data.
+This is sent via a secure connection but we are still working on sending fully encrypted data.
 ```python
 # returns True if credentials match our system
 interface.connect()
