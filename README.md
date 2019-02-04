@@ -90,14 +90,6 @@ print(interface.submit())
 
 ## Docker
 We recommend utilizing the docker files located in this repo to run AIQ.
-
-To begin, run the following command
-
-```bash
-sudo apt-get install -y squid-deb-proxy
-```
-This will create a proxy listening on 8000. This will be used to cache the debian packages so we do not need to download them again, after the initial run.
-
 Navigate to the docker file, then execute the following:
 
 ```bash
