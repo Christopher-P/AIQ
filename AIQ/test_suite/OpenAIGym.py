@@ -24,8 +24,8 @@ class OpenAIGym(desc):
         #TODO: Check all open ai gym envs to see if action space works the same
         #       Workout num_classes based on action_space type
         self.header = header(env_name=env_name, 
-                             input_dim=self.observation_space.shape, 
-                             output_dim=self.action_space.n,
+                             input_dim=self.action_space,
+                             output_dim=self.observation_space, 
                              num_classes=2,
                              info="Simulators gotten from OpenAI Gym",
                              env_min_score = 0.0,
