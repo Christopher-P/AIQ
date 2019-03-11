@@ -1,4 +1,5 @@
 *.yml
+!sample.yml
 *.pyc
 __pycache__/
 _vizdoom/
