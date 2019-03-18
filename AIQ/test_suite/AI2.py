@@ -5,7 +5,7 @@ import jsonlines
 
 class AI2(desc):
 
-    def __init__(self):
+    def __init__(self, params):
         try:
             # Gives common variables to all environments
             super().__init__()
