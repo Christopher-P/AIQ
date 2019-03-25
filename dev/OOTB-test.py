@@ -28,13 +28,6 @@ def main():
     # Set our agent
     interface.agent = OOTB_Agent()
 
-
-    interface.add('OpenAIGym', {'env_name':'Alien-v0'})
-    interface.fit_to('Alien-v0')
-    print(interface.test_to('Alien-v0', 20).history)
-    exit()
-
-
     # Add all envs
     # If ignore words found in env_name, dont add!
     ignore = ['Deterministic', 'ram', 'NoFrameskip']
@@ -43,7 +36,7 @@ def main():
     for ind,val in enumerate(interface.suites_added):
         print(interface.suites_added[ind], interface.test_names[ind])
 
-    last = 'basic'
+    last = 'Asterix-v4'
 
     # Train/fit/log OOTB-agents
     for ind,val in enumerate(interface.suites_added):
@@ -61,12 +54,13 @@ def main():
         else:
             name = interface.test_names[ind]
 
+        interface.agent.clear()
         interface.fit_to(name)
         results = interface.test_to(name, 20)
         interface.fancy_logger(interface.suites_added[ind], 
                                interface.test_names[ind], 
                                results.history, 
-                               file_name='dev/data/OOTB-Data', write='a')
+                               file_name='dev/data/OOTB-Data-v2', write='a')
 
     exit()
 

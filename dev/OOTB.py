@@ -21,9 +21,12 @@ class OOTB_Agent():
     def __init__(self):
         return None
 
+    def clear(self):
+        self.cem = None
+
     def fit_to(self, inst):
         self.prepare_agent(inst)
-        self.cem.fit(inst, nb_steps=10, visualize=False, verbose=1)
+        self.cem.fit(inst, nb_steps=100000, visualize=False, verbose=1)
 
     def test_to(self, inst, iters):
         data = self.cem.test(inst, nb_episodes=iters, visualize=False)
@@ -50,6 +53,10 @@ class OOTB_Agent():
         model.add(Activation('relu'))
         model.add(Dense(output_dim[0]))
         model.add(Activation('softmax'))
+        model.compile(optimizer='rmsprop',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
         return model
 
 
@@ -65,7 +72,7 @@ class OOTB_Agent():
             out_dim = [out_dim]
 
         model = self.gen_model(out_dim, in_dim)
-        memory = EpisodeParameterMemory(limit=1000, window_length=1)
+        memory = EpisodeParameterMemory(limit=5000, window_length=1)
         cem = CEMAgent(model=model, 
                        nb_actions=in_dim[0], 
                        memory=memory,
