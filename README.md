@@ -1,4 +1,4 @@
-The Artificial Intelligence Quotient is an open source testing frameworkd used for evaluating the intelligence of an agent. We hope to further the field of AI evaluation by utilizing this framework to have a open metric for intelligence. We will also utilize this framework to determine how the field of AI is developing and whether progress towards a general intelligence being made.
+The Artificial Intelligence Quotient is an open source testing framework used for evaluating the intelligence of an agent. We hope to further the field of AI evaluation by utilizing this framework to have a open metric for intelligence. We will also utilize this framework to determine how the field of AI is developing and whether progress towards a general intelligence is being made.
 
 # Installation
 Clone this repository
