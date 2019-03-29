@@ -1,6 +1,8 @@
 from .common import header
 from .common import desc
 
+import numpy as np
+import random
 class OpenAIGym(desc):
 
     def __init__(self, params):
@@ -27,7 +29,7 @@ class OpenAIGym(desc):
         #TODO: Check all open ai gym envs to see if action space works the same
         #       Workout num_classes based on action_space type
         if type(self.observation_space) == self.disc:
-            self.out = [self.observation_space.n - 1]
+            self.out = [self.observation_space.n]
         else:
             self.out = list(self.observation_space.shape)
 
@@ -47,20 +49,20 @@ class OpenAIGym(desc):
         self.env.render()
     
     def act(self, action):
-        print(action)
         self.observation, self.reward_step, self.done, self.info = self.env.step(action)
         self.reward_total += self.reward_step
         self.steps += 1
-        #print(self.observation)
         if self.steps >= 2000:
             self.done = True
 
         # If only a number is given as output    
         # turn to one-hot    
         if type(self.observation_space) == self.disc:
-            l = [0] * (self.observation_space.n - 1)
+            l = [0] * (self.observation_space.n)
             l[self.observation] = 1
             self.observation = l
+        else:
+            self.observation = self.observation / 255
 
         if self.done:
             return self.observation, self.reward_total, self.done, self.info
@@ -81,9 +83,11 @@ class OpenAIGym(desc):
 
 
         if type(self.observation_space) == self.disc:
-            l = [0] * (self.observation_space.n - 1)
+            l = [0] * (self.observation_space.n)
             l[self.observation] = 1
             self.observation = l
+        else:
+            self.observation = self.observation / 255
 
         return self.observation
         
