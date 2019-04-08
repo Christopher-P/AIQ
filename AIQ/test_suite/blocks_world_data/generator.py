@@ -94,8 +94,8 @@ class Simulator():
                 self.world[self.hand].push(self.holding)
                 self.holding = None
         
-        if self.check_done()
-            self.is_done = true
+        if self.check_done():
+            self.is_done = True
 
         return self.obs()
 

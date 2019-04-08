@@ -1,6 +1,8 @@
 from .common import header
 from .common import desc
 
+from blocks_world_data.generator import Simulator
+
 class BlocksWorld(desc):
         
     def __init__(self, params):
@@ -15,26 +17,40 @@ class BlocksWorld(desc):
         except Exception as inst:
             print(inst)
 
-    def download_data(self):
-        data = {'env':'3_RPM', 'option':'train', 'amt':self.amount}
-        self.train = self.backend.submit(data)
-        #TODO: Clean train data
-        data = {'env':'3_RPM', 'option':'test'}
-        self.test = self.backend.submit(data)
-        #TODO: Clean test data
-        
+        if 'blocks' in params:
+            blocks = params['blocks']
+        else:
+            blocks = 5
+    
+        if 'size' in params:
+            size = params['size']
+        else:
+            size = 5
+
+        if 'limit' in params:
+            limit = params['limit']
+        else:
+            limit = 2000
+
+        self.env = Simulator(size, blocks, None, limit)
+
+    
     def get_header(self):
         return self.header
         
-    def get_test(self):
-        return self.test
+    def render(self, mode=None):
+        return None
     
-    def get_train(self):
-        return self.train
-        
-    def evaluate(self, data):
-        data = {'env':'3_RPM', 'option':'evaluate', 'sol':data}
-        l = self.backend.submit(data)
-        print(l)
-        return l
+    def act(self, action):
+        self.obs = self.env.act(action)  
+        return self.env.obs(), self.env.score(), self.env.is_done, None     
 
+    # Used for cem agent
+    def step(self, action):
+        return self.act(action)
+        
+    def reset(self):
+        self.obs = self.env.reset()
+        return self.env.obs(), self.env.score(), self.env.is_done, None
+        
+        
