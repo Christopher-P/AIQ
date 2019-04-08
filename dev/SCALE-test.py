@@ -36,7 +36,7 @@ def main():
     for ind,val in enumerate(interface.suites_added):
         print(interface.suites_added[ind], interface.test_names[ind])
 
-    last = 'AirRaid-v0'
+    last = 'RoadRunner-v4'
 
     # Train/fit/log OOTB-agents
     for ind,val in enumerate(interface.suites_added):

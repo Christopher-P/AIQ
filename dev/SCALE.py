@@ -4,7 +4,7 @@ import numpy as np
 import math
 
 import keras.backend as K
-from keras.layers import Dense, Activation, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dropout
+from keras.layers import Dense, Activation, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dropout, Reshape
 from keras.optimizers import Adam, Adagrad, Adadelta, SGD
 from keras.callbacks import Callback
 from keras.models import Sequential, load_model
@@ -15,7 +15,7 @@ from sklearn.model_selection import train_test_split
 from rl.agents.cem import CEMAgent
 from rl.memory import EpisodeParameterMemory
 
-
+import copy
 
 class SCALE_Agent():
 
@@ -61,12 +61,14 @@ class SCALE_Agent():
 
         # get log of sum of input dims
         dim = self.log_finder(sh)
-        print(dim)
-        input_dim.insert(0, 1)  
+        k_ = copy.deepcopy(input_dim)
+        input_dim.insert(0, 1)
+        
         model = Sequential()
+        
 
         if len(sh) == 1:
-            
+              
             # Build up shape
             for i in range(dim):
                 if i == 0:
@@ -100,11 +102,12 @@ class SCALE_Agent():
             model.add(Flatten())
 
         if len(sh) == 3:
-            
+            model.add(Reshape(k_, input_shape=(tuple(input_dim)) ))
             # Build up shape
             for i in range(dim):
+                
                 if i == 0:
-                    model.add(Conv2D(8 * int(math.pow(2, i)), kernel_size=(3), activation='relu', input_shape=(tuple(input_dim))))
+                    model.add(Conv2D(8 * int(math.pow(2, i)), kernel_size=(3), activation='relu'))
                 else:
                     model.add(Conv2D(8 * int(math.pow(2, i)), kernel_size=(3), activation='relu'))
                 if i % 2 == 0 and i > 0:
