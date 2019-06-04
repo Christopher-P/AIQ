@@ -1,5 +1,4 @@
-from .common import header
-from .common import desc
+from ..common import header, desc
 
 from blocks_world_data.generator import Simulator
 

@@ -1,6 +1,4 @@
-from .common import header
-from .common import desc
-
+from ..common import header, desc
 import numpy as np
 
 class ViZDoom(desc):
@@ -19,7 +17,7 @@ class ViZDoom(desc):
             DEFAULT_CONFIG = params['config']
         # If not, pull config from env_name
         else:
-            file_path = 'AIQ/test_suite/vizdoom_scenarios/'
+            file_path = 'AIQ/test_suite/VizDoom/vizdoom_scenarios/'
             # Input --> env_name = vizdoom_stuff_name
             DEFAULT_CONFIG = file_path + params['env_name'] + '.cfg'
 

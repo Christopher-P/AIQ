@@ -1,5 +1,5 @@
-from .common import header
-from .common import desc
+from ..common import header, desc
+
 import json
 import jsonlines
 

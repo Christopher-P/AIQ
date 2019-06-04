@@ -1,7 +1,7 @@
 from .backend import backend_handler
-from .test_suite.bl_mnist import bl_mnist
-from .test_suite.bl_cifar10 import bl_cifar10
-from .test_suite.util import tests
+#from .test_suite.bl_mnist import bl_mnist
+#from .test_suite.bl_cifar10 import bl_cifar10
+from .test_suite.util import tests, test_loader
 
 # Used for loading tests into test suite
 import importlib
@@ -24,7 +24,7 @@ class AIQ():
         self.backend  = backend_handler(self.username, self.password)
 
         self.agent = None
-        self.test_suite = []
+        self.test_suite = test_loader()
         self.results = {}
 
     # Check connection
@@ -33,26 +33,10 @@ class AIQ():
 
     # Add a test to the test suite
     def add(self, env_name, params=None):
-        # https://stackoverflow.com/questions/547829/
-        try:
-            mod = __import__('AIQ.test_suite', fromlist=[env_name])
-            klass = getattr(mod, env_name)
-            kless = getattr(klass, env_name)
-            inst = kless(params)
-
-            self.test_suite.append(inst)
-            if params is not None and 'env_name' in params:
-                print("{}: {} was added to the suite!".format(env_name, params['env_name']))
-            else:
-                print("{} was added to the suite!".format(env_name))
-            return True
-        except:
-            if params is not None and 'env_name' in params:
-                print("{}: {} was not found in the test_suite directory!".format(env_name, params['env_name']))
-            else:
-                print("{}  was not found in the test_suite directory!".format(env_name))
-            return False
-
+        print(env_name)
+        print(params)
+        self.test_suite.add(env_name, params)
+       
     # Add all available test envs to the suite
     def add_all_tests(self, ignore):
         # Class used to get the list of tests
