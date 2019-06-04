@@ -33,8 +33,6 @@ class AIQ():
 
     # Add a test to the test suite
     def add(self, env_name, params=None):
-        print(env_name)
-        print(params)
         self.test_suite.add(env_name, params)
        
     # Add all available test envs to the suite
