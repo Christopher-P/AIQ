@@ -136,7 +136,7 @@ class AIQ():
             print(test_name + ' not found in active suite!')
 
         # Pass test instance to agents defined fitting function
-        self.agent.fit_to(inst)
+        return self.agent.fit_to(inst)
 
     def test_to(self, test_name, iters):
         # Make sure agent exists
@@ -221,13 +221,13 @@ class AIQ():
 
     # Logging utility
     # Expects a results history
-    def fancy_logger(self, suite_name, env_name, results, file_name='data', write='a'):
+    def fancy_logger(self, suite_name, env_name, results, train_res, file_name='data', write='a'):
         with open(file_name + '.csv', write, newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
             avg = sum(results['episode_reward']) / len(results['episode_reward'])
             stdev = statistics.stdev(results['episode_reward'])
-            spamwriter.writerow((suite_name, env_name, len(results['episode_reward']),
+            spamwriter.writerow((suite_name, env_name, train_res, len(results['episode_reward']),
                                  avg, -1*stdev, stdev, *results['episode_reward']))
 
 
