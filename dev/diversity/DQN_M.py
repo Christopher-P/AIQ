@@ -1,6 +1,8 @@
 # Out Of The Box solution
 # Utilize keras to train and test an agent 
 import numpy as np
+import copy 
+
 
 import keras.backend as K
 from keras.layers import Dense, Activation, Flatten, Conv2D, Input, Conv1D
@@ -33,6 +35,8 @@ class AtariProcessor(Processor):
         # We could perform this processing step in `process_observation`. In this case, however,
         # we would need to store a `float32` array instead, which is 4x more memory intensive than
         # an `uint8` array. This matters if we store 1M observations.
+        #print(type(batch))
+        #print(batch)
         processed_batch = batch.astype('float32') / 255.
         return processed_batch
 
@@ -49,9 +53,8 @@ class DQN_Agent():
 
     def fit_to(self, inst):
         self.prepare_agent(inst)
-        l = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
-        er = l.history['episode_reward'][-20:]
-        return sum(er)/len(er)
+        train_results = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
+        return train_results
 
     def test_to(self, inst, iters):
         data = self.dqn.test(inst, nb_episodes=iters, visualize=False)
@@ -59,11 +62,11 @@ class DQN_Agent():
 
     def gen_model_2D(self, input_dim, output_dim):
         model = Sequential()
-        print(input_dim, output_dim)
+        #print(input_dim, output_dim)
 
         # so shape looks like --> (1, whatever)
         input_dim.insert(0, 32)        
-        print(tuple(input_dim))
+        #print(tuple(input_dim))
         
         model.add(Conv2D(32, (8, 8), strides=(4, 4), input_shape=(tuple(input_dim))))
         model.add(Activation('relu'))
@@ -81,13 +84,14 @@ class DQN_Agent():
 
     def gen_model_1D(self, input_dim, output_dim):
         model = Sequential()
-        print(input_dim, output_dim)
+        #print(input_dim, output_dim)
 
         # so shape looks like --> (1, whatever)
-        input_dim.insert(0, 500)        
-        print(tuple(input_dim))
+        inn = copy.deepcopy(input_dim)
+        inn.insert(0, 500)        
+        #print(tuple(inn))
         
-        model.add(Dense(16, input_shape=(tuple(input_dim))))
+        model.add(Dense(16, input_shape=(tuple(inn))))
         model.add(Conv1D(64, 8, strides=2, data_format="channels_last"))
         model.add(Activation('relu'))
         model.add(Conv1D(64, 4, strides=2))
@@ -105,10 +109,9 @@ class DQN_Agent():
 
     def prepare_agent(self, inst):
         # Handle Dimensionality  
-        in_dim  = inst.max_in
-        out_dim = inst.max_out
-
-        print(in_dim, out_dim)
+        in_dim  = inst.get_header().input_dim
+        out_dim = inst.get_header().output_dim
+        #print(in_dim, out_dim)
         # If dim is int change to list of size 1
         if type(in_dim) == int:
             in_dim = [in_dim]

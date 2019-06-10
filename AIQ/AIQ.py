@@ -15,6 +15,8 @@ import time
 import csv
 import statistics 
 
+from .test_suite.inst_wrapper import wrap
+
 class AIQ():
 
     def __init__(self, username, password):
@@ -32,13 +34,16 @@ class AIQ():
         return self.backend.connect()
 
     # Add a test to the test suite
-    def add(self, env_name, params=None):
+    def add(self, env_name, out, params=None):
         # https://stackoverflow.com/questions/547829/
         try:
             mod = __import__('AIQ.test_suite', fromlist=[env_name])
             klass = getattr(mod, env_name)
             kless = getattr(klass, env_name)
             inst = kless(params)
+
+            if len(inst.get_header().output_dim) != out:
+                raise Exception('Dis-allowed output dimension')
 
             self.test_suite.append(inst)
             if params is not None and 'env_name' in params:
@@ -54,7 +59,7 @@ class AIQ():
             return False
 
     # Add all available test envs to the suite
-    def add_all_tests(self, ignore):
+    def add_all_tests(self, ignore, inp, out):
         # Class used to get the list of tests
         tests_class = tests()
         # Get test subsuites and env_names
@@ -69,11 +74,38 @@ class AIQ():
                 if word in test_names[ind]:
                     found = True
             if not found:
-                if self.add(suites[ind], {'env_name':test_names[ind]}):
+                if self.add(suites[ind],out, {'env_name':test_names[ind]}):
+                    # All input dims are one dimensional, will change with img -> img problems
                     self.suites_added.append(suites[ind])
                     self.test_names.append(test_names[ind])
 
         return None
+
+    # Used to merge tests utilzing a wrapper
+    def join(self, name1, name2):
+        # Search test suite for test
+        inst1 = None
+        for test in self.test_suite:
+            if name1 == test.header.env_name:
+                inst1 = test
+
+        if inst1 == None:
+            print('Cannot fit to: ' + name1)
+            print(name1 + ' not found in active suite!')
+
+        # Search test suite for test
+        inst2 = None
+        for test in self.test_suite:
+            if name2 == test.header.env_name:
+                inst2 = test
+
+        if inst2 == None:
+            print('Cannot fit to: ' + name2)
+            print(name2 + ' not found in active suite!')
+
+        print(inst1,inst2)
+        wr = wrap(inst1, inst2)
+        return self.agent.fit_to(wr)
 
     # Evaluate test suite and given agent
     def evaluate(self):
@@ -221,14 +253,14 @@ class AIQ():
 
     # Logging utility
     # Expects a results history
-    def fancy_logger(self, suite_name, env_name, results, train_res, file_name='data', write='a'):
+    def fancy_logger(self, name, results, file_name='data', write='a'):
         with open(file_name + '.csv', write, newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            avg = sum(results['episode_reward']) / len(results['episode_reward'])
-            stdev = statistics.stdev(results['episode_reward'])
-            spamwriter.writerow((suite_name, env_name, train_res, len(results['episode_reward']),
-                                 avg, -1*stdev, stdev, *results['episode_reward']))
+            res = results['episode_reward'][-20:]
+            avg = sum(res) / len(res)
+            stdev = statistics.stdev(res)
+            spamwriter.writerow((name, len(res),avg, -1*stdev, stdev, *res))
 
 
 

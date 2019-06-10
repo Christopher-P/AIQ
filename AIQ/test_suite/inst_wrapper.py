@@ -1,4 +1,8 @@
 import random
+import copy 
+import numpy as np
+
+from .common import header
 
 class wrap():
 
@@ -12,42 +16,56 @@ class wrap():
 
         self.max_in = max(self.instA_in,self.instB_in)
         self.max_out = max(self.instA_out,self.instB_out)
+        self.header = header(self.instA.get_header().env_name + "=" +       
+                                self.instB.get_header().env_name,
+                                self.max_in,
+                                self.max_out,
+                                -1, "empty", True, -200, 200)
 
-    def select():
+    def select(self):
         r = random.uniform(0.0, 1.0)
         if r < 0.5:
-            self.inst = instA
+            self.inst = self.instA
         else:
-            self.inst = instB
+            self.inst = self.instB
 
     def output_format(self, out):
-        if len(out) < len(self.max_out):
-            return out + [0.0] * (len(self.max_out) - len(out))
+        #print(self.instA_in, self.instB_in, self.instB_out, self.instB_out)
+        #print(out)
+        if len(out) < self.max_out[0]:
+            result = np.zeros(self.max_out[0])
+            result[0:len(out)] = out
+            #print(out, result)
+            return result
         else:
             return out
 
     def input_format(self, inp):
-        if len(inp) < len(self.max_in):
-            return inp + [0.0] * (len(self.max_in) - len(out))
+        if inp > self.inst.get_header().input_dim - 1:
+            return self.inst.get_header().input_dim - 1
         else:
             return inp
 
     def reset(self):
         self.select()
         obs = self.inst.reset()
-        return self.output_format(obs)
+        obs = self.output_format(obs)
+        return obs
 
+    # Calls act 
     def step(self, action):
-        action = self.input_format(action)
-        obs = self.act(action)
-        return self.output_format(obs)
+        return self.act(action)
 
     def act(self, action):
-        return self.inst.act(action)
+        action = self.input_format(action)
+        #print(self.inst.act(action))
+        obs, r, done, info = self.inst.act(action)
+        obs = self.output_format(obs)
+        return obs, r, done, info 
 
     def render(self):
         return self.inst.render()
     
-    def get_header():
-        return self.inst.get_header()
+    def get_header(self):
+        return self.header
 

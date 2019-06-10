@@ -1,6 +1,7 @@
 import yaml
 import sys
 import os
+from itertools import permutations, repeat
 
 # Go to where AIQ is installed
 os.chdir('../..')
@@ -8,7 +9,72 @@ sys.path.insert(0, os.getcwd())
 
 ### Import AIQ package
 from AIQ.AIQ import AIQ
-from DQN import DQN_Agent
+from DQN_M import DQN_Agent
+
+l1 = 'CartPole-v0'
+l2 = 'FrozenLake-v0'
+
+# Runs agent on test 1, test2 and combined test
+def run_agent(interface, name1, name2):
+    global l1
+    global l2
+
+    if l1 != None:
+        if l1 == name1 and l2 == name2:
+            l1 = None            
+            return None
+        else:
+            return None
+
+    print(name1, name2)
+
+    try:
+        interface.agent.clear()
+        train_res = interface.fit_to(name1)
+        #print(train_res.history)
+        interface.fancy_logger(name1, 
+                               train_res.history, 
+                               file_name='dev/diversity/data/DQN', write='a')
+
+        interface.agent.clear()
+        train_res = interface.fit_to(name2)
+        #print(train_res.history)
+        interface.fancy_logger(name2, 
+                               train_res.history, 
+                               file_name='dev/diversity/data/DQN', write='a')
+
+        interface.agent.clear()
+        train_res = interface.join(name1, name2)
+        #print(train_res.history)
+        interface.fancy_logger(name1 + '=' + name2, 
+                               train_res.history, 
+                               file_name='dev/diversity/data/DQN', write='a')
+    except:
+        return None
+
+
+# generates a list of all pairwise combinations
+def get_list(interface):
+    names = []
+    for ind,val in enumerate(interface.suites_added):
+        #print(interface.suites_added[ind], interface.test_names[ind])        
+        name = ''
+        if interface.suites_added[ind] == 'ViZDoom':
+            name = interface.suites_added[ind] + "_" + interface.test_names[ind]
+        else:
+            name = interface.test_names[ind]
+        names.append(name)
+
+    real_names = []
+
+    for ind,val in enumerate(names):
+        for ind2,val2 in enumerate(names):
+            if ind2 < ind:
+                continue
+            real_names.append((val, val2))
+
+    return real_names
+
 
 def main():
 
@@ -31,37 +97,19 @@ def main():
     # Add all envs
     # If ignore words found in env_name, dont add!
     ignore = ['Deterministic', 'ram', 'NoFrameskip']
-    interface.add_all_tests(ignore)
+    only_dim_in = 1
+    only_dim_out = 1
+    interface.add_all_tests(ignore, only_dim_in, only_dim_out)
 
     for ind,val in enumerate(interface.suites_added):
         print(interface.suites_added[ind], interface.test_names[ind])
 
-    last = None
-
     # Train/fit/log OOTB-agents
-    for ind,val in enumerate(interface.suites_added):
-        if last is not None:
-            if interface.test_names[ind] == last:
-                last = None
-            else:
-                continue
+    names = get_list(interface)
+    for i in names:
+        name1, name2 = i
+        run_agent(interface, name1, name2)
 
-        print(interface.suites_added[ind], interface.test_names[ind])        
-        name = ''
-
-        if interface.suites_added[ind] == 'ViZDoom':
-            name = interface.suites_added[ind] + "_" + interface.test_names[ind]
-        else:
-            name = interface.test_names[ind]
-
-        interface.agent.clear()
-        train_res = interface.fit_to(name)
-        results = interface.test_to(name, 20)
-        interface.fancy_logger(interface.suites_added[ind], 
-                               interface.test_names[ind], 
-                               results.history, 
-                               train_res,
-                               file_name='dev/diversity/data/DQN', write='a')
 
     exit()
 
