@@ -1,6 +1,7 @@
 import random
 import copy 
 import numpy as np
+import time
 
 from .common import header
 
@@ -15,7 +16,12 @@ class wrap():
         self.instB_out = self.instB.get_header().output_dim
 
         self.max_in = max(self.instA_in,self.instB_in)
-        self.max_out = max(self.instA_out,self.instB_out)
+        # Expect shape = [a,b,c]
+        # Expect same dims between instances
+        self.max_out = []
+        for ind, val in enumerate(self.instA_out):
+            self.max_out.append(max(self.instA_out[ind],self.instB_out[ind]))
+
         self.header = header(self.instA.get_header().env_name + "=" +       
                                 self.instB.get_header().env_name,
                                 self.max_in,
@@ -30,15 +36,9 @@ class wrap():
             self.inst = self.instB
 
     def output_format(self, out):
-        #print(self.instA_in, self.instB_in, self.instB_out, self.instB_out)
-        #print(out)
-        if len(out) < self.max_out[0]:
-            result = np.zeros(self.max_out[0])
-            result[0:len(out)] = out
-            #print(out, result)
-            return result
-        else:
-            return out
+        big_out = np.zeros(self.max_out)
+        big_out[0:out.shape[0], 0:out.shape[1], 0:out.shape[2]] = out
+        return big_out
 
     def input_format(self, inp):
         if inp > self.inst.get_header().input_dim - 1:

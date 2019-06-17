@@ -1,3 +1,4 @@
+# Universal super class
 class desc():
     
     def __init__(self):
@@ -23,4 +24,5 @@ class header():
         self.env_min_score = env_min_score
         self.env_max_score = env_max_score
 
+    
     

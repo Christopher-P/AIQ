@@ -19,6 +19,7 @@ COPY requirements.txt /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 RUN pip install gym[atari]
+RUN pip install keras-rl
 
 # Copy the current directory contents into the container at /app
 COPY . /app
@@ -27,4 +28,4 @@ COPY . /app
 ENV NAME World
 
 # Run app.py when the container launches
-CMD ["python", "full_test.py"]
+CMD ["python", "M-DQN-TEST.py"]

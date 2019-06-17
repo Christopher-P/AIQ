@@ -3,7 +3,7 @@ from .common import desc
 
 class RPM(desc):
         
-    def __init__(self, backend):
+    def __init__(self, params):
         try:
             super().__init__()
             self.env_name = '3-RPM'
