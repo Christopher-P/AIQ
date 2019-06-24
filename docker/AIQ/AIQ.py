@@ -33,6 +33,90 @@ class AIQ():
     def connect(self):
         return self.backend.connect()
 
+    def table(self, name):
+        tab = {'AirRaid' : 'UPS',
+        'Alien'   : 'Maze',
+        'Amidar'  : 'Maze',
+        'Assualt' : 'UPS',
+        'Asterix' : 'Driving',
+        'Asteroids':'Shooter',
+        'Atlantis': 'UPS',
+        'BankHeist': 'Maze',
+        'Battlezone':'Shooter',
+        'BeamRider':'UPS',
+        'Berzerk' : 'Shooter',
+        'Bowling' : 'Sports',
+        'Boxing' : 'Sports',
+        'Breakout' : 'Pong',
+        'Carnival' :'UPS',
+        'Centipede' :'UPS',
+        'ChopperCommand' : 'Shooter',
+        'CrazyClimber' :'Planning',
+        'DemonAttack' :'UPS',
+        'DoubleDunk':'Sports',
+        'ElevatorAction' : 'Shooter',
+        'Enduro' : 'Driving',
+        'FishingDerby':'Fishing',
+        'Freeway':'Driving',
+        'Frostbite':'Driving',
+        'Gopher':'Sports',
+        'Gravitar':'Shooter',
+        'IceHockey':'Sports',
+        'Jamesbond':'Shooter',
+        'JourneyEscape':'Sports',
+        'Kangaroo':'Maze',
+        'Krull':'Sports',
+        'KungFuMaster':'Sports',
+        'MontezumaRevenge':'Sports',
+        'MsPacman':'Maze',
+        'NameThisGame':'UPS',
+        'Pheonix':'UPS',
+        'Pitfall':'Sports',
+        'Pong':'Pong',
+        'Pooyan':'Sports',
+        'PrivateEye':'Sports',
+        'Qbert':'Maze',
+        'Riverraid':'UPS',
+        'RoadRunner':'Driving',
+        'Robottank':'Shooter',
+        'Seaquest':'Shooter',
+        'Skiing':'Driving',
+        'Solaris':'UPS',
+        'SpaceInvaders':'UPS',
+        'StarGunner':'Shooter',
+        'Tennis':'Sports',
+        'TimePilot':'Shooter',
+        'Tutankham':'Maze',
+        'UpNDown':'Driving',
+        'Venture':'Maze',
+        'VideoPinball':'Pong',
+        'WizardOfWar':'Maze',
+        'YarsRevenge':'Shooter',
+        'Zaxxon':'UPS',
+
+        # Classic control
+        'Acrobot':'CC',
+        'CartPole':'CC',
+        'MountainCar':'CC',
+        'MountainCarContinuous':'CC',
+        'Pendulum':'CC',
+        
+        # Vizdoom
+        'ViZDoom':'FPS',
+        'basic':'FPS',
+        'deadly_corridor': 'FPS',
+        'defend_the_center': 'FPS',
+        'defend_the_line': 'FPS',
+        'health_gathering': 'FPS',
+        'predict_position': 'FPS',
+        'take_cover': 'FPS'}
+
+        for i in tab.keys():
+            if i in name:
+                return tab[i]
+        print(name, 'UNKOWN')
+        return 'UNKNOWN'
+
     # Add a test to the test suite
     def add(self, env_name, out, params=None):
         # https://stackoverflow.com/questions/547829/
@@ -59,7 +143,7 @@ class AIQ():
             return False
 
     # Add all available test envs to the suite
-    def add_all_tests(self, ignore, inp, out):
+    def add_all_tests(self, ignore, genre, inp, out):
         # Class used to get the list of tests
         tests_class = tests()
         # Get test subsuites and env_names
@@ -73,6 +157,11 @@ class AIQ():
             for word in ignore:
                 if word in test_names[ind]:
                     found = True
+            # only keep correct genres!
+            g = self.table(val)
+            if g != genre:
+                found = True
+            
             if not found:
                 if self.add(suites[ind],out, {'env_name':test_names[ind]}):
                     # All input dims are one dimensional, will change with img -> img problems

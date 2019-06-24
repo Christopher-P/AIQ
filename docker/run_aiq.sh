@@ -1,5 +1,4 @@
 #!/bin/bash
-#SBATCH --partition=test        ### Partition (like a queue in PBS)
 #SBATCH --job-name=AIQGPUjob      ### Job Name
 #SBATCH --output=Hi.out         ### File in which to store job output
 #SBATCH --error=Hi.err          ### File in which to store job error messages

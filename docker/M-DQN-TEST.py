@@ -97,11 +97,14 @@ def main():
     interface.agent = DQN_Agent()
 
     # Add all envs
+    # only add envs with genre tag
+    genre = 'FPS'
+
     # If ignore words found in env_name, dont add!
     ignore = ['Deterministic', 'ram', 'NoFrameskip']
     only_dim_in = 1
     only_dim_out = 3
-    interface.add_all_tests(ignore, only_dim_in, only_dim_out)
+    interface.add_all_tests(ignore, genre, only_dim_in, only_dim_out)
 
     for ind,val in enumerate(interface.suites_added):
         print(interface.suites_added[ind], interface.test_names[ind])

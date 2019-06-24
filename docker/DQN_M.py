@@ -67,7 +67,7 @@ class DQN_Agent():
         #print(tuple(input_dim))
 
         model.add(Reshape(input_dim, input_shape=(tuple(d))  ))        
-        model.add(Conv2D(16, (16, 16), strides=(4, 4), padding='same', data_format="channels_last"))
+        model.add(Conv2D(16, (16, 16), strides=(4, 4), padding='same', data_format="channels_first"))
         model.add(Activation('relu'))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Dropout(0.2))
@@ -122,6 +122,7 @@ class DQN_Agent():
             in_dim = [in_dim]
         if type(out_dim) == int:
             out_dim = [out_dim]
+
 
         #if len(in_dim) == 1:
         #    model = self.gen_model_1D(out_dim, in_dim)

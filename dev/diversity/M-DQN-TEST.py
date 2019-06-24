@@ -105,7 +105,7 @@ def main():
     # If ignore words found in env_name, dont add!
     ignore = ['Deterministic', 'ram', 'NoFrameskip']
     only_dim_in = 1
-    only_dim_out = 3
+    only_dim_out = 1
     interface.add_all_tests(ignore, only_dim_in, only_dim_out)
 
     for ind,val in enumerate(interface.suites_added):
@@ -113,6 +113,29 @@ def main():
 
     # Train/fit/log OOTB-agents
     names = get_list(interface)
+
+    # Maximize effeciency
+    
+    names = [('CartPole-v0', 'CliffWalking-v0'),
+            ('CartPole-v0', 'Taxi-v2'),
+            ('CartPole-v1', 'FrozenLake8x8-v0'),
+            ('CartPole-v1', 'CliffWalking-v0'),
+            ('CartPole-v1', 'Taxi-v2'),
+            ('MountainCar-v0', 'MountainCar-v0'),
+            ('MountainCar-v0', 'CliffWalking-v0'),
+            ('MountainCar-v0', 'Taxi-v2'),
+            ('Acrobot-v1', 'Acrobot-v1'),
+            ('Acrobot-v1', 'Taxi-v2'),
+            ('FrozenLake-v0', 'Roulette-v0'),
+            ('NChain-v0', 'FrozenLake8x8-v0'),
+            ('NChain-v0', 'CliffWalking-v0'),
+            ('NChain-v0', 'Taxi-v2'),
+            ('Roulette-v0', 'FrozenLake8x8-v0'),
+            ('Roulette-v0', 'CliffWalking-v0'),
+            ('Roulette-v0', 'Taxi-v2'),
+            ('FrozenLake8x8-v0', 'FrozenLake8x8-v0')]
+
+    
     for i in names:
         #print(i)
         name1, name2 = i

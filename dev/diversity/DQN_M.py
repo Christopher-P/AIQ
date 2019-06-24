@@ -5,7 +5,7 @@ import copy
 
 
 import keras.backend as K
-from keras.layers import Dense, Activation, Flatten, Conv2D, Input, Conv1D, Conv3D, MaxPooling2D, Dropout, Reshape
+from keras.layers import Dense, Activation, Flatten, Conv2D, Input, Conv1D
 from keras.optimizers import Adam, Adagrad, Adadelta, SGD
 from keras.callbacks import Callback
 from keras.models import Sequential, load_model
@@ -53,7 +53,7 @@ class DQN_Agent():
 
     def fit_to(self, inst):
         self.prepare_agent(inst)
-        train_results = self.dqn.fit(inst, nb_steps=100000, visualize=False, verbose=1)
+        train_results = self.dqn.fit(inst, nb_steps=10000, visualize=False, verbose=1)
         return train_results
 
     def test_to(self, inst, iters):
@@ -63,29 +63,21 @@ class DQN_Agent():
     def gen_model_2D(self, input_dim, output_dim):
         model = Sequential()
         #print(input_dim, output_dim)
-        d = copy.deepcopy(input_dim)
 
         # so shape looks like --> (1, whatever)
-        d.insert(0, 1)        
+        input_dim.insert(0, 32)        
         #print(tuple(input_dim))
-
-        model.add(Reshape(input_dim, input_shape=(tuple(d))  ))        
-        model.add(Conv2D(16, (16, 16), strides=(4, 4), padding='same', data_format="channels_last"))
+        
+        model.add(Conv2D(32, (8, 8), strides=(4, 4), input_shape=(tuple(input_dim))))
         model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(0.2))
-        model.add(Conv2D(32, (16, 16), padding='same',strides=(4, 4)))
+        model.add(Conv2D(64, (4, 4), strides=(2, 2)))
         model.add(Activation('relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(0.2))
-        model.add(Conv2D(64, (16, 16), padding='same',strides=(4, 4)))
+        model.add(Conv2D(64, (3, 3), strides=(1, 1)))
         model.add(Activation('relu'))
-        #model.add(MaxPooling3D(pool_size=(2, 2, 2)))
-        #model.add(Dropout(0.2))
         model.add(Flatten())
         model.add(Dense(512))
         model.add(Activation('relu'))
-        model.add(Dense(output_dim[0]))
+        model.add(Dense(nb_actions))
         model.add(Activation('softmax'))
 
         return model
@@ -95,8 +87,8 @@ class DQN_Agent():
         #print(input_dim, output_dim)
 
         # so shape looks like --> (1, whatever)
-        #inn = copy.deepcopy(input_dim)
-        #inn.insert(0, 500)        
+        inn = copy.deepcopy(input_dim)
+        inn.insert(0, 500)        
         #print(tuple(inn))
         
         model.add(Dense(16, input_shape=(tuple(inn))))
@@ -126,12 +118,12 @@ class DQN_Agent():
         if type(out_dim) == int:
             out_dim = [out_dim]
 
-        #if len(in_dim) == 1:
-        #    model = self.gen_model_1D(out_dim, in_dim)
-        #elif len(in_dim) == 2:
-        model = self.gen_model_2D(out_dim, in_dim)
+        if len(in_dim) == 1:
+            model = self.gen_model_1D(out_dim, in_dim)
+        elif len(in_dim) == 2:
+            model = self.gen_model_2D(out_dim, in_dim)
 
-        memory = SequentialMemory(limit=10000, window_length=1)
+        memory = SequentialMemory(limit=10000, window_length=500)
         processor = AtariProcessor()
         policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=200., 
                     value_min=-200., value_test=.05, nb_steps=1000000)

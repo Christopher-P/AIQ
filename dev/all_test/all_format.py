@@ -24,7 +24,7 @@ def cross_table(data):
 
     print(res)
 
-    with open('nice results.csv', 'w', newline='') as csvfile:
+    with open('nice results 1000.csv', 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',')
         fieldnames = list(keys.keys())
         spamwriter.writerow(fieldnames)
@@ -45,16 +45,8 @@ def cross_table(data):
 
         spamwriter.writerow(('AVERAGE', avg))
 
-    # See what data is missing (maximize everything)
-    for ind,val in enumerate(res):
-        for ind2,val2 in enumerate(val):
-            if ind2 < ind:
-                continue
-            if val2 == 0.0:
-                print(list(keys.keys())[ind],list(keys.keys())[ind2])
-                
-
     plt.imshow(res, cmap='hot', interpolation='nearest')
+    plt.savefig('1000.png')
     plt.show()
 
     return None
@@ -62,10 +54,12 @@ def cross_table(data):
 
 data = []
 
-with open('d=1.csv', newline='') as csvfile:
+with open('all_test_data-1000.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in spamreader:
         data.append(row)
+
+
 
 #print(data)
 
@@ -77,30 +71,28 @@ counter = 0
 info = []
 
 for ind, val in enumerate(data):
-    if counter >= 3:
-        counter = 0
+    if ind < 20:
+        continue
+
+    # looks like --> 0=10
+    name = str(val[0]).split('=')
     
-    if counter == 0:
-        name1 = val[0]
-        A = float(val[2])
+    # get a, b baselines
+    A = float(data[int(name[0])][2])
+    B = float(data[int(name[1])][2])
 
-    elif counter == 1:
-        name2 = val[0]
-        B = float(val[2])
-
-    elif counter == 2:
-        Vmax = max(A,B)
-        Vmin = min(A,B)
-        V = float(val[2])
-        if A == B:
-            S = 0
-        else:
-            S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
-        info.append((name1, name2, S))         
-
+    # find min/max
+    Vmax = max(A,B)
+    Vmin = min(A,B)
+       
+    # get mixed values
+    V = float(val[2])
+    if A == B:
+        S = 0
     else:
-        print('error')
-        exit()
+        S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
+    info.append((name[0], name[1], S))         
+
 
     counter += 1
     continue
