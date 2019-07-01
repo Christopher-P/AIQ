@@ -53,7 +53,7 @@ class DQN_Agent():
 
     def fit_to(self, inst):
         self.prepare_agent(inst)
-        train_results = self.dqn.fit(inst, nb_steps=10000, visualize=False, verbose=1)
+        train_results = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
         return train_results
 
     def test_to(self, inst, iters):

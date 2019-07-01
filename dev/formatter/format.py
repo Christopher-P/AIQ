@@ -45,6 +45,10 @@ def cross_table(data):
 
         spamwriter.writerow(('AVERAGE', avg))
 
+    # this one entry is out of whach
+    res[5,7] = res[7,5]
+    res[7,5] = 0.0
+
     # See what data is missing (maximize everything)
     for ind,val in enumerate(res):
         for ind2,val2 in enumerate(val):
@@ -55,6 +59,31 @@ def cross_table(data):
                 
 
     plt.imshow(res, cmap='hot', interpolation='nearest')
+    plt.show()
+
+    # new plot
+    fig, ax = plt.subplots()
+    im = ax.imshow(res)
+
+    # We want to show all ticks...
+    ax.set_xticks(np.arange(len(res)))
+    ax.set_yticks(np.arange(len(res)))
+    # ... and label them with the respective list entries
+    ax.set_xticklabels(list(keys.keys()))
+    ax.set_yticklabels(list(keys.keys()))
+
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
+    for i in range(len(res)):
+        for j in range(len(res)):
+            text = ax.text(j, i, round(res[i, j],2),
+                           ha="center", va="center", color="w")
+
+    ax.set_title("Similarity table for current test suite")
+    fig.tight_layout()
     plt.show()
 
     return None
@@ -93,7 +122,7 @@ for ind, val in enumerate(data):
         Vmin = min(A,B)
         V = float(val[2])
         if A == B:
-            S = 0
+            S = 0.5
         else:
             S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
         info.append((name1, name2, S))         

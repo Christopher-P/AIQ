@@ -116,24 +116,7 @@ def main():
 
     # Maximize effeciency
     
-    names = [('CartPole-v0', 'CliffWalking-v0'),
-            ('CartPole-v0', 'Taxi-v2'),
-            ('CartPole-v1', 'FrozenLake8x8-v0'),
-            ('CartPole-v1', 'CliffWalking-v0'),
-            ('CartPole-v1', 'Taxi-v2'),
-            ('MountainCar-v0', 'MountainCar-v0'),
-            ('MountainCar-v0', 'CliffWalking-v0'),
-            ('MountainCar-v0', 'Taxi-v2'),
-            ('Acrobot-v1', 'Acrobot-v1'),
-            ('Acrobot-v1', 'Taxi-v2'),
-            ('FrozenLake-v0', 'Roulette-v0'),
-            ('NChain-v0', 'FrozenLake8x8-v0'),
-            ('NChain-v0', 'CliffWalking-v0'),
-            ('NChain-v0', 'Taxi-v2'),
-            ('Roulette-v0', 'FrozenLake8x8-v0'),
-            ('Roulette-v0', 'CliffWalking-v0'),
-            ('Roulette-v0', 'Taxi-v2'),
-            ('FrozenLake8x8-v0', 'FrozenLake8x8-v0')]
+    names = [('CartPole-v0', 'FrozenLake8x8-v0')]
 
     
     for i in names:
