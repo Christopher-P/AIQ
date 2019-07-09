@@ -8,6 +8,7 @@ sys.path.insert(0, os.getcwd())
 
 ### Import AIQ package
 from AIQ.AIQ import AIQ
+### Import random agent
 from AIQ.agents.random_agent import R_Agent
 
 def main():

@@ -1,6 +1,4 @@
 from .backend import backend_handler
-#from .test_suite.bl_mnist import bl_mnist
-#from .test_suite.bl_cifar10 import bl_cifar10
 from .test_suite.util import tests, test_loader
 
 # Used for loading tests into test suite
