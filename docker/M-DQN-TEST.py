@@ -98,7 +98,7 @@ def main():
 
     # Add all envs
     # only add envs with genre tag
-    genre = 'FPS'
+    genre = 'UPS'
 
     # If ignore words found in env_name, dont add!
     ignore = ['Deterministic', 'ram', 'NoFrameskip']
