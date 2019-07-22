@@ -4,3 +4,5 @@
 __pycache__/
 _vizdoom/
 _vizdoom.ini
+*.tar
+AIQ/test_suite/otb-data/*
