@@ -1,4 +1,4 @@
-from ..common import header, desc
+from .common import header, desc
 import numpy as np
 
 class ViZDoom(desc):
@@ -26,6 +26,7 @@ class ViZDoom(desc):
         # Incase cfg path is incorrect
         try:
             self.env.load_config(DEFAULT_CONFIG)
+
         except Exception as inst:
             print(inst)
             print(DEFAULT_CONFIG)

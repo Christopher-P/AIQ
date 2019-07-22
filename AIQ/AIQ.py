@@ -23,8 +23,11 @@ class AIQ():
         self.bl       = True
         self.backend  = backend_handler(self.username, self.password)
 
+        self.current_test = ''
+        self.current_percent = ''
         self.agent = None
-        self.test_suite = test_loader()
+        self.TL = test_loader()
+        self.test_suite = []
         self.results = {}
 
     # Check connection
@@ -33,7 +36,7 @@ class AIQ():
 
     # Add a test to the test suite
     def add(self, env_name, params=None):
-        self.test_suite.add(env_name, params)
+        self.test_suite.append(self.TL.add(env_name, params))
        
     # Add all available test envs to the suite
     def add_all_tests(self, ignore):
@@ -78,6 +81,7 @@ class AIQ():
         self.animation('Running test suite', 'Finished Test Suite')
         for test in self.test_suite:
             test_name = test.get_header().env_name
+            self.current_test = test_name
 
             # Seperate tests by RL or DS
             if test.get_header().rl == True:
@@ -142,6 +146,7 @@ class AIQ():
         score = 0.0
         trials = 10
         for i in range(trials):
+            self.current_percent = str(float(i) / trials * 100) + '%'
             test.reset()
             while test.done == False:
                 observation = test.observation
@@ -192,8 +197,8 @@ class AIQ():
         for c in itertools.cycle(['|', '/', '-', '\\']):
             if self.stop_animation_bool:
                 break
-            print('\r' + start_text + ' ' + c, end='')
-            time.sleep(0.15)
+            print('\r' + start_text + ' : ' + self.current_test + ' : ' + self.current_percent +'   '+ c, end='')
+            #time.sleep(0.15)
         print('\r' + end_text + ' ', end='')
         self.stop_animation_bool = False      
 

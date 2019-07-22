@@ -46,7 +46,7 @@ def main():
     # Sample for loading params into a test
     params = {}
     params['config'] = "AIQ/test_suite/vizdoom_scenarios/basic.cfg"
-    params['subtest'] = "basic"
+    params['env_name'] = "basic"
     interface.add('ViZDoom', params=params)
     
     # Tests not in suite will display [test_name] was not found.

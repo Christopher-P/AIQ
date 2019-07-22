@@ -21,6 +21,11 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 RUN pip install gym[atari]
 RUN pip install jsonlines
 
+
+RUN apt-get install -qqy x11-apps
+ENV DISPLAY :0
+CMD xeyes
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 

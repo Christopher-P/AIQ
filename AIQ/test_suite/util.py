@@ -63,9 +63,10 @@ class test_loader():
 
     # Add a test to the test suite
     def add(self, env_name, params=None):
+        #print(env_name)
         # https://stackoverflow.com/questions/547829/
         try:
-            mod = __import__('AIQ.test_suite.' + env_name, fromlist=[env_name])
+            mod = __import__('AIQ.test_suite', fromlist=[env_name])
             klass = getattr(mod, env_name)
             kless = getattr(klass, env_name)
             inst = kless(params)
@@ -105,11 +106,6 @@ class test_loader():
                     self.test_names.append(test_names[ind])
 
         return None
-
-
-
-
-
 
 
 

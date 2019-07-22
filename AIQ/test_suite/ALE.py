@@ -2,23 +2,22 @@ from .common import header, desc
 
 import numpy as np
 import random
-
-class OTB(desc):
+class ALE(desc):
 
     def __init__(self, params):
         # Gives common variables to all environments
         super().__init__()
 
         try:
-            from obstacle_tower_env import ObstacleTowerEnv
+            import gym
         except:
-            print("Failed to import ObstacleTowerEnv, make sure you have Obstacle Tower installed!")
+            print("Failed to import ALE, make sure you have OpenAI gym + ALE installed!")
             
         # Handle Parameters
         env_name = params['env_name']
 
         # Create GYM instance
-        env = ObstacleTowerEnv('./ObstacleTower/obstacletower', retro=False)
+        self.env = gym.make(env_name)
         self.action_space = self.env.action_space
         self.observation_space = self.env.observation_space
 
@@ -37,7 +36,7 @@ class OTB(desc):
                              input_dim=self.action_space.n,
                              output_dim=self.out, 
                              num_classes=2,
-                             info="",
+                             info="Simulators gotten from OpenAI Gym",
                              env_min_score = 0.0,
                              env_max_score = 200.0,
                              rl=True)
@@ -54,10 +53,15 @@ class OTB(desc):
         self.steps += 1
         if self.steps >= 2000:
             self.done = True
-        
-        # Only show screen atm
-        # TODO: think of good way to send screen and keys obs
-        self.observation = self.observation[0] / 255
+
+        # If only a number is given as output    
+        # turn to one-hot    
+        if type(self.observation_space) == self.disc:
+            l = [0] * (self.observation_space.n)
+            l[self.observation] = 1
+            self.observation = l
+        else:
+            self.observation = self.observation / 255
 
         if self.done:
             return self.observation, self.reward_total, self.done, self.info
@@ -77,7 +81,12 @@ class OTB(desc):
         self.observation = self.env.reset()
 
 
-        self.observation = self.observation[0] / 255
+        if type(self.observation_space) == self.disc:
+            l = [0] * (self.observation_space.n)
+            l[self.observation] = 1
+            self.observation = l
+        else:
+            self.observation = self.observation / 255
 
         return self.observation
         

@@ -1,4 +1,4 @@
-from ..common import header, desc
+from .common import header, desc
 
 import numpy as np
 import random
