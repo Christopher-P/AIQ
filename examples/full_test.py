@@ -3,8 +3,8 @@ import sys
 import os
 
 # Go to where AIQ is installed
-os.chdir('..')
-sys.path.insert(0, os.getcwd())
+#os.chdir('..')
+#sys.path.insert(0, os.getcwd())
 
 ### Import AIQ package
 from AIQ.AIQ import AIQ
@@ -13,7 +13,7 @@ from AIQ.agents.random_agent import R_Agent
 def main():
 
     #Import username and password
-    credentials = yaml.safe_load(open("credentials.yml"))
+    credentials = yaml.safe_load(open("sample.yml"))
 
     username = credentials['username']
     password = credentials['password']
@@ -27,7 +27,7 @@ def main():
     # Check login credentials
     if not interface.connect():
         print("Invalid login Credentials")
-        exit()
+        #exit()
 
     # Load server-side tests
     # Pass in the backend handler

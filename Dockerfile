@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     build-essential zlib1g-dev libsdl2-dev libjpeg-dev \
     nasm tar libbz2-dev libgtk2.0-dev cmake git libfluidsynth-dev libgme-dev \
     libopenal-dev timidity libwildmidi-dev unzip
-    
+   
 
 RUN apt-get install -y libboost-all-dev
 
@@ -19,12 +19,17 @@ COPY requirements.txt /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 RUN pip install gym[atari]
+RUN pip install jsonlines
 
 # Copy the current directory contents into the container at /app
 COPY . /app
 
 # Define environment variable
 ENV NAME World
+
+# Move files from examples to above directory
+COPY examples/full_test.py /app
+COPY examples/sample.yml /app
 
 # Run app.py when the container launches
 CMD ["python", "full_test.py"]

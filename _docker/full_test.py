@@ -2,6 +2,11 @@ import yaml
 import sys
 import os
 
+print(os.getcwd())
+
+import glob
+print(glob.glob('/'))
+
 ### Import AIQ package
 from AIQ.AIQ import AIQ
 from AIQ.agents.random_agent import R_Agent
