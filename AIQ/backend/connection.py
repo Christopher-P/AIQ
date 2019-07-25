@@ -27,7 +27,10 @@ class backend_handler():
 
         # Send information to rest handler
         self.call_rest("not_empty", str_data)
-        return self.response.text
+
+        # Formatting, so doesnt look terrible
+        text = self.response.text.replace('\\', '')
+        return text
 
     def connect(self):
         self.call_rest("Connect", 1)

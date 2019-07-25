@@ -33,7 +33,7 @@ class OpenAIGym(desc):
             self.out = list(self.observation_space.shape)
 
         self.header = header(env_name=env_name, 
-                             input_dim=self.action_space.n,
+                             input_dim=[self.action_space.n],
                              output_dim=self.out, 
                              num_classes=2,
                              info="Simulators gotten from OpenAI Gym",

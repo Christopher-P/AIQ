@@ -3,8 +3,8 @@ import sys
 import os
 
 # Go to where AIQ is installed
-#os.chdir('..')
-#sys.path.insert(0, os.getcwd())
+os.chdir('..')
+sys.path.insert(0, os.getcwd())
 
 ### Import AIQ package
 from AIQ.AIQ import AIQ

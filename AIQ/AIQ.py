@@ -34,7 +34,10 @@ class AIQ():
 
     # Add a test to the test suite
     def add(self, env_name, params=None):
-        self.test_suite.append(self.TL.add(env_name, params))
+        t = self.TL.add(env_name, params)
+        # Safety check for tests not found
+        if t is not None:
+            self.test_suite.append(t)
        
     # Add all available test envs to the suite
     def add_all_tests(self, ignore):
@@ -56,6 +59,7 @@ class AIQ():
                     self.suites_added.append(suites[ind])
                     self.test_names.append(test_names[ind])
 
+
         return None
 
     # Evaluate test suite and given agent
@@ -76,7 +80,7 @@ class AIQ():
             self.stop_animation()
 
         # Run test suite using defined agent
-        self.animation('Running test suite', 'Finished Test Suite')
+        self.animation('Running test suite', 'Finished Test Suite!')
         for test in self.test_suite:
             test_name = test.get_header().env_name
             self.current_test = test_name
@@ -179,6 +183,8 @@ class AIQ():
         # catchall incase score doesnt get normalized
         if norm_score > 1.0:
             return 1.0
+        elif norm_score < 0.0:
+            return 0.0
         else:
             return norm_score
 
@@ -193,15 +199,17 @@ class AIQ():
     def util_animation(self, start_text, end_text):
         self.stop_animation_bool = False  
         for c in itertools.cycle(['|', '/', '-', '\\']):
+            print('\r' + start_text + ' : ' + self.current_test + ' : ' + self.current_percent +'   '+ c, end='')
             if self.stop_animation_bool:
                 break
-            print('\r' + start_text + ' : ' + self.current_test + ' : ' + self.current_percent +'   '+ c, end='')
-            #time.sleep(0.15)
-        print('\r' + end_text + ' ', end='')
+        print("\033[K")
+        print('-----------------')
+        print(end_text)
         self.stop_animation_bool = False      
 
     def stop_animation(self):
         self.stop_animation_bool = True 
+        time.sleep(0.2)
 
 
     # Logging utility

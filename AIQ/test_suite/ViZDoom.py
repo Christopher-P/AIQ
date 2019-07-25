@@ -30,10 +30,14 @@ class ViZDoom(desc):
         except Exception as inst:
             print(inst)
             print(DEFAULT_CONFIG)
+
+        # This will disable popup window for vizdoom
+        # Should allow it to work in docker
+        self.env.set_window_visible(False)
     
         # Define header
         self.header = header(env_name="ViZDoom_" + params['env_name'], 
-                             input_dim=len(self.env.get_available_buttons()), 
+                             input_dim=[len(self.env.get_available_buttons())], 
                              output_dim=[self.env.get_screen_channels(),
                                          self.env.get_screen_height(), 
                                          self.env.get_screen_width(), 
@@ -77,10 +81,15 @@ class ViZDoom(desc):
         
         return self.observation, self.reward_step, self.done, {}
 
+    
     def decode_action(self, action):
         buttons = len(self.env.get_available_buttons())
         response = [False] * buttons
-        response[action] = True
+        for i in range(len(action)):
+            if action[i] >= 0.5:
+                response[i] = True
+            else:
+                response[i] = False
         return response
     
     def reset(self):
