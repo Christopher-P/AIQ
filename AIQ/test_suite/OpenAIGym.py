@@ -48,6 +48,10 @@ class OpenAIGym(desc):
         self.env.render()
     
     def act(self, action):
+        # OpenAIGym envs only accept numbers for inputs
+        if type(action) == list or type(action) == np.ndarray:
+            action = action[0]
+
         self.observation, self.reward_step, self.done, self.info = self.env.step(action)
         self.reward_total += self.reward_step
         self.steps += 1

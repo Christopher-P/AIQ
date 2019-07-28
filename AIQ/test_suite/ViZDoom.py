@@ -34,6 +34,7 @@ class ViZDoom(desc):
         # This will disable popup window for vizdoom
         # Should allow it to work in docker
         self.env.set_window_visible(False)
+        self.env.set_sound_enabled(False)
     
         # Define header
         self.header = header(env_name="ViZDoom_" + params['env_name'], 

@@ -104,6 +104,14 @@ Once this is completed, run the following code to execute:
 docker run [name]
 ```
 
+Ignore these errors, they are a result of ViZDoom being run in a docker:
+```bash
+Cannot connect to server socket err = No such file or directory
+Cannot connect to server request channel
+jack server is not running or cannot be started
+JackShmReadWritePtr::~JackShmReadWritePtr - Init not done for 4294967295, skipping unlock
+JackShmReadWritePtr::~JackShmReadWritePtr - Init not done for 4294967295, skipping unlock
+```
 
 ## Stand-alone
 ** 3.6.6 **

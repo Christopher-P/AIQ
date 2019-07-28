@@ -8,14 +8,13 @@ class R_Agent():
 
     # Called for RL type tests
     def act(self, header, data):
-        if header.info == 'ViZDoom simulator':
-            return np.random.choice(2, header.input_dim)
-        else:
-            size = header.output_dim
-            return np.random.choice(header.num_classes, 1)[0]
+        # Ignore data because this is a random agent!
+        size = header.input_dim
+        return np.random.choice(size[0], 1)
     
     # Called for DS type tests
     def predict(self, header, data):
+        #TODO: Generalize for various DS problems
         size = header.output_dim
         prediction = []
         for i in data:

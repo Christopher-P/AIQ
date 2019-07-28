@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
    
 
 RUN apt-get install -y libboost-all-dev
+#RUN apt-get install -y qjackctl
 
 # requirements only into dir
 COPY requirements.txt /app
@@ -20,11 +21,7 @@ COPY requirements.txt /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 RUN pip install gym[atari]
 RUN pip install jsonlines
-
-
-#RUN apt-get install -qqy x11-apps
-#ENV DISPLAY :0
-#CMD xeyes
+RUN pip install requests
 
 # Copy the current directory contents into the container at /app
 COPY . /app
@@ -37,4 +34,4 @@ COPY examples/full_test.py /app
 COPY examples/sample.yml /app
 
 # Run app.py when the container launches
-CMD ["python", "full_test.py"]
+CMD ["python", "-W ignore","full_test.py"]
