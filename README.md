@@ -30,7 +30,7 @@ Dummy information can be passed instead to utilize AIQ locally only.
 Remove any references to connection and submission.
 
 4. Verify credentials work
-This is sent via a secure connection but we are still working on sending fully encrypted data.
+This is sent via a secure connection.
 ```python
 # returns True if credentials match our system
 interface.connect()
@@ -58,9 +58,7 @@ interface.add('[package]', {'env_name':'[subtest]'})
 ```
 
 
-6. Add an agent
-AIQ provides an agent which randomly selects from the possible actions given
-by the test with knowledge of each test.
+6. Add an agent! AIQ provides an agent which randomly selects from the possible actions.
 ```python
 from AIQ.agents.random_agent import R_Agent
 interface.agent = R_Agent()
