@@ -1,4 +1,7 @@
 keras
 tensorflow
 gym
+gym[atari]
 vizdoom
+requests
+jsonlines

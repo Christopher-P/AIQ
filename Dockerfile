@@ -12,16 +12,12 @@ RUN apt-get update && apt-get install -y \
    
 
 RUN apt-get install -y libboost-all-dev
-#RUN apt-get install -y qjackctl
 
 # requirements only into dir
 COPY requirements.txt /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
-RUN pip install gym[atari]
-RUN pip install jsonlines
-RUN pip install requests
 
 # Copy the current directory contents into the container at /app
 COPY . /app
