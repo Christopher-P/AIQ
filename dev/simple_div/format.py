@@ -84,7 +84,6 @@ def cross_table(data):
 
     ax.set_title("Similarity table for current test suite")
     fig.tight_layout()
-    plt.savefig('HeatMap.png')
     plt.show()
 
     return None
@@ -125,7 +124,7 @@ for ind, val in enumerate(data):
         if A == B:
             S = 0.5
         else:
-            S = abs(abs(Vmax - V) + abs(Vmin - V) ) / abs( A  - B )
+            S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
         info.append((name1, name2, S))         
 
     else:
