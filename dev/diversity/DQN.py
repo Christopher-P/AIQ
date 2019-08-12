@@ -41,7 +41,8 @@ class AtariProcessor(Processor):
 
 class DQN_Agent():
 
-    def __init__(self):
+    def __init__(self, n):
+        self.size_input = int(n)
         return None
 
     def clear(self):
@@ -51,7 +52,7 @@ class DQN_Agent():
         self.prepare_agent(inst)
         l = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
         er = l.history['episode_reward'][-20:]
-        return sum(er)/len(er)
+        return l
 
     def test_to(self, inst, iters):
         data = self.dqn.test(inst, nb_episodes=iters, visualize=False)
@@ -87,16 +88,12 @@ class DQN_Agent():
         input_dim.insert(0, 500)        
         print(tuple(input_dim))
         
-        model.add(Dense(16, input_shape=(tuple(input_dim))))
-        model.add(Conv1D(64, 8, strides=2, data_format="channels_last"))
+        model.add(Dense(self.size_input, input_shape=(tuple(input_dim))))
         model.add(Activation('relu'))
-        model.add(Conv1D(64, 4, strides=2))
+        model.add(Dense(self.size_input))
         model.add(Activation('relu'))
-        model.add(Conv1D(64, 2, strides=2))
-        model.add(Activation('relu'))
+        model.add(Dense(self.size_input))
         model.add(Flatten())
-        model.add(Dense(64))
-        model.add(Activation('relu'))
         model.add(Dense(output_dim[0]))
         model.add(Activation('linear'))
 

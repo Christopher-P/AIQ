@@ -34,7 +34,7 @@ class AIQ():
         return self.backend.connect()
 
     # Add a test to the test suite
-    def add(self, env_name, out, params=None):
+    def add(self, env_name, params=None):
         # https://stackoverflow.com/questions/547829/
         try:
             mod = __import__('AIQ.test_suite', fromlist=[env_name])
@@ -42,8 +42,6 @@ class AIQ():
             kless = getattr(klass, env_name)
             inst = kless(params)
 
-            if len(inst.get_header().output_dim) != out:
-                raise Exception('Dis-allowed output dimension')
 
             self.test_suite.append(inst)
             if params is not None and 'env_name' in params:

@@ -23,48 +23,28 @@ def main():
     interface = AIQ(username, password)
 
     # Dont run Baseline Tests
-    interface.bl = False 
-    
-    # Set our agent
-    interface.agent = DQN_Agent()
+    interface.bl = False
 
     # Add all envs
-    # If ignore words found in env_name, dont add!
-    ignore = ['Deterministic', 'ram', 'NoFrameskip']
-    interface.add_all_tests(ignore)
+    interface.add('OpenAIGym', {'env_name':'CartPole-v0'})
 
-    for ind,val in enumerate(interface.suites_added):
-        print(interface.suites_added[ind], interface.test_names[ind])
-
-    last = None
-
-    # Train/fit/log OOTB-agents
-    for ind,val in enumerate(interface.suites_added):
-        if last is not None:
-            if interface.test_names[ind] == last:
-                last = None
-            else:
-                continue
-
-        print(interface.suites_added[ind], interface.test_names[ind])        
-        name = ''
-
-        if interface.suites_added[ind] == 'ViZDoom':
-            name = interface.suites_added[ind] + "_" + interface.test_names[ind]
-        else:
-            name = interface.test_names[ind]
-
-        interface.agent.clear()
-        train_res = interface.fit_to(name)
-        results = interface.test_to(name, 20)
-        interface.fancy_logger(interface.suites_added[ind], 
-                               interface.test_names[ind], 
-                               results.history, 
-                               train_res,
-                               file_name='dev/diversity/data/DQN', write='a')
+    
+    # Set our agent
+    for i in range(11,12):
+        interface.agent = None
+        interface.agent = DQN_Agent(i * 10)
+        train_res = interface.fit_to('CartPole-v0')
+        print(train_res)
+        interface.fancy_logger('CartPole-v0 ' + str(i * 10),
+                               train_res.history, 
+                               file_name='dev/diversity/data/handicapping', write='a')
 
     exit()
 
 
+
 if __name__ == '__main__':
     main()
+
+#37655
+#16504655
