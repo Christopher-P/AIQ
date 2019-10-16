@@ -29,14 +29,19 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 COPY . /app
 
 # Download latest AIQ Release
-RUN git clone https://github.com/Christopher-P/AIQ.git
+RUN git clone https://github.com/Christopher-P/AIQ.git AIQ_full
+RUN cp -r AIQ_full/AIQ /app/AIQ
 
 # Define environment variable
 ENV NAME World
 
-# Move files from examples to above directory
-COPY examples/full_test.py /app
-COPY examples/sample.yml /app
+# Copy local files into image
+COPY full_test.py /app
+
+#################################################
+# BE SURE TO CHANGE sample.yml TO redentials.yml
+#################################################
+COPY credentials.yml /app
 
 # Run app.py when the container launches
 CMD ["python", "-W ignore","full_test.py"]
