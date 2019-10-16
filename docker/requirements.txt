@@ -1,0 +1,7 @@
+keras
+tensorflow
+gym
+vizdoom
+jsonlines
+requests
+gym[atari]
