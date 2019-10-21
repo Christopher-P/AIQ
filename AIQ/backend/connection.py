@@ -28,8 +28,15 @@ class backend_handler():
         # Send information to rest handler
         self.call_rest("not_empty", str_data)
 
-        # Formatting, so doesnt look terrible
-        text = self.response.text.replace('\\', '')
+        # Handle website
+        # TODO: Fix on server end
+        if 'div' in self.response.text:
+            text = "Account information not found, make sure to sign up at https://portal.eecs.wsu.edu/aiq"
+        else:
+            text = "Submission made succesfully! ="
+
+        ## Formatting, so doesnt look terrible
+        #text = self.response.text.replace('\\', '')
         return text
 
     def connect(self):
