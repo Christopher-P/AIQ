@@ -56,13 +56,19 @@ def cross_table(data):
                 continue
             if val2 == 0.0:
                 print(list(keys.keys())[ind],list(keys.keys())[ind2])
+
+    ### NEW CODE
+    ## Fill out table (remove 0.0 values)
+    for i in range(10):
+        for j in range(10):
+            res[j,i] = res[i,j]
                 
 
     plt.imshow(res, cmap='hot', interpolation='nearest')
     plt.show()
 
     # new plot
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(14, 10))
     im = ax.imshow(res)
 
     # We want to show all ticks...
@@ -79,12 +85,12 @@ def cross_table(data):
     # Loop over data dimensions and create text annotations.
     for i in range(len(res)):
         for j in range(len(res)):
-            text = ax.text(j, i, round(res[i, j],2),
+            text = ax.text(j, i, round(res[i, j],2), size=13,
                            ha="center", va="center", color="w")
 
     ax.set_title("Similarity table for current test suite")
     fig.tight_layout()
-    plt.savefig('HeatMap.png')
+    plt.savefig('HeatMap.png', dpi=400)
     plt.show()
 
     return None
@@ -125,7 +131,7 @@ for ind, val in enumerate(data):
         if A == B:
             S = 0.5
         else:
-            S = abs(abs(Vmax - V) + abs(Vmin - V) ) / abs( A  - B )
+            S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
         info.append((name1, name2, S))         
 
     else:
