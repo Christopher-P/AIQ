@@ -39,6 +39,15 @@ class backend_handler():
         #text = self.response.text.replace('\\', '')
         return text
 
+    # This function will accept entries for the db
+    # Accepts Epochs, Params
+    def send_complexity(self, test_name, epochs, params):
+        data  = "'" + str(test_name) + "' "
+        data += "'" + str(epochs) + "' "
+        data += "'" + str(params) + "' "
+        self.call_rest("Complexity", data)
+        return self.response
+
     def connect(self):
         self.call_rest("Connect", 1)
         if(self.response.text == '\"Connection Successful\"'):
