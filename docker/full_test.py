@@ -33,6 +33,10 @@ def main():
     ### Add one env to test system
     #interface.add('OpenAIGym', {'env_name':'CartPole-v0'})
 
+    r = interface.backend.send_complexity(2, 2, 2, 2)
+    print(r.text)
+    exit()
+
     ### Add all envs to test suite
     ## If ignore words found in env_name, dont add!
     ignore = ['Deterministic', 'ram', 'NoFrameskip']
