@@ -41,24 +41,13 @@ class AIQ():
        
     # Add all available test envs to the suite
     def add_all_tests(self, ignore):
-        # Class used to get the list of tests
-        tests_class = tests()
-        # Get test subsuites and env_names
-        suites, test_names = tests_class.list_all()
-        self.suites_added = []
-        self.test_names   = []
+        # Use test loader
+        t = self.TL.add_all_tests(ignore)
 
-        # Go through list and add each test
-        for ind, val in enumerate(test_names):
-            found = False
-            for word in ignore:
-                if word in test_names[ind]:
-                    found = True
-            if not found:
-                if self.add(suites[ind], {'env_name':test_names[ind]}):
-                    self.suites_added.append(suites[ind])
-                    self.test_names.append(test_names[ind])
-
+        # Safety check for tests not found
+        for inst in t:
+            if inst is not None:
+                self.test_suite.append(inst)
 
         return None
 

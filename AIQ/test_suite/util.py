@@ -12,12 +12,12 @@ class tests():
 
         return None
     
-
-
     def load_OBT(self):
         return None
+
     def load_AI2(self):
         return None
+
     def load_BW(self):
         return None
 
@@ -50,7 +50,8 @@ class tests():
         return None
         
     def list_all(self):
-        return self.suites, self.env_names, self.paths
+        self.load_gym()
+        return self.suites, self.env_names
 
 
 class test_loader():
@@ -105,7 +106,7 @@ class test_loader():
                     self.suites_added.append(suites[ind])
                     self.test_names.append(test_names[ind])
 
-        return None
+        return self.suites_added
 
 
 
