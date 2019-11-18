@@ -34,7 +34,7 @@ class AIQ():
         return self.backend.connect()
 
     # Add a test to the test suite
-    def add(self, env_name, params=None):
+    def add(self, env_name, out, params=None):
         # https://stackoverflow.com/questions/547829/
         try:
             mod = __import__('AIQ.test_suite', fromlist=[env_name])
@@ -42,8 +42,11 @@ class AIQ():
             kless = getattr(klass, env_name)
             inst = kless(params)
 
+            if len(inst.get_header().output_dim) > 1:
+                    return False
 
             self.test_suite.append(inst)
+
             if params is not None and 'env_name' in params:
                 print("{}: {} was added to the suite!".format(env_name, params['env_name']))
             else:
@@ -80,7 +83,8 @@ class AIQ():
         return None
 
     # Used to merge tests utilzing a wrapper
-    def join(self, name1, name2):
+    def join(self, name1, name2, k):
+        self.k = k
         # Search test suite for test
         inst1 = None
         for test in self.test_suite:
@@ -103,7 +107,7 @@ class AIQ():
 
         print(inst1,inst2)
         wr = wrap(inst1, inst2)
-        return self.agent.fit_to(wr)
+        return self.agent.fit_to(wr, k)
 
     # Evaluate test suite and given agent
     def evaluate(self):
@@ -149,7 +153,7 @@ class AIQ():
         return self.backend.submit(self.results)
 
     # Used to train an agent on a subset of the test suite
-    def fit_to(self, test_name):
+    def fit_to(self, test_name,k):
         # Make sure agent exists
         if self.agent == None:
             print('ERROR: No agent defined')
@@ -166,7 +170,7 @@ class AIQ():
             print(test_name + ' not found in active suite!')
 
         # Pass test instance to agents defined fitting function
-        return self.agent.fit_to(inst)
+        return self.agent.fit_to(inst,k)
 
     def test_to(self, test_name, iters):
         # Make sure agent exists

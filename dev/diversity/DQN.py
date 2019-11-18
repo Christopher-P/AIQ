@@ -48,8 +48,8 @@ class DQN_Agent():
     def clear(self):
         self.dqn = None
 
-    def fit_to(self, inst):
-        self.prepare_agent(inst)
+    def fit_to(self, inst, k):
+        self.prepare_agent(inst, k)
         l = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
         er = l.history['episode_reward'][-20:]
         return l
@@ -58,7 +58,7 @@ class DQN_Agent():
         data = self.dqn.test(inst, nb_episodes=iters, visualize=False)
         return data
 
-    def gen_model_2D(self, input_dim, output_dim):
+    def gen_model_2D(self, input_dim, output_dim, k):
         model = Sequential()
         print(input_dim, output_dim)
 
@@ -66,21 +66,21 @@ class DQN_Agent():
         input_dim.insert(0, 32)        
         print(tuple(input_dim))
         
-        model.add(Conv2D(32, (8, 8), strides=(4, 4), input_shape=(tuple(input_dim))))
+        model.add(Conv2D(int(32 * k / 100) + 1, (8, 8), strides=(4, 4), input_shape=(tuple(input_dim))))
         model.add(Activation('relu'))
-        model.add(Conv2D(64, (4, 4), strides=(2, 2)))
+        model.add(Conv2D(int(64 * k / 100) + 1, (4, 4), strides=(2, 2)))
         model.add(Activation('relu'))
-        model.add(Conv2D(64, (3, 3), strides=(1, 1)))
+        model.add(Conv2D(int(64 * k / 100) + 1, (3, 3), strides=(1, 1)))
         model.add(Activation('relu'))
         model.add(Flatten())
-        model.add(Dense(512))
+        model.add(Dense(int(512 * k / 100) + 1))
         model.add(Activation('relu'))
         model.add(Dense(nb_actions))
         model.add(Activation('softmax'))
 
         return model
 
-    def gen_model_1D(self, input_dim, output_dim):
+    def gen_model_1D(self, input_dim, output_dim, k):
         model = Sequential()
         print(input_dim, output_dim)
 
@@ -88,11 +88,11 @@ class DQN_Agent():
         input_dim.insert(0, 500)        
         print(tuple(input_dim))
         
-        model.add(Dense(self.size_input, input_shape=(tuple(input_dim))))
+        model.add(Dense(int(self.size_input * k / 100) + 1, input_shape=(tuple(input_dim))))
         model.add(Activation('relu'))
-        model.add(Dense(self.size_input))
+        model.add(Dense(int(self.size_input * k / 100) + 1))
         model.add(Activation('relu'))
-        model.add(Dense(self.size_input))
+        model.add(Dense(int(self.size_input * k / 100) + 1))
         model.add(Flatten())
         model.add(Dense(output_dim[0]))
         model.add(Activation('linear'))
@@ -100,7 +100,7 @@ class DQN_Agent():
         return model
 
 
-    def prepare_agent(self, inst):
+    def prepare_agent(self, inst, k):
         # Handle Dimensionality  
         in_dim  = inst.get_header().input_dim
         out_dim = inst.get_header().output_dim
@@ -113,9 +113,9 @@ class DQN_Agent():
             out_dim = [out_dim]
 
         if len(in_dim) == 1:
-            model = self.gen_model_1D(out_dim, in_dim)
+            model = self.gen_model_1D(out_dim, in_dim,k)
         elif len(in_dim) == 2:
-            model = self.gen_model_2D(out_dim, in_dim)
+            model = self.gen_model_2D(out_dim, in_dim,k)
 
         memory = SequentialMemory(limit=10000, window_length=500)
         processor = AtariProcessor()

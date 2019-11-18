@@ -17,7 +17,7 @@ from DQN_M import DQN_Agent
 #l2 = 'None'
 
 # Runs agent on test 1, test2 and combined test
-def run_agent(interface, name1, name2):
+def run_agent(interface, name1, name2, k):
     #global l1
     #global l2
     '''
@@ -32,26 +32,26 @@ def run_agent(interface, name1, name2):
 
     try:
         interface.agent.clear()
-        train_res = interface.join(name1, name2)
+        train_res = interface.join(name1, name2, k)
         #print(train_res.history)
         interface.fancy_logger(name1 + '=' + name2, 
                                train_res.history, 
-                               file_name='dev/diversity/data/DQN', write='a')
-        '''
+                               file_name='dev/diversity/data/ensem', write='a')
+        
         interface.agent.clear()
-        train_res = interface.fit_to(name1)
+        train_res = interface.fit_to(name1,k)
         #print(train_res.history)
         interface.fancy_logger(name1, 
                                train_res.history, 
-                               file_name='dev/diversity/data/DQN', write='a')
+                               file_name='dev/diversity/data/ensem', write='a')
 
         interface.agent.clear()
-        train_res = interface.fit_to(name2)
+        train_res = interface.fit_to(name2,k)
         #print(train_res.history)
         interface.fancy_logger(name2, 
                                train_res.history, 
-                               file_name='dev/diversity/data/DQN', write='a')
-        '''
+                               file_name='dev/diversity/data/ensem', write='a')
+        
 
     except Exception as e:
         print(e)
@@ -86,7 +86,7 @@ def get_list(interface):
 def main():
 
     #Import username and password
-    credentials = yaml.safe_load(open("credentials.yml"))
+    #credentials = yaml.safe_load(open("credentials.yml"))
 
     # Dummy credentials
     username = 'admin'
@@ -116,13 +116,14 @@ def main():
 
     # Maximize effeciency
     
-    names = [('CartPole-v0', 'FrozenLake8x8-v0')]
+    #names = [('CartPole-v0', 'FrozenLake8x8-v0')]
 
     
-    for i in names:
-        #print(i)
-        name1, name2 = i
-        run_agent(interface, name1, name2)
+    for i in range(37,100):
+        print(i)
+        name1 = 'CartPole-v0'
+        name2 = 'Roulette-v0'
+        run_agent(interface, name1, name2, i)
 
 
     exit()
