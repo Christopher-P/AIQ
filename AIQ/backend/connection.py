@@ -42,15 +42,26 @@ class backend_handler():
     # This function will accept entries for the db
     # Accepts Epochs, Params
     def send_complexity(self, test_name, epochs, tp, ntp):
-        data  = "'" + str(test_name) + "' "
-        data += "'" + str(epochs) + "' "
-        data += "'" + str(tp) + "' "
-        data += "'" + str(ntp) + "' "
+        data = {"EPOCHS":epochs, "TP":tp, "NTP":ntp}
+        # Format data here for submission!
+        str_data = "'TEST_NAME' '" + self.username + "' "
+        for key, values in data.items():
+            str_data += "'"
+            str_data += str(key)
+            str_data += "'"
+            str_data += " "
+            str_data += "'"
+            str_data += str(values)
+            str_data += "'"
+            str_data += " "
 
-        with open('results.csv','a') as fd:
-            fd.write(data)
+        # Remove last space
+        str_data = str_data[:-1]
 
-        #self.call_rest("Complexity", data)
+        #with open('results.csv','a') as fd:
+        #    fd.write(data)
+
+        self.call_rest("Complexity", str_data)
         return self.response
 
     def connect(self):
