@@ -46,7 +46,7 @@ def _test_agent( refm_call, agent_call, rflip, episode_length, \
     refm = eval( refm_call )
 
     # create agent
-    agent = eval( agent_call )
+    agent = agent_call
     agent.reset()
 
     disc_reward = 0.0
@@ -73,7 +73,7 @@ def _test_agent( refm_call, agent_call, rflip, episode_length, \
         disc_reward /= episode_length
 
     # dispose of agent and reference machine
-    agent = None
+    #agent = None
     refm  = None
     
     return stratum, disc_reward
@@ -171,6 +171,7 @@ def stratified_estimator( refm_call, agent_call, episode_length, disc_rate, samp
 
         # add samples to processing pool (we skip stratum 0 which is passive)
         for i in range(1,I):
+            print(float(i)/I * 100, "%: done")
             for j in range(int(M[i])/2): # /2 is due to sampling each program twice
 
                 if len(samples[i]) == 0:
@@ -179,21 +180,10 @@ def stratified_estimator( refm_call, agent_call, episode_length, disc_rate, samp
 
                 program = samples[i].pop(0)
                 args = (refm_call, agent_call, episode_length, disc_rate, i, program)
-                result = pool.apply_async( test_agent, args )
-                results.append( result )
+                #result = pool.apply_async( test_agent, args )
+                stratum, perf1, perf2 = test_agent(refm_call, agent_call,
+                                            episode_length, disc_rate, i, program)
 
-        # collect the results, adding new jobs to the pool for any failed runs
-        while results != []:
-            result = results.pop(0)
-
-            if not result.ready():
-                # put back in the results list at the end and sleep for a moment
-                results.append( result )
-                sleep(0.02)
-            else:
-                # completed, now get the results
-                stratum, perf1, perf2 = result.get(100)
-                
                 if isnan(perf1) or isnan(perf2):
                     # run failed so get a new sample and add to processing pool
                     #print "Adding extra sample to the pool due to run failure"
@@ -201,13 +191,7 @@ def stratified_estimator( refm_call, agent_call, episode_length, disc_rate, samp
                         print "Error: Run out of program samples in stratum: " \
                               + str(stratum)
                         sys.exit()
-
-                    program = samples[stratum].pop(0)
-                    args = (refm_call, agent_call, episode_length, disc_rate, stratum, program)
-                    result = pool.apply_async( test_agent, args )
-                    results.append( result )
                 else:
-                    # run succeeded, so add the result to our results table Y
                     Y[stratum].append( (perf1, perf2) )
 
         pool.close()
@@ -317,7 +301,7 @@ def usage():
 
 
 # main function that just sets things up and then calls the sampler
-logging  = False
+logging  = True
 log_file = None
 
 def main():
@@ -412,6 +396,7 @@ def main():
     agent_call = agent_str + "." + agent_str + "( refm, " + str(disc_rate )
     for param in agent_params: agent_call += ", " + str(param)
     agent_call += " )"
+    print(agent_call)
     agent = eval( agent_call )
 
     # report settings
@@ -470,8 +455,8 @@ def main():
         # some agents have trouble serialising which messes up the multiprocessing
         # library that Python uses.  Easier just to construct the agent inside the
         # method that gets called in parallel.
-        agent = None 
-        stratified_estimator( refm_call, agent_call, episode_length, disc_rate,
+        #agent = None 
+        stratified_estimator( refm_call, agent, episode_length, disc_rate,
                               samples, sample_size, dist, threads )
 
     # close log file
