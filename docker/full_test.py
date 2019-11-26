@@ -33,9 +33,9 @@ def main():
     ### Add one env to test system
     #interface.add('OpenAIGym', {'env_name':'CartPole-v0'})
 
-    r = interface.backend.send_complexity(2, 2, 2, 2)
-    print(r.text)
-    exit()
+    #r = interface.backend.send_complexity(2, 2, 2, 2)
+    #print(r.text)
+    #exit()
 
     ### Add all envs to test suite
     ## If ignore words found in env_name, dont add!
@@ -44,13 +44,17 @@ def main():
 
     for inst in interface.test_suite:
         ## Set new test env
+        print(type(inst))
         interface.agent.reset(inst)
+        print(inst)
 
         ## Train agent, returns epochs and trainable params and non-trainable params
         e, tp, ntp = interface.agent.train()
+        print(e,tp,ntp)
 
         ## Get test name
         r = interface.backend.send_complexity(inst.header.env_name, e, tp, ntp)
+        print(r)
 
 if __name__ == '__main__':
     main()
