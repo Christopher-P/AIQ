@@ -14,7 +14,9 @@ class desc():
 
 class header():
     
-    def __init__(self, env_name, input_dim, output_dim, info, rl, num_classes=1, env_min_score=0.0, env_max_score=1.0):
+    def __init__(self, env_name, input_dim, output_dim, 
+                info, rl, num_classes=1, env_min_score=0.0, 
+                env_max_score=1.0):
         self.env_name = env_name
         self.input_dim = input_dim
         self.output_dim = output_dim
