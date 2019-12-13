@@ -88,6 +88,8 @@ class test_loader():
 
     # Add all available test envs to the suite
     def add_all_tests(self, ignore):
+        if ignore == None:
+            ignore = []
         # Class used to get the list of tests
         tests_class = tests()
         # Get test subsuites and env_names
@@ -102,6 +104,7 @@ class test_loader():
                 if word in test_names[ind]:
                     found = True
             if not found:
+                print(suites[ind], {'env_name':test_names[ind]})
                 if self.add(suites[ind], {'env_name':test_names[ind]}):
                     self.suites_added.append(suites[ind])
                     self.test_names.append(test_names[ind])

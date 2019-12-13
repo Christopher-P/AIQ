@@ -51,7 +51,8 @@ class DQN_Agent():
     def clear(self):
         self.dqn = None
 
-    def fit_to(self, inst,k):
+    # k = 100 means normal network
+    def fit_to(self, inst,k=100):
         self.prepare_agent(inst,k)
         train_results = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
         return train_results
@@ -137,5 +138,5 @@ class DQN_Agent():
 
 
 
-        print(model.summary())
+        #print(model.summary())
 

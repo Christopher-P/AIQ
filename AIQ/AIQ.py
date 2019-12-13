@@ -40,7 +40,7 @@ class AIQ():
             self.test_suite.append(t)
        
     # Add all available test envs to the suite
-    def add_all_tests(self, ignore):
+    def add_all_tests(self, ignore=None):
         # Use test loader
         t = self.TL.add_all_tests(ignore)
 
@@ -113,7 +113,9 @@ class AIQ():
             print(test_name + ' not found in active suite!')
 
         # Pass test instance to agents defined fitting function
-        self.agent.fit_to(inst)
+        # Return history
+        history = self.agent.fit_to(inst)
+        return history
 
     def test_to(self, test_name, iters):
         # Make sure agent exists
