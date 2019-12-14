@@ -29,6 +29,9 @@ def main():
     if not interface.connect():
         print("Invalid login Credentials")
         #exit()
+    # TODO: Remove later
+    # Check if add all works
+    interface.add_all_tests()
 
     # Load server-side tests
     # Pass in the backend handler
