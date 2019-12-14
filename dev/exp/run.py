@@ -6,6 +6,9 @@ import traceback
 
 import csv
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+import tensorflow as tf
+
 
 # Go to where AIQ is installed
 os.chdir('../..')
