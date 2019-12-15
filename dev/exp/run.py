@@ -162,7 +162,7 @@ def main():
                 Ratio = (AuC(B_r) - AuC(A_r)) / AuC(A_r)
             except:
                 Ratio = -999999
-            record('Ratio.csv', name_A, name_B, Reward)
+            record('Ratio.csv', name_A, name_B, Ratio)
 
             # Record Time to Threshold
             # Min(time_A > 0.95) - Min(time_B > 0.95)
