@@ -3,8 +3,8 @@ import os
 import csv
 
 # Supress warnings
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import tensorflow as tf
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 from keras.models import load_model
 
 # Go to where AIQ is installed
@@ -98,12 +98,12 @@ def main():
         interface.add('OpenAIGym', {'env_name':name})
 
     # Used for starting and stopping exp mid way
-    save_point = None
-    # save_point = ['name_A','name_B']
+    #save_point = None
+    save_point = ['FrozenLake8x8-v0','CliffWalking-v0']
 
     # For each test A, for each test B, train on a, train on b.
     for ind, A in enumerate(interface.test_suite):
-        # Get env names
+         # Get env names
         name_A = A.header.env_name
 
         # Train on initial problem

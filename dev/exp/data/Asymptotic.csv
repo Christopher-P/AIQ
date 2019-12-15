@@ -85,3 +85,17 @@ FrozenLake8x8-v0|MountainCar-v0|-399.0
 FrozenLake8x8-v0|Roulette-v0|-15.0
 FrozenLake8x8-v0|FrozenLake-v0|0.0
 FrozenLake8x8-v0|CliffWalking-v0|-15142.0
+FrozenLake8x8-v0|CliffWalking-v0|-13884.4
+FrozenLake8x8-v0|NChain-v0|1506.8
+FrozenLake8x8-v0|FrozenLake8x8-v0|0.0
+FrozenLake8x8-v0|Taxi-v2|-948.0
+Taxi-v2|CartPole-v0|1095.6
+Taxi-v2|CartPole-v1|1088.8
+Taxi-v2|Acrobot-v1|348.0
+Taxi-v2|MountainCar-v0|648.0
+Taxi-v2|Roulette-v0|1058.2
+Taxi-v2|FrozenLake-v0|1047.0
+Taxi-v2|CliffWalking-v0|-18168.0
+Taxi-v2|NChain-v0|2503.4
+Taxi-v2|FrozenLake8x8-v0|1047.0
+Taxi-v2|Taxi-v2|54.0
