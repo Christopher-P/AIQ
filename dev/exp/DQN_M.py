@@ -120,16 +120,16 @@ class DQN_Agent():
             out_dim = [out_dim]
 
         if len(in_dim) == 1:
-            model = self.gen_model_1D(out_dim, in_dim,k)
+            self.model = self.gen_model_1D(out_dim, in_dim,k)
         elif len(in_dim) == 2:
-            model = self.gen_model_2D(out_dim, in_dim,k)
+            self.model = self.gen_model_2D(out_dim, in_dim,k)
 
         memory = SequentialMemory(limit=10000, window_length=500)
         processor = AtariProcessor()
         policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=200., 
                     value_min=-200., value_test=.05, nb_steps=1000000)
 
-        self.dqn = DQNAgent(model=model, nb_actions=in_dim[0], policy=policy, memory=memory,
+        self.dqn = DQNAgent(model=self.model, nb_actions=in_dim[0], policy=policy, memory=memory,
                        processor=processor, nb_steps_warmup=1000, 
                        gamma=.99, target_model_update=10000,
                        train_interval=4, delta_clip=1.)
