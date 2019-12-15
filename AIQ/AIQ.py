@@ -1,5 +1,5 @@
 from .backend import backend_handler
-from .test_suite.util import tests, test_loader
+from .util import tests, test_loader
 
 # Used for loading tests into test suite
 import importlib
@@ -34,31 +34,27 @@ class AIQ():
 
     # Add a test to the test suite
     def add(self, env_name, params=None):
+        # Pass information to test loader
         t = self.TL.add(env_name, params)
+
         # Safety check for tests not found
         if t is not None:
             self.test_suite.append(t)
+
+        return None
        
     # Add all available test envs to the suite
-    def add_all_tests(self, ignore):
-        # Class used to get the list of tests
-        tests_class = tests()
-        # Get test subsuites and env_names
-        suites, test_names = tests_class.list_all()
-        self.suites_added = []
-        self.test_names   = []
-
-        # Go through list and add each test
-        for ind, val in enumerate(test_names):
-            found = False
-            for word in ignore:
-                if word in test_names[ind]:
-                    found = True
-            if not found:
-                if self.add(suites[ind], {'env_name':test_names[ind]}):
-                    self.suites_added.append(suites[ind])
-                    self.test_names.append(test_names[ind])
-
+    # whitelist: test_name must be in whitelist to be added
+    # blacklist: no part of black list must be in test_name
+    def add_all_tests(self, whitelist=None, blacklist=None):
+        # Pass information to test loader
+        t_list = self.TL.add_all_tests(whitelist,blacklist)
+        
+        # Add tests found
+        for t in t_list:
+            # Safety check for tests not found
+            if t is not None:
+                self.test_suite.append(t)
 
         return None
 
