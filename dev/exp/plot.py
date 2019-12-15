@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 def load_file(filename):
     data = []
-    with open('data/' + filename, newline='') as csvfile:
+    with open('data_bak/' + filename, newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter='|', quotechar=' ')
         for row in spamreader:
             data.append((row[0], row[1], row[2]))
@@ -30,39 +30,19 @@ def cross_table(data):
         res[keys[val[0]]][keys[val[1]]] = val[2]
 
     print(res)
-
-    with open('nice results.csv', 'w', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=',')
-        fieldnames = list(keys.keys())
-        spamwriter.writerow(fieldnames)
-        for ind, val in enumerate(res):
-            name = list(keys.keys())[ind]
-            spamwriter.writerow([name, *val])
-
-        flat_list = [item for sublist in res for item in sublist]
-        avg = 0.0
-        cnt = 0.0
-        for i in flat_list:
-            if i == 0.0:
-                continue   
-            else:
-                avg += i
-                cnt += 1
-        avg = avg/cnt
-
-        spamwriter.writerow(('AVERAGE', avg))
+    print(keys)
 
     # this one entry is out of whach
     #res[5,7] = res[7,5]
     #res[7,5] = 0.0
 
     # See what data is missing (maximize everything)
-    for ind,val in enumerate(res):
-        for ind2,val2 in enumerate(val):
-            if ind2 < ind:
-                continue
-            if val2 == 0.0:
-                print(list(keys.keys())[ind],list(keys.keys())[ind2])
+    #for ind,val in enumerate(res):
+    #    for ind2,val2 in enumerate(val):
+    #        if ind2 < ind:
+    #            continue
+    #        if val2 == 0.0:
+    #            print(list(keys.keys())[ind],list(keys.keys())[ind2])
 
     ### NEW CODE
     ## Fill out table (remove 0.0 values)
@@ -103,5 +83,5 @@ def cross_table(data):
     return None
 
 
-data = load_file('Reward.csv')
+data = load_file('Ratio.csv')
 cross_table(data)
