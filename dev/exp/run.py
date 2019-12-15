@@ -1,14 +1,11 @@
-import yaml
 import sys
 import os
-from itertools import permutations, repeat
-import traceback
-
 import csv
 
+# Supress warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import tensorflow as tf
-
+from keras.models import load_model
 
 # Go to where AIQ is installed
 os.chdir('../..')
@@ -18,67 +15,7 @@ sys.path.insert(0, os.getcwd())
 from AIQ.AIQ import AIQ
 from DQN_M import DQN_Agent
 
-#l1 = 'None'
-#l2 = 'None'
-
-# Runs agent on test 1, test2 and combined test
-def run_agent(interface, name1, name2, k):
-    #global l1
-
-    print(name1, name2)
-
-    try:
-        interface.agent.clear()
-        train_res = interface.join(name1, name2, k)
-        #print(train_res.history)
-        interface.fancy_logger(name1 + '=' + name2, 
-                               train_res.history, 
-                               file_name='dev/diversity/data/ensem', write='a')
-        
-        interface.agent.clear()
-        train_res = interface.fit_to(name1,k)
-        #print(train_res.history)
-        interface.fancy_logger(name1, 
-                               train_res.history, 
-                               file_name='dev/diversity/data/ensem', write='a')
-
-        interface.agent.clear()
-        train_res = interface.fit_to(name2,k)
-        #print(train_res.history)
-        interface.fancy_logger(name2, 
-                               train_res.history, 
-                               file_name='dev/diversity/data/ensem', write='a')
-        
-
-    except Exception as e:
-        print(e)
-        traceback.print_exc()
-        exit()
-        return None
-
-
-# generates a list of all pairwise combinations
-def get_list(interface):
-    names = []
-    for ind,val in enumerate(interface.suites_added):
-        #print(interface.suites_added[ind], interface.test_names[ind])        
-        name = ''
-        if interface.suites_added[ind] == 'ViZDoom':
-            name = interface.suites_added[ind] + "_" + interface.test_names[ind]
-        else:
-            name = interface.test_names[ind]
-        names.append(name)
-
-    real_names = []
-
-    for ind,val in enumerate(names):
-        for ind2,val2 in enumerate(names):
-            if ind2 < ind:
-                continue
-            real_names.append((val, val2))
-
-    return real_names
-
+# Uniform function to save experimental data
 def record(filename, nameA, nameB, values, values2=None):
     with open('dev/exp/data/' + filename, 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='|',
@@ -155,20 +92,29 @@ def main():
 
     # Time to Threshold: The learning time needed by the agent to achieve a pre-specified
     # performance level may be reduced via knowledge transfer.
-    #interface.add_all_tests()
 
+    # Add all tests we need
     for name in names:
         interface.add('OpenAIGym', {'env_name':name})
 
+    # Used for starting and stopping exp mid way
     save_point = None
     # save_point = ['name_A','name_B']
 
     # For each test A, for each test B, train on a, train on b.
     for ind, A in enumerate(interface.test_suite):
+        # Get env names
+        name_A = A.header.env_name
+
+        # Train on initial problem
+        history_A = interface.fit_to(name_A)
+
+        # Save model (so we dont need to retrain)
+        interface.agent.model.save('A_model.h5')
+
         for ind, B in enumerate(interface.test_suite):
                
             # Get env names
-            name_A = A.header.env_name
             name_B = B.header.env_name
             print(name_A, name_B)
 
@@ -179,8 +125,9 @@ def main():
                 else:
                     save_point = None
 
-            # Train on initial problem
-            history_A = interface.fit_to(name_A)
+            # Reset and load base problem
+            interface.agent.clear()
+            interface.agent.model = load_model('A_model.h5')
 
             # Transfer onto second problem
             history_B = interface.fit_to(name_B)
