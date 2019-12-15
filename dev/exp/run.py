@@ -98,8 +98,8 @@ def main():
         interface.add('OpenAIGym', {'env_name':name})
 
     # Used for starting and stopping exp mid way
-    #save_point = None
-    save_point = ['FrozenLake8x8-v0','CliffWalking-v0']
+    save_point = None
+    #save_point = ['FrozenLake8x8-v0','CliffWalking-v0']
 
     # For each test A, for each test B, train on a, train on b.
     for ind, A in enumerate(interface.test_suite):
