@@ -76,7 +76,7 @@ for entry in data:
 
 
     print(name_A, name_B)
-    
+    '''
     for ind,val in enumerate(A_r):
         try:
             A_r[ind] = (val - scales[name_A][0]) / (scales[name_A][1] - scales[name_A][0])
@@ -88,7 +88,7 @@ for entry in data:
             B_r[ind] = (val - scales[name_B][0]) / (scales[name_B][1] - scales[name_B][0])
         except:
             p = 10
-    
+    '''
     # Record JumpStart
     # agent_B_init_score - agent_A_init_score
     JumpStart = B_r[0] - A_r[0]

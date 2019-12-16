@@ -62,7 +62,7 @@ def plott(res, name, ax):
     # Loop over data dimensions and create text annotations.
     for i in range(len(res)):
         for j in range(len(res)):
-            text = ax.text(j, i, round(res[i, j],2), size=10,
+            text = ax.text(j, i, round(res[i, j],2), size=4,
                            ha="center", va="center", color="w")
 
     ax.set_title(name)
@@ -132,7 +132,7 @@ for i in range(10):
     for j in range(10):
         info[j,i] = info[i,j]
 
-fig, axs = plt.subplots(4, 2,figsize=(14,20))
+fig, axs = plt.subplots(4, 2,figsize=(12,20))
 
 # Scale data now
 for ind,name in enumerate(files):
@@ -147,16 +147,17 @@ for ind,name in enumerate(files):
     # This is a 2x2 coorelation matrix, so get one corner
     top_right = np.asarray([pearson[i][10:] for i in range(10)]) 
 
-    print(top_right.sum()/100)
-    continue
+    #print(top_right.sum()/100)
+    #continue
 
     # Plot the data
     plott(ct, name[0:-4] + " raw", axs[ind,0])
     plott(top_right, name[0:-4] + " coorelation", axs[ind,1])
 
-#plt.show()    
-#fig.tight_layout()
-#plt.savefig('LotsOfGraphs.png', dpi=400)
+   
+fig.tight_layout()
+#plt.show() 
+plt.savefig('G.png', dpi=400)
 
     
 
