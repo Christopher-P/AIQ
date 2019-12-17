@@ -45,7 +45,7 @@ def AuC(data, t):
 
 # Uniform function to save experimental data
 def record(filename, nameA, nameB, values, values2=None):
-    with open('data/' + filename, 'a', newline='') as csvfile:
+    with open('data_bak/' + filename, 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='|',
                                 quotechar=' ', quoting=csv.QUOTE_MINIMAL)
         if values2 == None:
