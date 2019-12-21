@@ -96,7 +96,7 @@ class AIQ():
         return self.backend.submit(self.results)
 
     # Used to train an agent on a subset of the test suite
-    def fit_to(self, test_name):
+    def fit_to(self, test_name, max_val):
         # Make sure agent exists
         if self.agent == None:
             print('ERROR: No agent defined')
@@ -114,7 +114,7 @@ class AIQ():
 
         # Pass test instance to agents defined fitting function
         # Return history
-        history = self.agent.fit_to(inst)
+        history = self.agent.fit_to(inst, max_val)
         return history
 
     def test_to(self, test_name, iters):

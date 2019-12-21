@@ -68,7 +68,8 @@ class OpenAIGym(desc):
             self.observation = self.observation / 255
 
         if self.done:
-            return self.observation, self.reward_total, self.done, self.info
+            return self.observation, self.reward_step, self.done, self.info
+            #return self.observation, self.reward_total, self.done, self.info
         else:
             return self.observation, self.reward_step, self.done, self.info
 
