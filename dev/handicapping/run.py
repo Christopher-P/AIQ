@@ -61,8 +61,6 @@ def main():
 
             history_A = interface.fit_to(name_A, counter * 10)
 
-            record('Epochs.csv', name_A, counter * 10, ind_m)
-           
             # Record all data
             # Just so if we change something we dont need to rerun everything
             record('RAW.csv', name_A, counter * 10, history_A.history)
