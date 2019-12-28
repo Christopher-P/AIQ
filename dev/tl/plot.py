@@ -153,16 +153,23 @@ for ind,name in enumerate(files):
     
     # Cross table the data
     ct = cross_table(data)
-    ct = ct.T
+    tmp = []
+    for i in range(10):
+        tmp.append(ct[i][i])
+        
+    print(tmp)
+    continue
+
+    #ct = ct.T
     pearson = np.corrcoef(ct,info)
 
     # This is a 2x2 coorelation matrix, so get one corner
     top_right = np.asarray([pearson[i][10:] for i in range(10)]) 
     t = 0
-    for i in range(10):
-        t = t + top_right[i][i]
-        #print(top_right[i][i])
+    tmp = []
 
+
+    
     sim = [1.0,1.0,0.1315258794532825,
     0.025197595082077928,
     0.5488069414316703,
