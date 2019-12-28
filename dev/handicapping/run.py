@@ -49,8 +49,19 @@ def main():
         interface.add('OpenAIGym', {'env_name':name})
 
 
+    last = 0
+    l_name = 'FrozenLake8x8-v0'
+
     for counter in range(10):
         for ind, A in enumerate(interface.test_suite):
+
+            if last is not None:
+                if last == counter and l_name == A.header.env_name:
+                    last = None
+                    l_name = None
+                    continue
+                else:
+                    continue
                
             # Get env names
             name_A = A.header.env_name
