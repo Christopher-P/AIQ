@@ -49,10 +49,10 @@ def main():
         interface.add('OpenAIGym', {'env_name':name})
 
 
-    last = 0
-    l_name = 'FrozenLake8x8-v0'
+    last = 9
+    l_name = 'Taxi-v2'
 
-    for counter in range(10):
+    for counter in range(11):
         for ind, A in enumerate(interface.test_suite):
 
             if last is not None:
