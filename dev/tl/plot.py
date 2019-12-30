@@ -26,7 +26,7 @@ def gen_nice_results(keys, res):
 
 
 # Plot results in a heatmap
-def cross_table(data):
+def cross_table(data, name):
     counter = 0
     keys = {}
     for val in data:
@@ -43,7 +43,15 @@ def cross_table(data):
         res[keys[val[0]]][keys[val[1]]] = val[2]
 
     gen_nice_results(keys,res)
-    #print(res)
+
+    with open(name+'_results.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',')
+        fieldnames = list(keys.keys())
+        spamwriter.writerow(fieldnames)
+        for ind, val in enumerate(res):
+            name = list(keys.keys())[ind]
+            spamwriter.writerow([name, *val])
+
     return res
 
 # Plot the cross tabled data
@@ -135,7 +143,7 @@ files = ['Reward.csv','Ratio.csv', 'JumpStart.csv', 'Asymptotic.csv']
 
 # Get sim measure data
 info = load_AIQ()
-info = cross_table(info)
+info = cross_table(info , 'sim')
 # this one entry is out of whach
 info[7,8] = info[7,5]
 info[7,5] = 0.0
@@ -152,7 +160,7 @@ for ind,name in enumerate(files):
     data = load_file(name)
     
     # Cross table the data
-    ct = cross_table(data)
+    ct = cross_table(data, name)
     tmp = []
     for i in range(10):
         tmp.append(ct[i][i])
@@ -167,43 +175,6 @@ for ind,name in enumerate(files):
     top_right = np.asarray([pearson[i][10:] for i in range(10)]) 
     t = 0
     tmp = []
-
-
-    
-    sim = [1.0,1.0,0.1315258794532825,
-    0.025197595082077928,
-    0.5488069414316703,
-    0.4992884732669241,
-    0.8160427807486632,
-    0.391907514450867
-    ,0.10085831313990765,
-    0.20373573158076802]
-
-    TL = [0.00042378420033432895,
-    0.0010126680668700178,
-    -0.11431468619321938,
-    -0.11431468619321938,
-    0.20400393089420732,
-    -0.09639627216348244,
-    0.22347143276210657,
-    0.30853014139298746,
-    -0.11273988304361308,
-    0.08070703507013621]
-
-    # Do math here
-    #upper = 10*np.dot(sim,TL)-sum(TL)*sum(sim)
-    #lower = math.sqrt((10*sum([i**2 for i in sim]) - sum(sim)**2) * (10*sum([i**2 for i in TL]) - sum(TL)**2))
-    #r = upper/lower
-    #print(r)
-
-    print(t/10)
-    #print(np.corrcoef(sim,TL))
-    #print(np.corrcoef(info[0],ct.T[0]))
-    #exit()
-    continue
-
-    #print(top_right.sum()/100)
-    #continue
 
     # Plot the data
     plott(ct, name[0:-4] + " raw", axs[ind,0])
