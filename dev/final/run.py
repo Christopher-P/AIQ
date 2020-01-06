@@ -132,6 +132,13 @@ def normalize_ct(ct):
 
 
 def compute_AIQ(P, C, ID):
+
+    # Subsets here
+    # Simulate not taking the tests by excluding measurmentes
+    ID = ID[0:3] + ID[4:6] + ID[7:]
+    P  =  P[0:3] + P[4:6] + P[7:]
+    C  =  C[0:3] + C[4:6] + C[7:]
+
     # Compute diversity from individual diversities
     D = sum(ID)
 
@@ -145,7 +152,7 @@ def compute_AIQ(P, C, ID):
     return AIQ
 
 def save_data(results):
-    with open('results.csv', 'w', newline='') as csvfile:
+    with open('results-7best.csv', 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='|',
                                 quotechar=' ', quoting=csv.QUOTE_MINIMAL)
         for i in results:
