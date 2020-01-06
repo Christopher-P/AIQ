@@ -64,7 +64,7 @@ names = ['Asymptotic.csv', 'JumpStart.csv', 'Ratio.csv', 'Reward.csv', 'sim.csv'
 
 
 
-plot_single = True
+plot_single = False
 
 if not plot_single:
     # Setup graph

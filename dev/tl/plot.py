@@ -44,7 +44,18 @@ def cross_table(data, name):
 
     gen_nice_results(keys,res)
 
-    with open(name+'_results.csv', 'w', newline='') as csvfile:
+    #scales = [(15.0, 200.0), (15.0, 500.0), (-699.0, -42.0), (-399.0, -110.0), (-71.0, 144.0), (0.0, 1.0), (-26058.0, -10.0), (1318.0, 3677.0), (0.0, 1.0), (-1164.0, 9.7)]
+
+    #print(res)
+    #exit()
+
+    #for i in range(len(res)):
+    #    for j in range(len(res[i])):
+    #        res[i][j] = (res[i][j] - scales[j][0]) / (scales[j][1] - scales[j][0])
+
+
+    # Save results
+    with open('form_data/' + name+'_results.csv', 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',')
         fieldnames = list(keys.keys())
         spamwriter.writerow(fieldnames)

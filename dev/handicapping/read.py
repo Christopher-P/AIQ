@@ -61,11 +61,23 @@ def simplify_data(data):
 
     return data
 
+def normalize_data(data):
+    scales = [(15.0, 200.0), (15.0, 500.0), (-699.0, -42.0), (-399.0, -110.0), (-71.0, 144.0), (0.0, 1.0), (-26058.0, -10.0), (1318.0, 3677.0), (0.0, 1.0), (-1164.0, 9.7)]
+    
+    for i in range(len(data)):
+        print(data[i])
+        data[i][2] = (data[i][2] - scales[i % 10][0]) / (scales[i % 10][1] - scales[i % 10][0])
+
+    return data
+
 # Load data from raw
 data = load_data()
 
 # Simplify the data
 data = simplify_data(data)
+
+# Normalize data 
+data = normalize_data(data)
 
 # Save better data to csv
 save_data(data)
