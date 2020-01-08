@@ -135,24 +135,55 @@ def compute_AIQ(P, C, ID):
 
     # Subsets here
     # Simulate not taking the tests by excluding measurmentes
+    '''
+    # Data segmented for no dupes
+    file_name = 'results-nodupe.csv'
     ID = ID[1:4] + ID[5:]
     P  = P[1:4] + P[5:]
     C  = C[1:4] + C[5:]
-
+    '''
+    '''
+    # Data segmented for no cartpoles
+    file_name = 'results-nocarts.csv'
+    ID = ID[2:]
+    P  = P[2:]
+    C  = C[2:]
+    '''
+    '''
+    # Data segmented for only cartpoles
+    file_name = 'results-onlycarts.csv'
+    ID = ID[:2]
+    P  = P[:2]
+    C  = C[:2]
+    '''
+    '''
+    # Data segmented for only cartpoles
+    file_name = 'results-all.csv'
+    ID = ID
+    P  = P
+    C  = C
+    '''
+    '''
+    # Data segmented for best7
+    file_name = 'results-best7.csv'
+    ID = ID[0:3] + [ID[4]] + ID[6:]
+    P = P[0:3] + [P[4]] + P[6:]
+    C = C[0:3] + [C[4]] + C[6:]
+    '''
     # Compute diversity from individual diversities
-    D = sum(ID)
+    #D = sum(ID)
 
     # Calculate AIQ
     s = 0.0
     #print("D",D)
     for i in range(len(P)):
         #print(type(P[i][2]), C[i])
-        s = s + P[i][2] * C[i]
-    AIQ = s * D
-    return AIQ
+        s = s + P[i][2] * C[i] * ID[i]
+    AIQ = s# * D
+    return AIQ, file_name
 
-def save_data(results):
-    with open('results-nodupe.csv', 'w', newline='') as csvfile:
+def save_data(results, file_name):
+    with open(file_name, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='|',
                                 quotechar=' ', quoting=csv.QUOTE_MINIMAL)
         for i in results:
@@ -186,9 +217,9 @@ transfer_learning.append(similarity)
 results = []
 
 # Run through final AIQ score
-for j in range(5):
+for j in range(len(file_names)):
     for i in range(10):
-        AIQ = compute_AIQ(handicapping_p[i*9:(i*9)+9], complexity_w, transfer_learning[j])
+        AIQ, save_file = compute_AIQ(handicapping_p[i*9:(i*9)+9], complexity_w, transfer_learning[j])
         results.append((file_names[j], AIQ, i*10 ))
 
-save_data(results)
+save_data(results, save_file)
