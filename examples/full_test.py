@@ -39,6 +39,8 @@ def main():
     #interface.add('RPM', interface.backend)
     
     # Load test suite
+    interface.add('CIFAR10', {'env_name':'CIFAR10'})
+    '''
     interface.add('OpenAIGym', {'env_name':'CartPole-v0'})
     interface.add('OpenAIGym', {'env_name':'Acrobot-v1'})
     interface.add('ALE',       {'env_name':'MsPacman-v0'})
@@ -52,7 +54,7 @@ def main():
     
     # Tests not in suite will display [test_name] was not found.
     interface.add('none_test')
-    
+    '''
     # Set our agent
     interface.agent = R_Agent()
 

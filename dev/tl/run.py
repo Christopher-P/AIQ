@@ -17,7 +17,7 @@ from DQN_M import DQN_Agent
 
 # Uniform function to save experimental data
 def record(filename, nameA, nameB, values, values2=None):
-    with open('dev/exp/data/' + filename, 'a', newline='') as csvfile:
+    with open('dev/tl/data/' + filename, 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='|',
                                 quotechar=' ', quoting=csv.QUOTE_MINIMAL)
         if values2 == None:
@@ -92,6 +92,8 @@ def main():
 
     # Time to Threshold: The learning time needed by the agent to achieve a pre-specified
     # performance level may be reduced via knowledge transfer.
+
+    interface.add('CIFAR10', {'env_name':'CIFAR10'})
 
     # Add all tests we need
     for name in names:

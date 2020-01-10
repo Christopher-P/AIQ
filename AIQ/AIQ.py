@@ -80,6 +80,7 @@ class AIQ():
             else:
                 self.results[test_name] = self.ds_test(test)
             
+            #print("res", test_name, self.results[test_name])
         self.stop_animation()
 
         # For now simple average computed client side
@@ -96,7 +97,7 @@ class AIQ():
         return self.backend.submit(self.results)
 
     # Used to train an agent on a subset of the test suite
-    def fit_to(self, test_name, max_val):
+    def fit_to(self, test_name):
         # Make sure agent exists
         if self.agent == None:
             print('ERROR: No agent defined')
@@ -114,7 +115,7 @@ class AIQ():
 
         # Pass test instance to agents defined fitting function
         # Return history
-        history = self.agent.fit_to(inst, max_val)
+        history = self.agent.fit_to(inst)
         return history
 
     def test_to(self, test_name, iters):
@@ -147,6 +148,7 @@ class AIQ():
                 test.act(action)
 
             score += test.reward_total
+        print(score, trials)
 
         f_score = self.norm(float(score/trials), 
                             test.header.env_min_score, 
