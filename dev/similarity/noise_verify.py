@@ -44,16 +44,21 @@ def main()
     sim_backend = Similarity(interface)
 
     ## Run experiment
-    for testA in interface.tests:
-        for testB in interface.tests:
+    for testA in interface.test_suite:
+        for testB in interface.test_suite:
+
             # Get test instances
             sim_backend.testA = testA
             sim_backend.testB = testB
             
             # Run it
             A,B,AB,S = sim_backend.run(seed=seed,trials=trials,p=proportion)
+
             # Log it
             log(testA_name, testB_name, A, B, AB, S, seed, trials, proportion)
+
+            # Reset agent (prevent any TL)
+            interface.agent.clear()
 
 
 
