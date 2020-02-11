@@ -24,7 +24,7 @@ trials = 10
 def logger(Aname, Bname, A, B, AB, S, seed, trials, proportion):
     return None
 
-def main()
+def main():
     global seed
     global proportion
     global trials
@@ -34,11 +34,11 @@ def main()
 
     ### Add classification test
     names = {'CIFAR10':{'env_name':'CIFAR10'}}
-    for i in names.keys()
+    for i in names.keys():
         interface.add(i, names[i])
 
     ### Add modifcation of classification dataset
-
+    
 
     ### Setup 
     sim_backend = Similarity(interface)
