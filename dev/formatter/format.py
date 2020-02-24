@@ -64,12 +64,13 @@ def cross_table(data):
             res[j,i] = res[i,j]
                 
 
-    plt.imshow(res, cmap='hot', interpolation='nearest')
-    plt.show()
+    #plt.imshow(res, cmap='hot', interpolation='nearest')
+    #plt.show()
 
     # new plot
     fig, ax = plt.subplots(figsize=(14, 10))
     im = ax.imshow(res)
+    fig.colorbar(im, orientation='vertical')
 
     # We want to show all ticks...
     ax.set_xticks(np.arange(len(res)))
@@ -82,6 +83,9 @@ def cross_table(data):
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
              rotation_mode="anchor")
 
+
+
+
     # Loop over data dimensions and create text annotations.
     for i in range(len(res)):
         for j in range(len(res)):
@@ -89,7 +93,9 @@ def cross_table(data):
                            ha="center", va="center", color="w")
 
     ax.set_title("Similarity table for current test suite")
+    
     fig.tight_layout()
+    
     plt.savefig('HeatMap.png', dpi=400)
     plt.show()
 
