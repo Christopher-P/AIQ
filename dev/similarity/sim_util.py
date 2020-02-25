@@ -6,6 +6,8 @@ import random
 import copy 
 import numpy as np
 
+from DQN_M import DQN_Agent
+
 ### Will perform similarity experiment given two tests
 class Similarity():
 
@@ -27,27 +29,27 @@ class Similarity():
     def run(self, seed=None, trials=10, p=0.5):
         # check before run
         if self.testA is None or self.testB is None:
-            raise Exception ValueError("Tests must be set!")
+            #raise Exception ValueError("Tests must be set!")
             return None
 
         # Create mixed test
         self.testAB = self.join(self.testA, self.testB, p)
 
         # Get score for A
-        score_A = self.interface.fit_to(self.testA)
+        score_A = self.interface.fit_to(self.testA).history['episode_reward'][-1] / 1000
 
         # Get score for B
-        score_B = self.interface.fit_to(self.testB)
+        score_B = self.interface.fit_to(self.testB).history['episode_reward'][-1] / 1000
 
         # Get score for AB
-        score_AB = self.interface.fit_to(self.testAB)
+        score_AB = self.interface.fit_to(self.testAB).history['episode_reward'][-1] / 1000
 
         # Get similarity
         sim = self.calc_sim(score_A, score_B, score_AB)
 
         return score_A, score_B, score_AB, sim
         
-    def calc_sim(A, B, AB):
+    def calc_sim(self, A, B, AB):
         try:
             sim = (abs(A - AB) - abs(B - AB)) / abs(A - B)
         except Exception as e:
@@ -60,10 +62,10 @@ class Similarity():
         self.p = p
 
         # TODO: add verbose settings
-        print(inst1,inst2)
+        #print(name1, name2)
 
         # Wrap the test
-        wr = wrap(inst1, inst2)
+        wr = wrap(name1, name2, self.p)
     
         return wr
 
@@ -73,7 +75,7 @@ class wrap():
         # Save to local
         self.instA = instA
         self.instB = instB
-        self.p
+        self.p     = p
         
         # Proccess test params
         self.instA_in = self.instA.get_header().input_dim
@@ -107,6 +109,7 @@ class wrap():
             return out
 
     def input_format(self, inp):
+        #print(inp,self.inst.get_header().input_dim)
         if inp > self.inst.get_header().input_dim - 1:
             return self.inst.get_header().input_dim - 1
         else:
