@@ -97,17 +97,17 @@ class AIQ():
         return self.backend.submit(self.results)
 
     # Used to train an agent on a subset of the test suite
-    def fit_to(self, test_name):
+    def fit_to(self, inst):
         # Make sure agent exists
         if self.agent == None:
             print('ERROR: No agent defined')
             return None
 
         # Search test suite for test
-        inst = None
-        for test in self.test_suite:
-            if test_name == test.header.env_name:
-                inst = test
+        #inst = None
+        #for test in self.test_suite:
+        #    if test_name == test.header.env_name:
+        #        inst = test
 
         if inst == None:
             print('Cannot fit to: ' + test_name)

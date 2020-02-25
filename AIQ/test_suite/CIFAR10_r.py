@@ -1,8 +1,10 @@
 from .common import header, desc
 from keras.utils import np_utils
 import numpy as np
+import random
+from random import randint
 
-class CIFAR10(desc):
+class CIFAR10_r(desc):
 
     def __init__(self, params):
 
@@ -27,7 +29,6 @@ class CIFAR10(desc):
         self.x_test  = np.dot(self.x_test , rgb_convert)
 
         # Flatten x data
-        #print(self.x_train.shape)
         #self.x_train = np.reshape(self.x_train, (-1, 1024))[0:10000]
         #self.x_test  = np.reshape(self.x_test , (-1, 1024))
 
@@ -44,6 +45,10 @@ class CIFAR10(desc):
         self.current_image_ind = None
         self.instance_counter  = None 
         self.max_instances = 1000
+
+        # Var for number of pixels to replace
+        self.r = 0
+        self.regen()
         
         # Define header
         self.header = header(env_name="CIFAR10", 
@@ -53,6 +58,23 @@ class CIFAR10(desc):
                              env_min_score = 0.0,
                              env_max_score = 1000.0,
                              rl=True)
+
+    # Induce randomness
+    def img_random(self, img):
+        np.random.randint(len(self.x_train[0]))
+        return img
+
+    def regen(self):
+        self.x_rand = []
+        for i in self.x_train:
+            img = i
+            rans = random.sample(range(0, 1024), self.r)
+            for j in rans:
+                img[j] = randint(0,255)
+            self.x_rand.append(img)
+        
+        return None
+
     # Return header object
     def get_header(self):
         return self.header
@@ -88,11 +110,11 @@ class CIFAR10(desc):
             self.done = True
         else:
             self.done = False
-
         
         # Set new index and get new image
         self.current_image_ind = np.random.randint(len(self.x_train))
-        self.observation = self.x_train[self.current_image_ind]
+        self.observation = self.x_rand[self.current_image_ind]
+        self.observation = self.img_random(self.observation)
         
         return self.observation, self.reward_step, self.done, {}
     
@@ -106,5 +128,7 @@ class CIFAR10(desc):
 
 
         self.current_image_ind = np.random.randint(len(self.x_train))
+        self.observation = self.x_rand[self.current_image_ind]
+        self.observation = self.img_random(self.observation)
 
-        return self.x_train[self.current_image_ind]
+        return self.observation
