@@ -106,22 +106,22 @@ def main():
         
         model = gen_model()
 
-        scoreA = model.fit(x_train, y_train, batch_size=32, epochs=20, validation_split=0.1)
-        scoreA = scoreA.history['val_acc'][-1]
+        scoreA = model.fit(x_train, y_train, batch_size=32, epochs=30, validation_split=0.1)
+        scoreA = scoreA.history['val_accuracy'][-1]
 
         model = gen_model()
 
         x_rand = regen(x_train, i*10)
 
-        scoreB = model.fit(x_rand, y_train, batch_size=32, epochs=20, validation_split=0.1)
-        scoreB = scoreB.history['val_acc'][-1]
+        scoreB = model.fit(x_rand, y_train, batch_size=32, epochs=30, validation_split=0.1)
+        scoreB = scoreB.history['val_accuracy'][-1]
 
         model = gen_model()
 
         merged = join(x_train,x_rand)
 
-        scoreAB = model.fit(merged, y_train, batch_size=32, epochs=20, validation_split=0.1)
-        scoreAB = scoreAB.history['val_acc'][-1]
+        scoreAB = model.fit(merged, y_train, batch_size=32, epochs=30, validation_split=0.1)
+        scoreAB = scoreAB.history['val_accuracy'][-1]
 
         try:
             S = (abs(scoreA - scoreAB) - abs(scoreB - scoreAB)) / abs(scoreA - scoreB)
