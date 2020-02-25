@@ -89,7 +89,7 @@ class CIFAR10(desc):
 
         
         # Set new index and get new image
-        self.current_image_ind = np.random.randint(len(self.x_train) + 1)
+        self.current_image_ind = np.random.randint(len(self.x_train))
         self.observation = self.x_train[self.current_image_ind]
         
         return self.observation, self.reward_step, self.done, {}
@@ -103,6 +103,6 @@ class CIFAR10(desc):
         self.done = False
 
 
-        self.current_image_ind = np.random.randint(len(self.x_train) + 1)
+        self.current_image_ind = np.random.randint(len(self.x_train))
 
         return self.x_train[self.current_image_ind]
