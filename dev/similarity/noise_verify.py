@@ -101,41 +101,42 @@ def main():
     y_train = np_utils.to_categorical(y_train)
     y_test =  np_utils.to_categorical(y_test)
 
-    ## Run experiment
-    for i in range(10):
-        
-        model = gen_model()
+    for ik in range(10):
+        ## Run experiment
+        for i in range(10):
+            
+            model = gen_model()
 
-        scoreA = model.fit(x_train, y_train, batch_size=32, epochs=30, validation_split=0.1)
-        scoreA = scoreA.history['val_accuracy'][-1]
+            scoreA = model.fit(x_train, y_train, batch_size=32, epochs=30, validation_split=0.1)
+            scoreA = scoreA.history['val_accuracy'][-1]
 
-        model = gen_model()
+            model = gen_model()
 
-        x_rand = regen(x_train, i*10)
+            x_rand = regen(x_train, i*10)
 
-        scoreB = model.fit(x_rand, y_train, batch_size=32, epochs=30, validation_split=0.1)
-        scoreB = scoreB.history['val_accuracy'][-1]
+            scoreB = model.fit(x_rand, y_train, batch_size=32, epochs=30, validation_split=0.1)
+            scoreB = scoreB.history['val_accuracy'][-1]
 
-        model = gen_model()
+            model = gen_model()
 
-        merged = join(x_train,x_rand)
+            merged = join(x_train,x_rand)
 
-        scoreAB = model.fit(merged, y_train, batch_size=32, epochs=30, validation_split=0.1)
-        scoreAB = scoreAB.history['val_accuracy'][-1]
+            scoreAB = model.fit(merged, y_train, batch_size=32, epochs=30, validation_split=0.1)
+            scoreAB = scoreAB.history['val_accuracy'][-1]
 
-        try:
-            S = (abs(scoreA - scoreAB) - abs(scoreB - scoreAB)) / abs(scoreA - scoreB)
-        except Exception as e:
-            S= -100
+            try:
+                S = (abs(scoreA - scoreAB) - abs(scoreB - scoreAB)) / abs(scoreA - scoreB)
+            except Exception as e:
+                S= -100
 
 
-        # Run it
-        #A,B,AB,S = sim_backend.run(seed=seed,trials=trials,p=proportion)
+            # Run it
+            #A,B,AB,S = sim_backend.run(seed=seed,trials=trials,p=proportion)
 
-        # Log it
-        testA_name = 'CIFAR10'
-        testB_name = 'CIFAR10_r' + str(i*10)
-        logger(testA_name, testB_name, i*10, scoreA, scoreB, scoreAB, S)
+            # Log it
+            testA_name = 'CIFAR10'
+            testB_name = 'CIFAR10_r' + str(i*10)
+            logger(testA_name, testB_name, i*10, scoreA, scoreB, scoreAB, S)
 
 if __name__ == "__main__":
     main()
