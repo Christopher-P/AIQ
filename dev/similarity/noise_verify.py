@@ -31,7 +31,7 @@ trials = 10
 ## End parameters
 
 def logger(Aname, Bname, r, A, B, AB, S):
-    with open('r-noise.csv', 'a', newline='') as csvfile:
+    with open('r-noise-more.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow([Aname, Bname, r, A, B, AB, S])
@@ -103,7 +103,7 @@ def main():
 
     for ik in range(10):
         ## Run experiment
-        for i in range(10):
+        for i in range(67,100):
             
             model = gen_model()
 
