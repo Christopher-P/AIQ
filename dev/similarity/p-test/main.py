@@ -34,7 +34,7 @@ def gen_model():
 
 def run_it(A, B, C):
     # Experiment Vars
-    epochs = 12
+    epochs = 60
     batch_size = 32
 
     results = []
@@ -51,7 +51,7 @@ def run_it(A, B, C):
     return results
 
 def log_it(results):
-    with open('results.csv', 'a', newline='') as csvfile:
+    with open('results-epoch-60.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
