@@ -23,8 +23,8 @@ class Loader():
         x_test  = np.dot(x_test , rgb_convert)/255
 
         # Convert class vectors to binary class matrices.
-        y_train = np_utils.to_categorical(y_train, 20)
-        y_test  = np_utils.to_categorical(y_test, 20)
+        y_train = np_utils.to_categorical(y_train, 10)
+        y_test  = np_utils.to_categorical(y_test, 10)
 
         # Reduce sizes to 50k
         x_train = x_train[0:50000]
@@ -50,7 +50,7 @@ class Loader():
     def load_cifar100(self):        
 
         # The data, split between train and test sets:
-        (x_train, y_train), (x_test, y_test) = cifar100.load_data(label_mode="coarse")
+        (x_train, y_train), (x_test, y_test) = cifar100.load_data(label_mode="fine")
         
         # Convert to greyscale, normalize
         rgb_convert = [0.2989,0.5870,0.1140]
@@ -58,8 +58,8 @@ class Loader():
         x_test  = np.dot(x_test , rgb_convert)/255
 
         # Convert class vectors to binary class matrices.
-        y_train = np_utils.to_categorical(y_train, 20)
-        y_test  = np_utils.to_categorical(y_test, 20)
+        y_train = np_utils.to_categorical(y_train, 100)
+        y_test  = np_utils.to_categorical(y_test, 100)
 
         # Reduce sizes to 50k
         x_train = x_train[0:50000]
@@ -99,8 +99,8 @@ class Loader():
         x_test  = x_test.reshape(x_test.shape[0], 32, 32, 1)
 
         # Convert class vectors to binary class matrices.
-        y_train = np_utils.to_categorical(y_train, 20)
-        y_test  = np_utils.to_categorical(y_test, 20)
+        y_train = np_utils.to_categorical(y_train, 10)
+        y_test  = np_utils.to_categorical(y_test, 10)
 
         # Reduce sizes to 50k
         x_train = x_train[0:50000]
@@ -136,8 +136,8 @@ class Loader():
         x_test  = x_test.reshape(x_test.shape[0], 32, 32, 1)
 
         # Convert class vectors to binary class matrices.
-        y_train = np_utils.to_categorical(y_train, 20)
-        y_test  = np_utils.to_categorical(y_test, 20)
+        y_train = np_utils.to_categorical(y_train, 10)
+        y_test  = np_utils.to_categorical(y_test, 10)
 
         # Reduce sizes to 50k
         x_train = x_train[0:50000]
@@ -161,18 +161,31 @@ class Loader():
     def join(self, A, B, p):
         # Merged dataset
         data = []
-        
+
         # For each x,y,train,test
-        for ind, val in enumerate(A):
-            dset = []
+        for ind, val in enumerate(A[0:2]):
+            dset_x = []
+            dset_y = []
+
             # For each sample
             for ind2,val2 in enumerate(val):
-                if random() < p:
-                    dset.append(A[ind][ind2])
+                r = random()
+
+                # For x's
+                if r < p:
+                    dset_x.append(A[ind][ind2])
                 else:
-                    dset.append(B[ind][ind2])
+                    dset_x.append(B[ind][ind2])
+
+                # For y's
+                if r < p:
+                    dset_y.append(list(A[ind+2][ind2]) + [0] * len(B[ind+2][ind2]))
+                else:
+                    dset_y.append([0] * len(A[ind+2][ind2]) + list(B[ind+2][ind2]))
+
             # Append set of samples
-            data.append(np.asarray(dset))
+            data.append(np.asarray(dset_x))
+            data.append(np.asarray(dset_y))
 
         return data
 

@@ -9,9 +9,10 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 
-def gen_model():
+def gen_model(data):
     input_shape = (32,32,1)
-    num_classes = 20
+    num_classes = data[2][0].shape[0]
+    print(num_classes)
 
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(3, 3),
@@ -34,12 +35,12 @@ def gen_model():
 
 def run_it(A, B, C):
     # Experiment Vars
-    epochs = 60
+    epochs = 12
     batch_size = 32
 
     results = []
     for i in [A,B,C]:
-        model = gen_model()
+        model = gen_model(i)
         model.fit(i[0], i[2],
               batch_size=batch_size,
               epochs=epochs,
@@ -51,7 +52,7 @@ def run_it(A, B, C):
     return results
 
 def log_it(results):
-    with open('results-epoch-60.csv', 'a', newline='') as csvfile:
+    with open('results-label-joined.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
