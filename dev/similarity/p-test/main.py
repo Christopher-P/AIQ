@@ -9,10 +9,11 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 
+import numpy as np
+
 def gen_model(data):
     input_shape = (32,32,1)
-    num_classes = data[2][0].shape[0]
-    print(num_classes)
+    num_classes = data[3][0].shape[0]
 
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(3, 3),
@@ -34,6 +35,7 @@ def gen_model(data):
     return model
 
 def run_it(A, B, C):
+
     # Experiment Vars
     epochs = 12
     batch_size = 32
@@ -52,13 +54,29 @@ def run_it(A, B, C):
     return results
 
 def log_it(results):
-    with open('results-label-joined.csv', 'a', newline='') as csvfile:
+    with open('results-p-noise.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
 
 def main():
-    tl = Loader()
+    # Load the data
+    tl    = Loader()
+    tl.fm = tl.load_fmnist()
+
+    # Run over p-noise 0-512 (50%) over 5 steps
+    for j in range(0,100):
+        A = tl.fm
+        B = tl.add_noise(A, j*5)
+
+        # Run over p variations
+        for i in range(0,11):
+            p = i / 10.0
+            tl.C = tl.join(A,B,p)
+            results = run_it(A, B, tl.C)
+            log_it([j*5, p] + results)
+
+    ''' Will run main code
     tl.c10  = tl.load_cifar10()
     tl.c100 = tl.load_cifar100()
     tl.m    = tl.load_mnist()
@@ -68,12 +86,16 @@ def main():
     dats = [tl.m, tl.fm, tl.c10, tl.c100]
     for ind, val in enumerate(dats):
         for ind2, val2 in enumerate(dats):
-            for i in range(11):
+            if names[ind] != 'MNIST' or names[ind2] != 'C100':
+                continue
+            print(names[ind], names[ind2])
+            for i in range(8,11):
                 p = i / 10.0
                 tl.C = tl.join(val,val2,p)
                 results = run_it(val, val2, tl.C)
                 log_it([names[ind], names[ind2]] + results)
-
+            exit()
+    '''
     return None
 
 if __name__ == '__main__':

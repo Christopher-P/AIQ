@@ -4,7 +4,9 @@ from keras.utils import np_utils
 from keras.datasets import cifar10, cifar100, mnist, fashion_mnist
 
 import numpy as np
-from random import random
+import random
+
+from copy import deepcopy
 
 class Loader():
 
@@ -156,6 +158,24 @@ class Loader():
 
         return [x_train, x_test, y_train, y_test]
 
+    # introduce noise into a test
+    def add_noise(self, A, r):
+        # Copy, not in place edit
+        test = deepcopy(A)
+
+        # Do for both X's
+        for i in range(2):
+            # For each sample
+            for ind,val in enumerate(test[i]):
+                # Choose an array of random info of length r
+                rans = random.sample(range(0, 1024), r)
+                # For each random value
+                for j in range(r):
+                    # Set random values in 32x32
+                    test[i][ind][int(rans[j]/32)][int(rans[j]%32)] = random.random()
+
+        return test
+
     # p = 1 --> max A
     # p = 0 --> max B
     def join(self, A, B, p):
@@ -169,7 +189,7 @@ class Loader():
 
             # For each sample
             for ind2,val2 in enumerate(val):
-                r = random()
+                r = random.random()
 
                 # For x's
                 if r < p:
@@ -186,6 +206,10 @@ class Loader():
             # Append set of samples
             data.append(np.asarray(dset_x))
             data.append(np.asarray(dset_y))
+
+        y_tr = data[1]
+        data[1] = data[2]
+        data[2] = y_tr
 
         return data
 

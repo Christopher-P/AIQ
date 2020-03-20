@@ -8,7 +8,7 @@ def load_data():
     res = []
     data = []
     names = []
-    with open('tmp_results.csv', newline='') as csvfile:
+    with open('tmp-results-label-joined.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             res.append([float(row[2]),float(row[3]),float(row[4])])
