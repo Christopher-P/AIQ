@@ -8,7 +8,7 @@ def load_data():
     res = []
     data = []
     names = []
-    with open('tmp_results.csv', newline='') as csvfile:
+    with open('tmp-results-label-joined.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             res.append([float(row[2]),float(row[3]),float(row[4])])
@@ -106,7 +106,7 @@ def calc_auc(data):
             # width * height
             rect = 0.1 * ( (min(i[ind][2],i[ind+1][2])) - b_avg)
 
-            trap = tri + rect
+            trap = abs(tri + rect)
         
             auc = auc + trap
 
@@ -151,7 +151,7 @@ def calc_proj(data):
             proj = np.dot(v,s) / np.dot(s,s) * s
 
             # FIND MAGNITUDE
-            l_proj = np.linalg.norm(proj)
+            l_proj = abs(np.linalg.norm(proj))
                     
             proj_sum = proj_sum + l_proj
 
@@ -180,7 +180,7 @@ def calc_proj_auc(data):
         pro = 0.0
         for ind, j in enumerate(i):
             ideal = ((ind / 10.0) * a_avg + (1.0 - ind / 10.0) * b_avg)/2
-            print(ideal,j[2])
+            #print(ideal,j[2])
             pro = pro + abs(ideal - j[2])
 
         res.append(pro)
