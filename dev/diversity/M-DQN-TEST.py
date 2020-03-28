@@ -121,33 +121,32 @@ def main(pos):
     #names = [('CartPole-v0', 'FrozenLake8x8-v0')]
 
     ## 13 * 55 
-    val = names[int(pos/55)]
+    val = names[pos]
 
     name1 = val[0]
     name2 = val[1]
     p = -1
     k = 100
 
-    if pos % 13 == 0:
-        interface.agent.clear()
-        train_res = interface.fit_to(name1,k)
-        interface.fancy_logger(name1, p,
-                               train_res.history,
-                               file_name='dev/diversity/data/recal-' + str(name1), write='a')
-    elif pos % 13 == 1:
-        interface.agent.clear()
-        train_res = interface.fit_to(name2,k)
-        interface.fancy_logger(name2, p,
-                               train_res.history, 
-                               file_name='dev/diversity/data/recal-' + str(name2), write='a')
-    else:
-        p = pos % 13 - 2
+    interface.agent.clear()
+    train_res = interface.fit_to(name1,k)
+    interface.fancy_logger(name1, p,
+                           train_res.history,
+                           file_name='dev/diversity/data/recal-' + str(name1), write='a')
+
+    interface.agent.clear()
+    train_res = interface.fit_to(name2,k)
+    interface.fancy_logger(name2, p,
+                           train_res.history, 
+                           file_name='dev/diversity/data/recal-' + str(name2), write='a')
+
+    for p in range(0,11)
         interface.agent.clear()
         train_res = interface.join(name1, name2, k, p/10.0)
         interface.fancy_logger(name1 + '=' + name2, p/10.0,
                                train_res.history, 
                                file_name='dev/diversity/data/recal-'+ 
-                               str(name1) + '-' + str(name1), write='a')
+                               str(name1) + '-' + str(name2), write='a')
 
 if __name__ == '__main__':
     ## Parse args here
