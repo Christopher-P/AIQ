@@ -17,7 +17,7 @@ from DQN_M import DQN_Agent
 #l2 = 'None'
 
 # Runs agent on test 1, test2 and combined test
-def run_agent(interface, name1, name2, k):
+def run_agent(interface, name1, name2, k,p):
     #global l1
     #global l2
     '''
@@ -34,23 +34,23 @@ def run_agent(interface, name1, name2, k):
         interface.agent.clear()
         train_res = interface.join(name1, name2, k)
         #print(train_res.history)
-        interface.fancy_logger(name1 + '=' + name2, 
+        interface.fancy_logger(name1 + '=' + name2, p,
                                train_res.history, 
-                               file_name='dev/diversity/data/ensem', write='a')
+                               file_name='dev/diversity/data/recal', write='a')
         
         interface.agent.clear()
         train_res = interface.fit_to(name1,k)
         #print(train_res.history)
-        interface.fancy_logger(name1, 
-                               train_res.history, 
-                               file_name='dev/diversity/data/ensem', write='a')
+        interface.fancy_logger(name1, p,
+                               train_res.history,
+                               file_name='dev/diversity/data/recal', write='a')
 
         interface.agent.clear()
         train_res = interface.fit_to(name2,k)
         #print(train_res.history)
-        interface.fancy_logger(name2, 
+        interface.fancy_logger(name2, p,
                                train_res.history, 
-                               file_name='dev/diversity/data/ensem', write='a')
+                               file_name='dev/diversity/data/recal', write='a')
         
 
     except Exception as e:
@@ -117,17 +117,31 @@ def main():
     # Maximize effeciency
     
     #names = [('CartPole-v0', 'FrozenLake8x8-v0')]
+    print(names)
 
-    
-    for i in range(37,100):
-        print(i)
-        name1 = 'CartPole-v0'
-        name2 = 'Roulette-v0'
-        run_agent(interface, name1, name2, i)
+    for ind, val in enumerate(names):
+        name1 = val[0]
+        name2 = val[1]
+        p = -1
+        k = 100
+        interface.agent.clear()
+        train_res = interface.fit_to(name1,k)
+        interface.fancy_logger(name1, p,
+                               train_res.history,
+                               file_name='dev/diversity/data/recal', write='a')
 
+        interface.agent.clear()
+        train_res = interface.fit_to(name2,k)
+        interface.fancy_logger(name2, p,
+                               train_res.history, 
+                               file_name='dev/diversity/data/recal', write='a')
 
-    exit()
-
+        for p in range(0,11):
+            interface.agent.clear()
+            train_res = interface.join(name1, name2, k, p/10.0)
+            interface.fancy_logger(name1 + '=' + name2, p/10.0,
+                                   train_res.history, 
+                                   file_name='dev/diversity/data/recal', write='a')
 
 if __name__ == '__main__':
     main()

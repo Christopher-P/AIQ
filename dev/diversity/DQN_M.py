@@ -53,7 +53,7 @@ class DQN_Agent():
 
     def fit_to(self, inst,k):
         self.prepare_agent(inst,k)
-        train_results = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
+        train_results = self.dqn.fit(inst, nb_steps=200000, visualize=False, verbose=1)
         return train_results
 
     def test_to(self, inst, iters):
@@ -84,7 +84,7 @@ class DQN_Agent():
 
     def gen_model_1D(self, input_dim, output_dim,k):
         model = Sequential()
-        #print(input_dim, output_dim)
+        print(input_dim, output_dim)
 
         # so shape looks like --> (1, whatever)
         inn = copy.deepcopy(input_dim)
@@ -126,7 +126,7 @@ class DQN_Agent():
         memory = SequentialMemory(limit=10000, window_length=500)
         processor = AtariProcessor()
         policy = LinearAnnealedPolicy(EpsGreedyQPolicy(), attr='eps', value_max=200., 
-                    value_min=-200., value_test=.05, nb_steps=1000000)
+                    value_min=-200., value_test=.05, nb_steps=500000)
 
         self.dqn = DQNAgent(model=model, nb_actions=in_dim[0], policy=policy, memory=memory,
                        processor=processor, nb_steps_warmup=1000, 

@@ -83,7 +83,7 @@ class AIQ():
         return None
 
     # Used to merge tests utilzing a wrapper
-    def join(self, name1, name2, k):
+    def join(self, name1, name2, k, p=0.5):
         self.k = k
         # Search test suite for test
         inst1 = None
@@ -106,7 +106,7 @@ class AIQ():
             print(name2 + ' not found in active suite!')
 
         print(inst1,inst2)
-        wr = wrap(inst1, inst2)
+        wr = wrap(inst1, inst2,p)
         return self.agent.fit_to(wr, k)
 
     # Evaluate test suite and given agent
@@ -255,14 +255,14 @@ class AIQ():
 
     # Logging utility
     # Expects a results history
-    def fancy_logger(self, name, results, file_name='data', write='a'):
+    def fancy_logger(self, name, p, results, file_name='data', write='a'):
         with open(file_name + '.csv', write, newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=',',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
             res = results['episode_reward'][-20:]
             avg = sum(res) / len(res)
             stdev = statistics.stdev(res)
-            spamwriter.writerow((name, len(res),avg, -1*stdev, stdev, *res))
+            spamwriter.writerow((name, p, len(res),avg, -1*stdev, stdev, *res))
 
 
 
