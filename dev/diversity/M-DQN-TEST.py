@@ -140,7 +140,7 @@ def main(pos):
                            train_res.history, 
                            file_name='dev/diversity/data/recal-' + str(name2), write='a')
 
-    for p in range(0,11)
+    for p in range(0,11):
         interface.agent.clear()
         train_res = interface.join(name1, name2, k, p/10.0)
         interface.fancy_logger(name1 + '=' + name2, p/10.0,
