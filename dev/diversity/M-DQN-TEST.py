@@ -1,9 +1,11 @@
+#!/usr/bin/python
+
 import yaml
 import sys
 import os
 from itertools import permutations, repeat
 import traceback
-
+import datetime
 
 # Go to where AIQ is installed
 os.chdir('../..')
@@ -36,21 +38,21 @@ def run_agent(interface, name1, name2, k,p):
         #print(train_res.history)
         interface.fancy_logger(name1 + '=' + name2, p,
                                train_res.history, 
-                               file_name='dev/diversity/data/recal', write='a')
+                               file_name='dev/diversity/data-re/recal', write='a')
         
         interface.agent.clear()
         train_res = interface.fit_to(name1,k)
         #print(train_res.history)
         interface.fancy_logger(name1, p,
                                train_res.history,
-                               file_name='dev/diversity/data/recal', write='a')
+                               file_name='dev/diversity/data-re/recal', write='a')
 
         interface.agent.clear()
         train_res = interface.fit_to(name2,k)
         #print(train_res.history)
         interface.fancy_logger(name2, p,
                                train_res.history, 
-                               file_name='dev/diversity/data/recal', write='a')
+                               file_name='dev/diversity/data-re/recal', write='a')
         
 
     except Exception as e:
@@ -83,7 +85,7 @@ def get_list(interface):
     return real_names
 
 
-def main():
+def main(pos):
 
     #Import username and password
     #credentials = yaml.safe_load(open("credentials.yml"))
@@ -117,31 +119,37 @@ def main():
     # Maximize effeciency
     
     #names = [('CartPole-v0', 'FrozenLake8x8-v0')]
-    print(names)
 
-    for ind, val in enumerate(names):
-        name1 = val[0]
-        name2 = val[1]
-        p = -1
-        k = 100
-        interface.agent.clear()
-        train_res = interface.fit_to(name1,k)
-        interface.fancy_logger(name1, p,
-                               train_res.history,
-                               file_name='dev/diversity/data/recal', write='a')
+    val = names[pos]
 
+    name1 = val[0]
+    name2 = val[1]
+    p = -1
+    k = 100
+    interface.agent.clear()
+    train_res = interface.fit_to(name1,k)
+    interface.fancy_logger(name1, p,
+                           train_res.history,
+                           file_name='dev/diversity/data/recal-' + str(name1), write='a')
+
+    interface.agent.clear()
+    train_res = interface.fit_to(name2,k)
+    interface.fancy_logger(name2, p,
+                           train_res.history, 
+                           file_name='dev/diversity/data/recal-' + str(name2), write='a')
+
+    for p in range(0,11):
         interface.agent.clear()
-        train_res = interface.fit_to(name2,k)
-        interface.fancy_logger(name2, p,
+        train_res = interface.join(name1, name2, k, p/10.0)
+        interface.fancy_logger(name1 + '=' + name2, p/10.0,
                                train_res.history, 
-                               file_name='dev/diversity/data/recal', write='a')
-
-        for p in range(0,11):
-            interface.agent.clear()
-            train_res = interface.join(name1, name2, k, p/10.0)
-            interface.fancy_logger(name1 + '=' + name2, p/10.0,
-                                   train_res.history, 
-                                   file_name='dev/diversity/data/recal', write='a')
+                               file_name='dev/diversity/data/recal-'+ str(name1) + '-' + str(name1), write='a')
 
 if __name__ == '__main__':
-    main()
+    ## Parse args here
+    pos = int(sys.argv[1])
+
+    first_time = datetime.datetime.now()
+    main(pos)
+    later_time = datetime.datetime.now()
+    print(later_time - first_time)
