@@ -8,4 +8,5 @@ _vizdoom.ini
 AIQ/test_suite/otb-data/*
 AIQ/test_suite/OTB/
 
+dev/similarity/p-test/cart_data
 *.h5

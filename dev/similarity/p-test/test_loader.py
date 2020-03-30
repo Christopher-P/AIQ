@@ -121,6 +121,10 @@ class Loader():
 
         return [x_train, x_test, y_train, y_test]
 
+    def load_cartpole(self):
+        # Requires external data
+        file_path = "cart_data"
+
     def load_fmnist(self):        
 
         # The data, split between train and test sets:

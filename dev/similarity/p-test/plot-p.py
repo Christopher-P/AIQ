@@ -3,12 +3,39 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 
+# Genned by shannon.py
+shannon = [1.0,
+0.9884630786125186,
+0.9779063680780861,
+0.9670823663352526,
+0.9562480935437159,
+0.9458791582568702,
+0.9354357639018251,
+0.9262285524206242,
+0.91701533048111,
+0.9038639564658724,
+0.8986290119258085,
+0.8889915068056273,
+0.8812026403870312,
+0.8749012916921781,
+0.8617467562693013,
+0.8564688365293252,
+0.850243786091179,
+0.8395607580321117,
+0.8298647538199406,
+0.8248330719039476,
+0.8156931044276727
+]
+
+
+f = shannon
+
 def load_data():
     c = 0
     res = []
     data = []
     names = []
-    with open('tmp-results-label-joined.csv', newline='') as csvfile:
+    with open('tmp-results-p-noise.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             res.append([float(row[2]),float(row[3]),float(row[4])])
@@ -47,6 +74,54 @@ def plot_data(names, data):
         plt.legend()
         plt.savefig(str(names[ind][1]) + '.png')
         #plt.show()
+
+
+    return None
+
+def plot_all(a,b,c,d,e,f, tm=False, nam=''):
+    
+    names = ['Similarity', 'Similarity_Mean', 'AuC', 'Projection', 'AuC_Proj', 'Shannon']
+
+    if tm:
+        for ind,val in enumerate([a,b,c,d,e,f]):
+            max_val = max(val)
+            for ind2, val2 in enumerate(val):
+                val[ind2] = val2 / max_val 
+    print(c)
+
+    fig, ax = plt.subplots()
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    p = np.arange(0.0, 105.0, 5.0)
+
+    plt.plot(p, a, 'r', label=names[0])
+    plt.plot(p, b, 'g', label=names[1])
+    plt.plot(p, c, 'b', label=names[2])
+    plt.plot(p, d, 'y', label=names[3])
+    plt.plot(p, e, 'purple', label=names[4])
+    plt.plot(p, f, 'black',  label=names[5])
+
+    plt.ylabel('Measurements')
+    plt.title('P-Varied test over random noise injection')
+    plt.legend()
+    plt.savefig('lots_of_graphs/' + nam + '.png')
+    plt.show()
+
+
+    return None
+
+def plot_one(a, nam=''):
+    
+    fig, ax = plt.subplots()
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    p = np.arange(0.0, 105.0, 5.0)
+
+    plt.plot(p, a, 'r', label=nam)
+
+    plt.ylabel('Measure')
+    plt.title('P-Varied test over random noise injection: ' + nam)
+    plt.legend()
+    plt.savefig('lots_of_graphs/' + nam + '.png')
+    #plt.show()
 
 
     return None
@@ -189,21 +264,32 @@ def calc_proj_auc(data):
 
 names, data = load_data()
 
-plot_data(names,data)
+#plot_data(names,data)
 
-print(names)
+#print(names)
 
 a = calc_s(data)
-print(a)
+#print(a)
 
-a = calc_s_mean(data)
-print(a)
+b = calc_s_mean(data)
+#print(b)
 
-a = calc_auc(data)
-print(a)
+c = calc_auc(data)
+#print(c)
 
-a = calc_proj(data)
-print(a)
+d = calc_proj(data)
+#print(d)
 
-a = calc_proj_auc(data)
-print(a)
+e = calc_proj_auc(data)
+#print(e)
+
+plot_one(a, 'Similarity')
+plot_one(b, 'Similarity_mean')
+plot_one(c, 'AuC')
+plot_one(d, 'Projection')
+plot_one(e, 'AuC_Projection')
+plot_one(f, 'Shannon')
+
+plot_all(a,b,c,d,e,f, tm=False, nam='Non_normed')
+plot_all(a,b,c,d,e,f, tm=True, nam='Normed')
+
