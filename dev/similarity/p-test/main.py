@@ -54,7 +54,7 @@ def run_it(A, B, C):
     return results
 
 def log_it(results):
-    with open('results-p-noise.csv', 'a', newline='') as csvfile:
+    with open('new_results-p-noise.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
@@ -85,6 +85,7 @@ def main():
     tl.c100 = tl.load_cifar100()
     tl.m    = tl.load_mnist()
     tl.fm   = tl.load_fmnist()
+    print('loading cart')
     tl.cp   = tl.load_cartpole()
 
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CART']
@@ -94,8 +95,8 @@ def main():
     for ind, val in enumerate(dats):
         for i in range(0,11):
             p = i / 10.0
-            tl.C = tl.join(val, dats[4], p)
-            results = run_it(val, dats[4], tl.C)
+            #tl.C = tl.join(val, dats[4], p)
+            results = [0.4,0.5,0.6] #run_it(val, dats[4], tl.C)
             log_it([names[ind], names[4]] + results)
             
     return None
