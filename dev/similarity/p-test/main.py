@@ -54,12 +54,14 @@ def run_it(A, B, C):
     return results
 
 def log_it(results):
-    with open('results-p-noise.csv', 'a', newline='') as csvfile:
+    with open('new_results-p-noise.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
 
 def main():
+
+    ''' ###Will run high precision experiment
     # Load the data
     tl    = Loader()
     tl.fm = tl.load_fmnist()
@@ -75,27 +77,28 @@ def main():
             tl.C = tl.join(A,B,p)
             results = run_it(A, B, tl.C)
             log_it([j*5, p] + results)
+    '''
 
-    ''' Will run main code
+    ###Will run main code
+    tl      = Loader()
     tl.c10  = tl.load_cifar10()
     tl.c100 = tl.load_cifar100()
     tl.m    = tl.load_mnist()
     tl.fm   = tl.load_fmnist()
+    print('loading cart')
+    tl.cp   = tl.load_cartpole()
 
-    names = ['MNIST', 'FMNIST', 'C10', 'C100']
-    dats = [tl.m, tl.fm, tl.c10, tl.c100]
+    names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CART']
+    dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cp]
+
+    ### Running for just comparing to cartpole!
     for ind, val in enumerate(dats):
-        for ind2, val2 in enumerate(dats):
-            if names[ind] != 'MNIST' or names[ind2] != 'C100':
-                continue
-            print(names[ind], names[ind2])
-            for i in range(8,11):
-                p = i / 10.0
-                tl.C = tl.join(val,val2,p)
-                results = run_it(val, val2, tl.C)
-                log_it([names[ind], names[ind2]] + results)
-            exit()
-    '''
+        for i in range(0,11):
+            p = i / 10.0
+            #tl.C = tl.join(val, dats[4], p)
+            results = [0.4,0.5,0.6] #run_it(val, dats[4], tl.C)
+            log_it([names[ind], names[4]] + results)
+            
     return None
 
 if __name__ == '__main__':

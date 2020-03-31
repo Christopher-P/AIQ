@@ -1,7 +1,11 @@
 #/usr/bin/env python3
+from PIL import Image
 
 from keras.utils import np_utils
 from keras.datasets import cifar10, cifar100, mnist, fashion_mnist
+
+from os import listdir
+from os.path import isfile, join
 
 import numpy as np
 import random
@@ -122,8 +126,43 @@ class Loader():
         return [x_train, x_test, y_train, y_test]
 
     def load_cartpole(self):
+        ### Load image data (x)
+        x = []
+
         # Requires external data
         file_path = "cart_data"
+
+        # Get all files in dir
+        onlyfiles = [f for f in listdir(file_path) if isfile(join(file_path, f))]
+
+        # Sort according to file name (0.png --> 1.png --> ...)
+        onlyfiles = sorted(onlyfiles, key = lambda x: int(x.split('.')[0]))
+
+        # Load images into array
+        for entry in onlyfiles:
+            entry_dat = np.array(Image.open(file_path + '/' + entry))
+            x.append(entry_dat)
+
+        # Convert to greyscale, normalize
+        rgb_convert = [0.2989,0.5870,0.1140]
+        x = np.dot(x, rgb_convert)/255
+
+        # Conver to correct shape (n,x,y,1)
+        x = np.reshape(x,(60000, 32,32,1))
+       
+        ### Load correct action (y)
+        y  = np.load('all.npy')
+        
+        # Convert to one-hot
+        y = np_utils.to_categorical(y, 2)
+
+        ### Split into train/test
+        x_train = x[0:50000]
+        x_test  = x[50000:]
+        y_train = y[0:50000]
+        y_test  = y[50000:]
+
+        return [x_train, x_test, y_train, y_test]
 
     def load_fmnist(self):        
 
@@ -150,15 +189,6 @@ class Loader():
         x_test  = x_test[0:50000]
         y_train = y_train[0:50000]
         y_test  = y_test[0:50000]
-
-        '''
-        print('x_train shape:', x_train.shape)
-        print('x_train shape:', x_test.shape)
-        print('x_train shape:', y_train.shape)
-        print('x_train shape:', y_test.shape)
-        print(x_train.shape[0], 'train samples')
-        print(x_test.shape[0], 'test samples')
-        '''
 
         return [x_train, x_test, y_train, y_test]
 
