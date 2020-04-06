@@ -91,12 +91,17 @@ def main():
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CART']
     dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cp]
 
+    print(tl.cp[2][0])
+    print(tl.fm[2][0])
+    exit()
+
     ### Running for just comparing to cartpole!
     for ind, val in enumerate(dats):
-        for i in range(0,11):
+        # Data comes from np-plot.py
+        for i in [2,3,8]:
             p = i / 10.0
-            #tl.C = tl.join(val, dats[4], p)
-            results = [0.4,0.5,0.6] #run_it(val, dats[4], tl.C)
+            tl.C = tl.join(val, dats[4], p)
+            run_it(val, dats[4], tl.C)
             log_it([names[ind], names[4]] + results)
             
     return None
