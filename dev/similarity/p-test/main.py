@@ -91,6 +91,10 @@ def main():
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CART']
     dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cp]
 
+    print(tl.cp[2][0])
+    print(tl.fm[2][0])
+    exit()
+
     ### Running for just comparing to cartpole!
     for ind, val in enumerate(dats):
         # Data comes from np-plot.py

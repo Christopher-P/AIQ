@@ -151,7 +151,7 @@ class Loader():
         x = np.reshape(x,(60000, 32,32,1))
        
         ### Load correct action (y)
-        y  = np.load('all.npy')
+        y  = np.load('actions.npy')
         
         # Convert to one-hot
         y = np_utils.to_categorical(y, 2)
