@@ -97,8 +97,8 @@ def main():
         for i in [2,3,8]:
             p = i / 10.0
             tl.C = tl.join(val, dats[4], p)
-            run_it(val, dats[4], tl.C)
-            log_it([names[ind], names[4]] + results)
+            results = run_it(val, dats[4], tl.C)
+            log_it([names[ind], names[4]]+ [p] + results)
             
     return None
 
