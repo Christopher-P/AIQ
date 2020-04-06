@@ -27,7 +27,6 @@ shannon = [1.0,
 0.8156931044276727
 ]
 
-
 f = shannon
 
 def load_data():
@@ -35,13 +34,13 @@ def load_data():
     res = []
     data = []
     names = []
-    with open('tmp-results-p-noise.csv', newline='') as csvfile:
+    with open('cart-results.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            res.append([float(row[2]),float(row[3]),float(row[4])])
+            res.append([float(row[3]),float(row[4]),float(row[5]), float(row[2])])
 
             c = c + 1
-            if c >= 11:
+            if c >= 3:
                 c = 0
                 names.append(row[0:2])
                 data.append(res)
@@ -55,7 +54,7 @@ def plot_data(names, data):
         fig, ax = plt.subplots()
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
         # evenly sampled proportion
-        p = np.arange(0.0, 1.1, 0.1)
+        p = [0.2, 0.3, 0.8]
         a = []
         b = []
         c = []
@@ -65,6 +64,7 @@ def plot_data(names, data):
             b.append(j[1])
             c.append(j[2])
 
+        #print(a,p)
         plt.plot(p, a, 'r', label='A')
         plt.plot(p, b, 'g', label='B')
         plt.plot(p, c, 'b', label='AB')
@@ -73,7 +73,7 @@ def plot_data(names, data):
         plt.title('A = ' + names[ind][0] + ' B = ' + names[ind][1] )
         plt.legend()
         plt.savefig(str(names[ind][1]) + '.png')
-        #plt.show()
+        plt.show()
 
 
     return None
@@ -147,7 +147,7 @@ def calc_s_mean(data):
                 s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
             except:
                 s_sum = s_sum + 1
-        res.append(s_sum/11)
+        res.append(s_sum/len(i))
     
     return res
 
@@ -264,32 +264,34 @@ def calc_proj_auc(data):
 
 names, data = load_data()
 
-#plot_data(names,data)
+#print(names)
+print(data)
+plot_data(names,data)
 
 #print(names)
 
-a = calc_s(data)
+#a = calc_s(data)
 #print(a)
 
 b = calc_s_mean(data)
-#print(b)
+print(b)
 
-c = calc_auc(data)
+#c = calc_auc(data)
 #print(c)
 
-d = calc_proj(data)
+#d = calc_proj(data)
 #print(d)
 
-e = calc_proj_auc(data)
+#e = calc_proj_auc(data)
 #print(e)
 
-plot_one(a, 'Similarity')
-plot_one(b, 'Similarity_mean')
-plot_one(c, 'AuC')
-plot_one(d, 'Projection')
-plot_one(e, 'AuC_Projection')
-plot_one(f, 'Shannon')
+#plot_one(a, 'Similarity')
+#plot_one(b, 'Similarity_mean')
+#plot_one(c, 'AuC')
+#plot_one(d, 'Projection')
+#plot_one(e, 'AuC_Projection')
+#plot_one(f, 'Shannon')
 
-plot_all(a,b,c,d,e,f, tm=False, nam='Non_normed')
-plot_all(a,b,c,d,e,f, tm=True, nam='Normed')
+#plot_all(a,b,c,d,e,f, tm=False, nam='Non_normed')
+#plot_all(a,b,c,d,e,f, tm=True, nam='Normed')
 
