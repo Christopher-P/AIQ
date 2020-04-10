@@ -50,7 +50,7 @@ class DQN_Agent():
 
     def fit_to(self, inst, k):
         self.prepare_agent(inst, k)
-        l = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=1)
+        l = self.dqn.fit(inst, nb_steps=20000, visualize=False, verbose=0)
         er = l.history['episode_reward'][-20:]
         return l
 

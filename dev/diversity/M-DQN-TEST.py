@@ -141,7 +141,7 @@ def main(pos):
                            file_name='dev/diversity/data/recal-' + str(name2), write='a')
 
     ## list found from sim branch np-plot.py
-    for p in [2,3,8]:
+    for p in range(1,10):
         interface.agent.clear()
         train_res = interface.join(name1, name2, k, p/10.0)
         interface.fancy_logger(name1 + '=' + name2, p/10.0,
