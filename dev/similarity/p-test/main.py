@@ -54,7 +54,7 @@ def run_it(A, B, C):
     return results
 
 def log_it(results):
-    with open('new_results-p-noise.csv', 'a', newline='') as csvfile:
+    with open('all-results-n-11.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
@@ -95,7 +95,7 @@ def main():
     for ind, val in enumerate(dats):
         for ind2, val2 in enumerate(dats):
             # Data comes from np-plot.py
-            for i in [2,3,8]:
+            for i in range(0,11):
                 p = i / 10.0
                 tl.C = tl.join(val, val2, p)
                 results = run_it(val, val2, tl.C)
