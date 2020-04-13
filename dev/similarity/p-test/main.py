@@ -91,9 +91,15 @@ def main():
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CART']
     dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cp]
 
+    found = False
+
     ### Running for just comparing to cartpole!
     for ind, val in enumerate(dats):
         for ind2, val2 in enumerate(dats):
+            if val == tl.c100:
+                found = True
+            if not found:
+                continue
             # Data comes from np-plot.py
             for i in range(0,11):
                 p = i / 10.0
