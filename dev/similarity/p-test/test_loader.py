@@ -8,6 +8,7 @@ from os import listdir
 from os.path import isfile, join
 
 import numpy as np
+
 import random
 
 from copy import deepcopy
@@ -126,6 +127,7 @@ class Loader():
         return [x_train, x_test, y_train, y_test]
 
     def load_cartpole(self):
+        ''' # not needed after switch to npy save!
         ### Load image data (x)
         x = []
 
@@ -146,6 +148,7 @@ class Loader():
         # Convert to greyscale, normalize
         rgb_convert = [0.2989,0.5870,0.1140]
         x = np.dot(x, rgb_convert)/255
+        x = np.subtract(1,x)
 
         # Conver to correct shape (n,x,y,1)
         x = np.reshape(x,(60000, 32,32,1))
@@ -155,6 +158,43 @@ class Loader():
         
         # Convert to one-hot
         y = np_utils.to_categorical(y, 2)
+
+        ## Save unique x,y to pkl
+        ### TMP, remove later
+        unique = set()
+        x_save = []
+        y_save = []
+        for ind,val in enumerate(x):
+            hashed = hash(x[ind].data.tobytes() ) 
+            if hashed in unique:
+                continue
+            else:
+                unique.add(hashed)
+                x_save.append(x[ind])
+                y_save.append(y[ind])
+
+        x_save = np.asarray(x_save)
+        y_save = np.asarray(y_save)
+
+        np.save('cart_x.npy', x_save)
+        np.save('cart_y.npy', y_save)
+        exit()
+        '''        
+
+        # Load from save
+        x = np.load('cart_x.npy')
+        y = np.load('cart_y.npy')
+
+        print(x.shape)
+        print(y.shape)
+
+        # Shrink a bit
+        x = x[0:15000]
+        y = y[0:15000]
+
+        # Fit to 60k
+        x = np.concatenate((x,x,x,x))
+        y = np.concatenate((y,y,y,y))
 
         ### Split into train/test
         x_train = x[0:50000]
