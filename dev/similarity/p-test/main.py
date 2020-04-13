@@ -96,7 +96,8 @@ def main():
     ### Running for just comparing to cartpole!
     for ind, val in enumerate(dats):
         for ind2, val2 in enumerate(dats):
-            if val == tl.c100:
+            print(names[ind], names[ind2])
+            if names[ind] == 'C100':
                 found = True
             if not found:
                 continue
