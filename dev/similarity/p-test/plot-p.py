@@ -34,13 +34,13 @@ def load_data():
     res = []
     data = []
     names = []
-    with open('cart-results.csv', newline='') as csvfile:
+    with open('tmp_n-11.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
-            res.append([float(row[3]),float(row[4]),float(row[5]), float(row[2])])
+            res.append([float(row[3]),float(row[4]),float(row[5])])
 
             c = c + 1
-            if c >= 3:
+            if c >= 11:
                 c = 0
                 names.append(row[0:2])
                 data.append(res)
@@ -54,7 +54,7 @@ def plot_data(names, data):
         fig, ax = plt.subplots()
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
         # evenly sampled proportion
-        p = [0.2, 0.3, 0.8]
+        p = np.arrange(0.0, 1.1, 0.1)
         a = []
         b = []
         c = []
@@ -143,10 +143,17 @@ def calc_s_mean(data):
     for i in data:
         s_sum = 0.0
         for j in i:
-            try:
-                s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
-            except:
+            a = max(j[0], j[1])
+            b = min(j[0], j[1])
+            ab = j[2] 
+
+            if ab > a or ab < b:
                 s_sum = s_sum + 1
+            else:
+                try:
+                    s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
+                except:
+                    s_sum = s_sum + 1
         res.append(s_sum/len(i))
     
     return res
@@ -265,8 +272,8 @@ def calc_proj_auc(data):
 names, data = load_data()
 
 #print(names)
-print(data)
-plot_data(names,data)
+#print(data)
+#plot_data(names,data)
 
 #print(names)
 
@@ -274,7 +281,15 @@ plot_data(names,data)
 #print(a)
 
 b = calc_s_mean(data)
-print(b)
+
+
+c = 0
+for i in b:
+    print(round(i, 4))
+    c += 1
+    if c > 4:
+        c = 0
+        print('')
 
 #c = calc_auc(data)
 #print(c)
