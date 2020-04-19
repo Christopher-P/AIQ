@@ -179,22 +179,40 @@ class Loader():
         np.save('cart_x.npy', x_save)
         np.save('cart_y.npy', y_save)
         exit()
-        '''        
+        '''     
+
+        ''' # Convert 6 npy files into one file
+        y = []
+        x = []        
+
+        for i in range(6):
+            y.append(np.load('actions_' + str(i) + '.npy'))
+            x.append(np.load('observations_' + str(i) + '.npy'))
+
+        x = np.reshape(x, (60000, 32, 32))
+        y = np.reshape(y, (60000, -1))
+
+        print(x[0])
+        print(y[0])
+        print(x.shape)
+        print(y.shape)
+        
+        np.save('actions.npy', y)
+        np.save('cart_data.npy', x)
+
+        exit()
+        '''
 
         # Load from save
         x = np.load('cart_x.npy')
         y = np.load('cart_y.npy')
 
+        # Correct shape
+        x = np.reshape(x, (60000, 32, 32, 1))
+        y = np_utils.to_categorical(y, 2)
+
         print(x.shape)
         print(y.shape)
-
-        # Shrink a bit
-        x = x[0:15000]
-        y = y[0:15000]
-
-        # Fit to 60k
-        x = np.concatenate((x,x,x,x))
-        y = np.concatenate((y,y,y,y))
 
         ### Split into train/test
         x_train = x[0:50000]
