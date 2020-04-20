@@ -3,6 +3,8 @@ import csv
 from os import listdir
 from os.path import isfile, join
 
+import numpy as np
+
 def load_data():
     # Main data holder
     data = dict()
@@ -94,15 +96,62 @@ def sim_data(data):
     for key in data:
         S = 0.0
         for element in data[key]:
-            
+            try:
+                num = abs(abs(element[0] - element[2]) - abs(element[1] - element[2]))
+                den = abs(element[0] - element[1])
+                S += num/den
+            except:
+                S += 1.0
 
-
-        sim[key] = 
+        S = S/len(data[key])
+        sim[key] = S
     
-    return None
+    return sim
+
+def table_data(data):
+    # Create name num pairing
+    c = 0
+    name_val = dict()
+    for key in data:
+        name = key.split('=')[0]
+        if name in name_val:
+            continue
+        else:
+            name_val[name] = c
+            c = c + 1
+    # Skips taxi, too lazy to fix in general
+    name_val['Taxi-v3'] = 9
+
+    # Creat table struct, fill it
+    tab = np.zeros((10,10))
+    for key in data:
+        name  = key.split('=')[0]
+        name2 = key.split('=')[1]
+
+        tab[name_val[name]][name_val[name2]] = data[key] 
+        tab[name_val[name2]][name_val[name]] = data[key] 
+
+    for i in tab:
+        print(i)
+
+    return tab, name_val
+
+def write_data(data, name_val):
+    with open('nice_results.csv', 'w', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        key_list = name_val
+        spamwriter.writerow(key_list)
+
+        for ind, key in enumerate(key_list):
+            spamwriter.writerow([key] + list(data[ind]))
+    
 
 data_raw = load_data()
 clean_data = conform_data(data_raw)
 sim = sim_data(clean_data)
+table,name_val = table_data(sim)
+
+write_data(table,name_val)
+print(sim)
 
 
