@@ -168,21 +168,52 @@ def cross_table(data):
 
         
 
-def load_data():
-    first = True
-    name_vals = None
-    with open('nice_results.csv', newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        for row in spamreader:
-            if first:
-                first = not first
-                name_vals = row
-
-            print(name_vals)
-            exit()
 
 
+data = []
 
-info = load_data()
+with open('d=1.csv', newline='') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in spamreader:
+        data.append(row)
+
+#print(data)
+
+A = None
+B = None
+name1 = None
+name2 = None
+counter = 0
+info = []
+
+for ind, val in enumerate(data):
+    if counter >= 3:
+        counter = 0
+    
+    if counter == 0:
+        name1 = val[0]
+        A = float(val[2])
+
+    elif counter == 1:
+        name2 = val[0]
+        B = float(val[2])
+
+    elif counter == 2:
+        Vmax = max(A,B)
+        Vmin = min(A,B)
+        V = float(val[2])
+        if A == B:
+            S = 0.5
+        else:
+            S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
+        info.append((name1, name2, S))         
+
+    else:
+        print('error')
+        exit()
+
+    counter += 1
+    continue
+
 cross_table(info)
 

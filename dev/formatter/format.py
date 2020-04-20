@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 def load_data():
     # Main data holder
@@ -144,6 +145,36 @@ def write_data(data, name_val):
 
         for ind, key in enumerate(key_list):
             spamwriter.writerow([key] + list(data[ind]))
+
+def plot_data(data, name_val):
+    # new plot
+    fig, ax = plt.subplots(figsize=(14, 10))
+    im = ax.imshow(data)
+    fig.colorbar(im, orientation='vertical')
+
+    # We want to show all ticks...
+    ax.set_xticks(np.arange(len(data)))
+    ax.set_yticks(np.arange(len(data)))
+    # ... and label them with the respective list entries
+    ax.set_xticklabels(name_val)
+    ax.set_yticklabels(name_val)
+
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
+    for i in range(len(data)):
+        for j in range(len(data)):
+            text = ax.text(j, i, round(data[i, j],2), size=13,
+                           ha="center", va="center", color="w")
+
+    ax.set_title("Similarity table for current test suite")
+    
+    fig.tight_layout()
+    
+    plt.savefig('HeatMap.png', dpi=400)
+    plt.show()
     
 
 data_raw = load_data()
@@ -151,7 +182,9 @@ clean_data = conform_data(data_raw)
 sim = sim_data(clean_data)
 table,name_val = table_data(sim)
 
+
 write_data(table,name_val)
+plot_data(table,name_val)
 print(sim)
 
 
