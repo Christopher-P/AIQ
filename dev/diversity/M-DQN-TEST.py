@@ -14,6 +14,8 @@ sys.path.insert(0, os.getcwd())
 ### Import AIQ package
 from AIQ.AIQ import AIQ
 from DQN_M import DQN_Agent
+from os import listdir
+from os.path import isfile, join
 
 #l1 = 'None'
 #l2 = 'None'
@@ -127,6 +129,15 @@ def main(pos):
     name2 = val[1]
     p = -1
     k = 100
+
+    mypath = 'dev/diversity/data/'
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    strng = 'recal-' + name1 + '-' + name2 + '.csv'
+
+    if strng in onlyfiles:
+        print(name1, name2)
+        print('data already collected continuing')
+        exit()
 
     interface.agent.clear()
     train_res = interface.fit_to(name1,k)
