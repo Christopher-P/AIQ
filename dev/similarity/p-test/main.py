@@ -97,13 +97,13 @@ def main():
     for ind, val in enumerate(dats):
         print('CART', names[ind])
 
-            # Data comes from np-plot.py
-            for i in range(0,11):
-                p = i / 10.0
-                tl.C = tl.join(tl.cp, val, p)
-                results = run_it(tl.cp, val, tl.C)
-                log_it('CART', names[ind]]+ [p] + results)
-            
+        # Data comes from np-plot.py
+        for i in range(0,11):
+            p = i / 10.0
+            tl.C = tl.join(tl.cp, val, p)
+            results = run_it(tl.cp, val, tl.C)
+            log_it(['CART', names[ind]]+ [p] + results)
+
     return None
 
 if __name__ == '__main__':
