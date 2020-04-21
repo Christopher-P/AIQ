@@ -20,8 +20,7 @@ def holder_aiq(ID_partial, ID_full, scores):
 
     # Calculate aiq score according to formula
     aiq = D * nfac * sum(scores)
-    #print("E", D * nfac)
-    return D * nfac
+    return aiq / len(ID_full)
 
 ## Chris function
 def chris_aiq(ID_partial, ID_full, scores):
@@ -29,14 +28,14 @@ def chris_aiq(ID_partial, ID_full, scores):
     ID_partial = ID_partial / sum(ID_full)
 
     # Multiply by n
-    ID_partial = ID_partial 
+    ID_partial = ID_partial * len(ID_partial)
 
     aiq = 0.0
     
     for ind,val in enumerate(ID_partial):
         aiq += ID_partial[ind] * scores[ind]
 
-    return sum(ID_partial)
+    return aiq / len(ID_full)
 
 def cross_table(data, scores):
     counter = 0
@@ -77,9 +76,11 @@ def cross_table(data, scores):
 
     # Get diverse set
     # Hard Coded set
-    di,d = zip(*(reversed(sorted(zip(ID, scores)))))
+    nam = list(keys.keys())
+    di,d,nam2 = zip(*(reversed(sorted(zip(ID, scores,nam)))))
     ID = list(di)
     scores = list(d)
+    nam = list(nam2)
     a = 0
     b = 5
     h2 = holder_aiq(ID[0:5],ID,scores[0:5])
@@ -88,6 +89,9 @@ def cross_table(data, scores):
     # Get similar set
     h3 = holder_aiq(ID[7:11],ID,scores[7:11])
     c3 = chris_aiq(ID[7:11],ID,scores[7:11])
+
+    for ind, val in enumerate(ID):
+        print('{:20s}'.format(nam[ind]), "{0:.2f}".format(scores[ind]), "{0:.2f}".format(ID[ind]))
 
     # Get single set
     h4 = holder_aiq([ID[6]],ID,[scores[6]])
@@ -111,66 +115,85 @@ def plotit(d1, d2):
     rects1 = plt.bar(index, d1, bar_width,
     alpha=opacity,
     color='b',
-    label='D')
+    label='D * sum(S*C)')
 
     rects2 = plt.bar(index + bar_width, d2, bar_width,
     alpha=opacity,
     color='g',
-    label='sum(ID)')
+    label='sum(D*S*C)')
 
     plt.xlabel('Different Sets')
-    plt.ylabel("Diversity \'multiplier\'")
-    plt.title('Different multipliers compared by sets')
+    plt.ylabel('AIQ')
+    plt.title('Different sets compared by methods (C = 1)')
     plt.xticks(index + bar_width, ('All', 'Top 4 Diverse', 'Bot 4 diverse', 'One average test'), rotation=15)
     plt.legend()
 
-    plt.savefig('D_Mulitiplier_methods.png',dpi=200)
+    plt.savefig('D_methods.png',dpi=200)
     plt.tight_layout()
     plt.show()
 
 
-def load_data():
-    first = True
-    name_vals = dict()
-    val_names = dict()
-    data = []
-    tabled = []
-    with open('nice_results.csv', newline='') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-        for row in spamreader:
-            if first:
-                first = not first
-                c = 0
-                for element in row:
-                    name_vals[element] = c
-                    name_vals[c] = element
-                    c = c + 1
-                continue
-            
-            d = []
-            for element in row[1:]:
-                d.append(element)
-            data.append(d)
 
-    for i in range(len(data)):
-        for j in range(len(data)):
-            tabled.append((name_vals[i], name_vals[j], float(data[i][j])))
+### Import and process raw data
+data = []
 
-    #print(name_vals)
-    #print(data)
-    #print(tabled)
-    #exit()
-    return tabled
+with open('raw_data.csv', newline='') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in spamreader:
+        data.append(row)
 
+#print(data)
 
-info = load_data()
+A = None
+B = None
+name1 = None
+name2 = None
+counter = 0
+info = []
 
-# Scores is a list of scores for same name pairings
+# Holds the score from each test that is same (A = B)
 scores = []
-for i in info:
-    if i[0] == i[1]:
-        scores.append(i[2])
-print(scores)
+
+for ind, val in enumerate(data):
+    if counter >= 3:
+        counter = 0
+    
+    if counter == 0:
+        name1 = val[0]
+        A = float(val[2])
+
+    elif counter == 1:
+        name2 = val[0]
+        B = float(val[2])
+
+    elif counter == 2:
+        Vmax = max(A,B)
+        Vmin = min(A,B)
+        V = float(val[2])
+        
+        names = str(val[0]).split('=')
+        if names[0] == names[1]:
+            vals = [float(i) for i in val[5:25]]
+            if max(vals) == min(vals):
+                s = 0.0
+            else:
+                s = (float(val[2]) - min(vals)) / (max(vals) - min(vals))
+            scores.append(s)
+
+        if A == B:
+            S = 0.5
+        else:
+            S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
+        info.append((name1, name2, S))         
+
+    else:
+        print('error')
+        exit()
+
+    counter += 1
+    continue
+
+print(info, scores)
+exit()
+
 cross_table(info, scores)
-
-

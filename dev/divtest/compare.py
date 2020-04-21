@@ -8,6 +8,7 @@ import numpy as np
 import copy
 
 from numpy import prod
+import random
 
 ## Holder function
 def holder_aiq(ID_partial, ID_full, scores):
@@ -132,65 +133,49 @@ def plotit(d1, d2):
     plt.tight_layout()
     plt.show()
 
+def load_data():
+    first = True
+    name_vals = dict()
+    val_names = dict()
+    data = []
+    tabled = []
+    with open('nice_results.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in spamreader:
+            if first:
+                first = not first
+                c = 0
+                for element in row:
+                    name_vals[element] = c
+                    name_vals[c] = element
+                    c = c + 1
+                continue
+            
+            d = []
+            for element in row[1:]:
+                d.append(element)
+            data.append(d)
+
+    for i in range(len(data)):
+        for j in range(len(data)):
+            tabled.append((name_vals[i], name_vals[j], float(data[i][j])))
+
+    #print(name_vals)
+    #print(data)
+    #print(tabled)
+    #exit()
+    return tabled
 
 
-### Import and process raw data
-data = []
+info = load_data()
 
-with open('raw_data.csv', newline='') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in spamreader:
-        data.append(row)
-
-#print(data)
-
-A = None
-B = None
-name1 = None
-name2 = None
-counter = 0
-info = []
-
-# Holds the score from each test that is same (A = B)
+# Scores is a list of scores for same name pairings
 scores = []
-
-for ind, val in enumerate(data):
-    if counter >= 3:
-        counter = 0
-    
-    if counter == 0:
-        name1 = val[0]
-        A = float(val[2])
-
-    elif counter == 1:
-        name2 = val[0]
-        B = float(val[2])
-
-    elif counter == 2:
-        Vmax = max(A,B)
-        Vmin = min(A,B)
-        V = float(val[2])
-        
-        names = str(val[0]).split('=')
-        if names[0] == names[1]:
-            vals = [float(i) for i in val[5:25]]
-            if max(vals) == min(vals):
-                s = 0.0
-            else:
-                s = (float(val[2]) - min(vals)) / (max(vals) - min(vals))
-            scores.append(s)
-
-        if A == B:
-            S = 0.5
-        else:
-            S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
-        info.append((name1, name2, S))         
-
-    else:
-        print('error')
-        exit()
-
-    counter += 1
-    continue
-
+random.seed(1243)
+for i in range(10):
+    scores.append(random.random())
+print(scores)
 cross_table(info, scores)
+
+
+
