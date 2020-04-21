@@ -143,51 +143,42 @@ def cross_table(data):
         
 
 
+        
 
-data = []
+def load_data():
+    first = True
+    name_vals = dict()
+    val_names = dict()
+    data = []
+    tabled = []
+    with open('nice_results.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in spamreader:
+            if first:
+                first = not first
+                c = 0
+                for element in row:
+                    name_vals[element] = c
+                    name_vals[c] = element
+                    c = c + 1
+                continue
+            
+            d = []
+            for element in row[1:]:
+                d.append(element)
+            data.append(d)
 
-with open('d=1.csv', newline='') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    for row in spamreader:
-        data.append(row)
+    for i in range(len(data)):
+        for j in range(len(data)):
+            tabled.append((name_vals[i], name_vals[j], float(data[i][j])))
 
-#print(data)
+    #print(name_vals)
+    #print(data)
+    #print(tabled)
+    #exit()
+    return tabled
 
-A = None
-B = None
-name1 = None
-name2 = None
-counter = 0
-info = []
 
-for ind, val in enumerate(data):
-    if counter >= 3:
-        counter = 0
-    
-    if counter == 0:
-        name1 = val[0]
-        A = float(val[2])
-
-    elif counter == 1:
-        name2 = val[0]
-        B = float(val[2])
-
-    elif counter == 2:
-        Vmax = max(A,B)
-        Vmin = min(A,B)
-        V = float(val[2])
-        if A == B:
-            S = 0.5
-        else:
-            S = abs(abs(Vmax - V) - abs(Vmin - V) ) / abs( A  - B )
-        info.append((name1, name2, S))         
-
-    else:
-        print('error')
-        exit()
-
-    counter += 1
-    continue
-
+info = load_data()
 cross_table(info)
 
