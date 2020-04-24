@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 
+from statistics import stdev
+import copy
+
 # Genned by shannon.py
 shannon = [1.0,
 0.9884630786125186,
@@ -129,32 +132,42 @@ def plot_one(a, nam=''):
 def calc_s(data):
     res = []
     for i in data:
+        A = i[5][0]
+        B = i[5][1]
+        AB = i[5][2]
         try:
-            s = abs(abs(i[5][0] -i[5][2]) - abs(i[5][1] -i[5][2]))/abs(i[5][0] -i[5][1])
+            s = abs(abs(A - AB) - abs(B - AB))/abs(A - B)
         except:
             print('Exusprosion')
             s = 1
         res.append(s)
-    
+        
     return res
 
 def calc_s_mean(data):
     res = []
     for i in data:
         s_sum = 0.0
+        s_list = []
         for j in i:
             a = max(j[0], j[1])
             b = min(j[0], j[1])
             ab = j[2] 
 
             if ab > a or ab < b:
-                s_sum = s_sum + 1
+                s_sum = s_sum + 1.0
+                s_list.append(1.0)
             else:
                 try:
                     s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
+                    s_list.append(abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1]))
                 except:
                     s_sum = s_sum + 1
-        res.append(s_sum/len(i))
+                    s_list.append(1.0)
+
+        print(stdev([0,1,2,3]))
+        print(s_list)
+        res.append(round(s_sum/len(i),4)) #, stdev(s_list)/3.16])
     
     return res
 
@@ -282,10 +295,19 @@ names, data = load_data()
 
 b = calc_s_mean(data)
 
+d = np.asarray(b)
+d = np.reshape(d,(5,5))
+
+t = copy.deepcopy(d)
+
+for ind,val in enumerate(d):
+    for ind2,val2 in enumerate(d):
+        t[ind][ind2] = (d[ind][ind2] + d[ind2][ind]) / 2.0
+print(t)
 
 c = 0
 for i in b:
-    print(round(i, 4))
+    print(i)
     c += 1
     if c > 4:
         c = 0
