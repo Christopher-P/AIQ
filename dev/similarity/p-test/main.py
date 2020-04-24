@@ -95,14 +95,14 @@ def main():
 
     ### Running for just comparing to cartpole!
     for ind, val in enumerate(dats):
-        print('CART', names[ind])
+        print(names[ind], names[ind])
 
         # Data comes from np-plot.py
         for i in range(0,11):
             p = i / 10.0
-            tl.C = tl.join(tl.cp, val, p)
-            results = run_it(tl.cp, val, tl.C)
-            log_it(['CART', names[ind]]+ [p] + results)
+            tl.C = tl.join(val, val, p)
+            results = run_it(val, val, tl.C)
+            log_it([names[ind], names[ind]]+ [p] + results)
 
     return None
 

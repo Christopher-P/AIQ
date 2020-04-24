@@ -272,6 +272,9 @@ class Loader():
     # p = 0 --> max B
     def join(self, A, B, p):
         # Merged dataset
+        if A == B:
+            print('Same test detected!')
+            return A
         data = []
 
         # For each x,y,train,test
