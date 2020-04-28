@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 from itertools import chain, combinations
+from statistics import stdev
 
 # Genned by shannon.py
 shannon = [1.0,
@@ -36,7 +37,7 @@ def load_data():
     res = []
     data = []
     names = []
-    with open('tmp-results-label-joined.csv', newline='') as csvfile:
+    with open('results-p-noise.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             res.append([float(row[2]),float(row[3]),float(row[4])])
@@ -79,27 +80,30 @@ def plot_data(names, data):
 
     return None
 
-def plot_all(a,b,c,d,e,f, tm=False, nam=''):
+def plot_all(a, f, sd, tm=False, nam=''):
     
-    names = ['Similarity', 'Similarity_Mean', 'AuC', 'Projection', 'AuC_Proj', 'Shannon']
+    names = ['Similarity','Shannon']# 'Similarity_Mean', 'AuC', 'Projection', 'AuC_Proj', 'Shannon']
 
     if tm:
-        for ind,val in enumerate([a,b,c,d,e,f]):
+        for ind,val in enumerate([a,f]):
             max_val = max(val)
             for ind2, val2 in enumerate(val):
                 val[ind2] = val2 / max_val 
-    print(c)
+    #print(c)
 
     fig, ax = plt.subplots()
     ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
     p = np.arange(0.0, 105.0, 5.0)
 
+    print(len(a), len(f), len(p))
+
     plt.plot(p, a, 'r', label=names[0])
-    plt.plot(p, b, 'g', label=names[1])
-    plt.plot(p, c, 'b', label=names[2])
-    plt.plot(p, d, 'y', label=names[3])
-    plt.plot(p, e, 'purple', label=names[4])
-    plt.plot(p, f, 'black',  label=names[5])
+    #plt.errorbar(p, a, yerr=sd, label='both limits (default)')
+    #plt.plot(p, b, 'g', label=names[1])
+    #plt.plot(p, c, 'b', label=names[2])
+    #plt.plot(p, d, 'y', label=names[3])
+    #plt.plot(p, e, 'purple', label=names[4])
+    plt.plot(p, f, 'black',  label=names[1])
 
     plt.ylabel('Measurements')
     plt.title('P-Varied test over random noise injection')
@@ -127,25 +131,34 @@ def plot_one(a, nam=''):
 
     return None
 
-def calc_s_mean(data, arr):
+def calc_s_mean(data):
     res = []
-
+    sd  = []
     for i in data:
-
-        tmp_data = []
-        # Reduce data to array size
-        for k in arr:
-            tmp_data.append(i[k])
-
         s_sum = 0.0
-        for j in tmp_data:
-            try:
-                s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
-            except:
-                s_sum = s_sum + 1
-        res.append(s_sum/len(tmp_data))
+        s_list = []
+        for j in i:
+            a = max(j[0], j[1])
+            b = min(j[0], j[1])
+            ab = j[2] 
+
+            if ab > a or ab < b:
+                s_sum = s_sum + 1.0
+                s_list.append(1.0)
+            else:
+                try:
+                    s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
+                    s_list.append(abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1]))
+                except:
+                    print('div 0')
+                    s_sum = s_sum + 1
+                    s_list.append(1.0)
+
+        sd.append(stdev(s_list)/3.16)
+        #print(s_list)
+        res.append(round(s_sum/len(i),4)) #, stdev(s_list)/3.16])
     
-    return res
+    return res, sd
 
 ### All possible combinations
 def powerset(iterable):
@@ -164,6 +177,7 @@ for i in d:
     combs.append(list(i))
 
 names, data = load_data()
+'''
 print("----")
 print(names,data)
 
@@ -180,6 +194,10 @@ for i in combs:
 
 list1, list2 = zip(*sorted(zip(comb_res, combs)))
 print(list1[0:10], list2[0:10])
+'''
+a, sd = calc_s_mean(data)
+a = a[0:21]
+sd = sd[0:21]
 
 #plot_one(a, 'Similarity')
 #plot_one(b, 'Similarity_mean')
@@ -189,5 +207,5 @@ print(list1[0:10], list2[0:10])
 #plot_one(f, 'Shannon')
 
 #plot_all(a,b,c,d,e,f, tm=False, nam='Non_normed')
-#plot_all(a,b,c,d,e,f, tm=True, nam='Normed')
+plot_all(a,f, sd, tm=True, nam='Normed')
 

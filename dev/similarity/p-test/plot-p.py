@@ -162,11 +162,12 @@ def calc_s_mean(data):
                     s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
                     s_list.append(abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1]))
                 except:
+                    print('div 0')
                     s_sum = s_sum + 1
                     s_list.append(1.0)
 
-        print(stdev([0,1,2,3]))
-        print(s_list)
+        print(stdev(s_list)/3.16)
+        #print(s_list)
         res.append(round(s_sum/len(i),4)) #, stdev(s_list)/3.16])
     
     return res
