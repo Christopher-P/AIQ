@@ -77,11 +77,11 @@ def cross_table(data):
     # 1 - x because we want dissimilarity
     for val in data:
         if val[2] == 1.0:
-            res[keys[val[0]]][keys[val[1]]] = 1.0 - 0.99
-            res[keys[val[1]]][keys[val[0]]] = 1.0 - 0.99
+            res[keys[val[0]]][keys[val[1]]] = 1.0 - 0.99999
+            res[keys[val[1]]][keys[val[0]]] = 1.0 - 0.99999
         elif val[2] == 0.0:
-            res[keys[val[0]]][keys[val[1]]] = 1.0 - 0.01
-            res[keys[val[1]]][keys[val[0]]] = 1.0 - 0.01
+            res[keys[val[0]]][keys[val[1]]] = 1.0 - 0.00001
+            res[keys[val[1]]][keys[val[0]]] = 1.0 - 0.00001
         else:
             res[keys[val[0]]][keys[val[1]]] = 1.0 - val[2]
             res[keys[val[1]]][keys[val[0]]] = 1.0 - val[2]
@@ -170,17 +170,36 @@ def cross_table(data):
 
 def load_data():
     first = True
-    name_vals = None
+    name_vals = dict()
+    val_names = dict()
+    data = []
+    tabled = []
     with open('nice_results.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             if first:
                 first = not first
-                name_vals = row
+                c = 0
+                for element in row:
+                    name_vals[element] = c
+                    name_vals[c] = element
+                    c = c + 1
+                continue
+            
+            d = []
+            for element in row[1:]:
+                d.append(element)
+            data.append(d)
 
-            print(name_vals)
-            exit()
+    for i in range(len(data)):
+        for j in range(len(data)):
+            tabled.append((name_vals[i], name_vals[j], float(data[i][j])))
 
+    #print(name_vals)
+    #print(data)
+    #print(tabled)
+    #exit()
+    return tabled
 
 
 info = load_data()

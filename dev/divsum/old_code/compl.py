@@ -214,6 +214,7 @@ for ind, val in enumerate(data):
 
     counter += 1
     continue
-
+print(info)
+exit()
 cross_table(info)
 
