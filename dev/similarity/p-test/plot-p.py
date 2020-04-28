@@ -49,7 +49,47 @@ def load_data():
                 data.append(res)
                 res = []
 
+    data = add_data(data)
+
     return names, data
+
+def add_data(data):
+    '''
+    amt  = [10, 10, 10, 100, 2]
+
+    data = np.asarray(data)
+    data = np.reshape(data, (5,5,11,3))
+    
+    for ind, val in enumerate(amt):
+        for ind2, val2 in enumerate(amt):
+            for i in range(11):
+                AB = data[ind][ind][i][2]
+                # add the percentage of probablity times 1/base class
+                AB = AB + (1 - AB) * 1 / (val + val2)
+
+                data[ind][ind2][i][2] = AB
+    data = np.reshape(data, (25,11,3))
+    return list(data)
+    '''
+    
+    # Just AB
+    nums = [0,6,12,18,24]
+    amt  = [10, 10, 10, 100, 2]
+    
+    for ind, val in enumerate(data):
+        if ind not in nums:
+            continue
+        
+        for ind2, val2 in enumerate(val):
+            # AB
+            AB = data[ind][ind2][2]
+            # add the percentage of probablity times 1/base class
+            amnt = amt[nums.index(ind)]
+            AB = AB + (1 - AB) * 1 / amnt
+
+            data[ind][ind2][2] = AB
+    
+    return data
 
 def plot_data(names, data):
 
