@@ -132,12 +132,18 @@ def main(pos):
 
     mypath = 'dev/diversity/data/'
     onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
-    strng = 'recal-' + name1 + '-' + name2 + '.csv'
+    if name1 == name2:
+        strng = 'recal-' + name1 + '.csv'
+    else:
+        strng = 'recal-' + name1 + '-' + name2 + '.csv'
 
     if strng in onlyfiles:
         print(name1, name2)
         print('data already collected continuing')
         exit()
+
+    print('Running: ')
+    print(name1, name2)
 
     interface.agent.clear()
     train_res = interface.fit_to(name1,k)
