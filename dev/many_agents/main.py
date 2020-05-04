@@ -60,13 +60,14 @@ def run_it(A, B, C, nodes, layers):
     
     return results, tp, ntp
 
-def log_it(results):
-    with open('many_agents_' + str(datetime.datetime.now()) + '.csv', 'a', newline='') as csvfile:
+def log_it(time, results):
+    with open('many_agents_' + time + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
 
 def main(pos):
+    time = str(datetime.datetime.now())
 
     ###Will run main code
     tl      = Loader()
@@ -88,7 +89,7 @@ def main(pos):
             p = i / 10.0
             tl.C = tl.join(tl.m, tl.m, p)
             results, tp, ntp  = run_it(tl.m, tl.m, tl.C, nodes, layers)
-            log_it(['MNIST','MNIST'] + [nodes, layers, tp, ntp, p] + results)
+            log_it(time, ['MNIST','MNIST'] + [nodes, layers, tp, ntp, p] + results)
 
     else:
         # Data comes from np-plot.py
@@ -96,7 +97,7 @@ def main(pos):
             p = i / 10.0
             tl.C = tl.join(tl.m, tl.fm, p)
             results, tp, ntp  = run_it(tl.m, tl.fm, tl.C, nodes, layers)
-            log_it(['MNIST','FMNIST'] + [nodes, layers, tp, ntp, p] + results)
+            log_it(time, ['MNIST','FMNIST'] + [nodes, layers, tp, ntp, p] + results)
 
     return None
 
