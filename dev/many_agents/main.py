@@ -12,6 +12,9 @@ from keras import backend as K
 import random
 import numpy as np
 
+import datetime
+import sys
+
 def gen_model(data,nodes,layers):
     input_shape = (32,32,1)
     num_classes = data[3][0].shape[0]
@@ -58,12 +61,12 @@ def run_it(A, B, C, nodes, layers):
     return results, tp, ntp
 
 def log_it(results):
-    with open('many_agents.csv', 'a', newline='') as csvfile:
+    with open('many_agents_' + str(datetime.datetime.now()) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
 
-def main():
+def main(pos):
 
     ###Will run main code
     tl      = Loader()
@@ -74,11 +77,12 @@ def main():
     dats = [tl.m, tl.fm]
 
     ### Running for just comparing to cartpole!
-    for ind in range(100):
+    ind = pos
         
-        nodes  = int(random.random() * 32) + 1
-        layers = int(random.random() *  5) + 1
+    nodes  = int(random.random() * 32) + 1
+    layers = int(random.random() *  5) + 1
 
+    if ind % 2 == 0:
         # Data comes from np-plot.py
         for i in range(0,11):
             p = i / 10.0
@@ -86,6 +90,7 @@ def main():
             results, tp, ntp  = run_it(tl.m, tl.m, tl.C, nodes, layers)
             log_it(['MNIST','MNIST'] + [nodes, layers, tp, ntp, p] + results)
 
+    else:
         # Data comes from np-plot.py
         for i in range(0,11):
             p = i / 10.0
@@ -95,5 +100,9 @@ def main():
 
     return None
 
+
 if __name__ == '__main__':
-    main()
+    ## Parse args here
+    pos = int(sys.argv[1])
+    main(pos)
+
