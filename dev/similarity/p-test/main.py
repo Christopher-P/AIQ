@@ -54,7 +54,7 @@ def run_it(A, B, C):
     return results
 
 def log_it(results):
-    with open('all-results-n-11.csv', 'a', newline='') as csvfile:
+    with open('Buttons.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
@@ -95,14 +95,16 @@ def main():
 
     ### Running for just comparing to cartpole!
     for ind, val in enumerate(dats):
-        print(names[ind], names[ind])
+        for ind2, val2 in enumerate(dats):
+            if ind > ind2:
+                continue 
 
-        # Data comes from np-plot.py
-        for i in range(0,11):
-            p = i / 10.0
-            tl.C = tl.join(val, val, p)
-            results = run_it(val, val, tl.C)
-            log_it([names[ind], names[ind]]+ [p] + results)
+            # Data comes from np-plot.py
+            for i in range(0,11):
+                p = i / 10.0
+                tl.C = tl.join(val, val2, p)
+                results = run_it(val, val2, tl.C)
+                log_it([names[ind], names[ind2]]+ [p] + results)
 
     return None
 

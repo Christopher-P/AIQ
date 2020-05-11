@@ -298,6 +298,12 @@ class Loader():
                 else:
                     dset_y.append([0] * len(A[ind+2][ind2]) + list(B[ind+2][ind2]))
 
+                # Set marker pixel
+                if r < p:
+                    dset_x[-1][0] = 1.0
+                else:
+                    dset_x[-1][0] = 0.0
+
             # Append set of samples
             data.append(np.asarray(dset_x))
             data.append(np.asarray(dset_y))
