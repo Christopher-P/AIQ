@@ -272,7 +272,7 @@ class Loader():
     # p = 0 --> max B
     def join(self, A, B, p):
         # Merged dataset
-        if A == B:
+        if np.array_equal(np.asarray(A), np.asarray(B)):
             print('Same test detected!')
             return A
         data = []
