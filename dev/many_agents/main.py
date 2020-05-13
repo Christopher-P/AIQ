@@ -61,7 +61,7 @@ def run_it(A, B, C, nodes, layers):
     return results, tp, ntp
 
 def log_it(time, results):
-    with open('many_agents_' + time + '.csv', 'a', newline='') as csvfile:
+    with open('data_2/many_agents_' + time + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
@@ -83,7 +83,7 @@ def main(pos):
     nodes  = int(random.random() * 32) + 1
     layers = int(random.random() *  5) + 1
 
-    if ind % 2 == 0:
+    if True:
         # Data comes from np-plot.py
         for i in range(0,11):
             p = i / 10.0
