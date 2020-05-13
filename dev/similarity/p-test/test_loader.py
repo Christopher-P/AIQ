@@ -272,7 +272,7 @@ class Loader():
     # p = 0 --> max B
     def join(self, A, B, p):
         # Merged dataset
-        if A == B:
+        if np.array_equal(np.asarray(A), np.asarray(B)):
             print('Same test detected!')
             return A
         data = []
@@ -297,6 +297,12 @@ class Loader():
                     dset_y.append(list(A[ind+2][ind2]) + [0] * len(B[ind+2][ind2]))
                 else:
                     dset_y.append([0] * len(A[ind+2][ind2]) + list(B[ind+2][ind2]))
+
+                # Set marker pixel
+                if r < p:
+                    dset_x[-1][0] = 1.0
+                else:
+                    dset_x[-1][0] = 0.0
 
             # Append set of samples
             data.append(np.asarray(dset_x))
