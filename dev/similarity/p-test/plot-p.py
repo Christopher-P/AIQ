@@ -37,7 +37,7 @@ def load_data():
     res = []
     data = []
     names = []
-    with open('tmp_n-11.csv', newline='') as csvfile:
+    with open('tmp_buttons.csv', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             res.append([float(row[3]),float(row[4]),float(row[5])])
@@ -193,18 +193,20 @@ def calc_s_mean(data):
             a = max(j[0], j[1])
             b = min(j[0], j[1])
             ab = j[2] 
-
+            
             if ab > a or ab < b:
+                a = 0
                 s_sum = s_sum + 1.0
                 s_list.append(1.0)
             else:
+            
                 try:
                     s_sum = s_sum + abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1])
                     s_list.append(abs(abs(j[0] -j[2]) - abs(j[1] -j[2]))/abs(j[0] - j[1]))
                 except:
                     print('div 0')
-                    s_sum = s_sum + 1
-                    s_list.append(1.0)
+                    #s_sum = s_sum + 1
+                    #s_list.append(1.0)
 
         print(stdev(s_list)/3.16)
         #print(s_list)
@@ -323,7 +325,37 @@ def calc_proj_auc(data):
 
     return res
 
+
+def plot_dat(data):
+    fig, ax = plt.subplots()
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    p = np.arange(0.0, 11.0, 1.0)
+    d = data[4]
+    a = []
+    b = []
+    c = []
+
+    for i in d:
+        print(i)
+        a.append(i[0])
+        b.append(i[1])
+        c.append(i[2])
+
+    plt.plot(p, a, 'r', label='A')
+    plt.plot(p, b, 'b', label='B')
+    plt.plot(p, c, 'g', label='AB')
+
+    plt.ylabel('Measure')
+    plt.title('P-Varied test over random noise injection: ' + '1')
+    plt.legend()
+    plt.savefig('lots_of_graphs/' + '1' + '.png')
+    plt.show()
+
 names, data = load_data()
+
+plot_dat(data)
+
+
 
 #print(names)
 #print(data)
@@ -335,6 +367,8 @@ names, data = load_data()
 #print(a)
 
 b = calc_s_mean(data)
+print(b)
+exit()
 
 d = np.asarray(b)
 d = np.reshape(d,(5,5))

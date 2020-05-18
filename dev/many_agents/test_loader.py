@@ -271,10 +271,14 @@ class Loader():
     # p = 1 --> max A
     # p = 0 --> max B
     def join(self, A, B, p):
-        # Merged dataset
-        if np.array_equal(A,B):
+        # Check for same test        
+        a_hash = hash(np.asarray(A).data.tobytes())
+        b_hash = hash(np.asarray(B).data.tobytes())
+        if a_hash == b_hash:
             print('Same test detected!')
             return A
+
+        # Merged dataset
         data = []
 
         # For each x,y,train,test
