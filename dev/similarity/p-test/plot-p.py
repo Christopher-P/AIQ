@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import numpy as np
 
+import math
 from statistics import stdev
 import copy
 
@@ -196,8 +197,8 @@ def calc_s_mean(data):
             
             if ab > a or ab < b:
                 a = 0
-                s_sum = s_sum + 1.0
-                s_list.append(1.0)
+                #s_sum = s_sum + 1.0
+                #s_list.append(1.0)
             else:
             
                 try:
@@ -208,7 +209,7 @@ def calc_s_mean(data):
                     #s_sum = s_sum + 1
                     #s_list.append(1.0)
 
-        print(stdev(s_list)/3.16)
+        #print(stdev(s_list)/3.16)
         #print(s_list)
         res.append(round(s_sum/len(i),4)) #, stdev(s_list)/3.16])
     
@@ -351,42 +352,224 @@ def plot_dat(data):
     plt.savefig('lots_of_graphs/' + '1' + '.png')
     plt.show()
 
+# Propigate the uncertainty
+# C = AB in this func
+def uncer(data):
+    deltas = []
+    for entry in data:
+        # Vars for equation
+        A   = 0.0
+        dA  = 0.0
+        B   = 0.0
+        dB  = 0.0
+        C  = 0.0
+        dC = 0.0
+
+        # To reformat data
+        A_arr = []
+        B_arr = []
+        C_arr = []
+        for ind, j in enumerate(entry):
+            A_arr.append(j[0])
+            B_arr.append(j[1])
+            #C_arr.append(j[2])
+            
+            
+            # Use 1-dist from perfect
+            p = ind/10
+            perfect = (1-p) * j[0] + (p) * j[1]
+            C_arr.append(1 - abs(j[2] - perfect))
+            #dC_arr.append(0)
+            #print(abs(j[2] - perfect))
+            
+
+        # Find averages
+        A = sum(A_arr)/len(A_arr)
+        B = sum(B_arr)/len(B_arr)
+        C = sum(C_arr)/len(C_arr)
+
+        # Find delats
+        # https://stats.stackexchange.com/questions/48948
+        dA = (max(A_arr) - min(A_arr)) / math.pow(len(A_arr), 2)
+        dB = (max(B_arr) - min(B_arr)) / math.pow(len(B_arr), 2)
+        dC = (max(C_arr) - min(C_arr)) / math.pow(len(C_arr), 2)
+
+        # Equations
+        # Part 1:
+        num1 = math.pow(dA, 2) + math.pow(dB, 2) + 2 * math.pow(dC, 2)
+        den1 = math.pow(abs(A - C) - abs(B - C), 2)
+        # Part 2
+        num2 = math.pow(dA, 2) + math.pow(dB, 2)
+        den2 = math.pow(abs(A - B), 2)
+
+        unc = math.sqrt(num1/den1 + num2/den2)
+
+        deltas.append(round(unc, 4))
+        print(unc)
+
+    return deltas
+
+def pareto(data):
+    costs = []
+    for entry in data:
+        # Vars for equation
+        A   = 0.0
+        dA  = 0.0
+        B   = 0.0
+        dB  = 0.0
+        C  = 0.0
+        dC = 0.0
+
+        # To reformat data
+        A_arr = []
+        B_arr = []
+        C_arr = []
+        for ind, j in enumerate(entry):
+            A_arr.append(j[0])
+            B_arr.append(j[1])
+            #C_arr.append(j[2])
+            
+            
+            # Use 1-dist from perfect
+            p = ind/10
+            perfect = (1-p) * j[0] + (p) * j[1]
+            C_arr.append(1 - abs(j[2] - perfect))
+            #dC_arr.append(0)
+            #print(abs(j[2] - perfect))
+            
+
+        # Find averages
+        A = sum(A_arr)/len(A_arr)
+        B = sum(B_arr)/len(B_arr)
+        C = sum(C_arr)/len(C_arr)
+
+        # Find delats
+        # https://stats.stackexchange.com/questions/48948
+        dA = (max(A_arr) - min(A_arr)) / math.pow(len(A_arr), 2)
+        dB = (max(B_arr) - min(B_arr)) / math.pow(len(B_arr), 2)
+        dC = (max(C_arr) - min(C_arr)) / math.pow(len(C_arr), 2)
+
+        #conf = abs(A - B) / abs(abs(A - C) - abs(B - C))
+        #vari = abs(dA - dB) / abs(abs(dA - dC) - abs(dB - dC))
+        costs.append([A, B, C, dA, dB, dC])
+
+    costs = np.asarray(costs)
+    a = keep_efficient(costs)[0]
+   
+    t = sum(a)
+    for ind,val in enumerate(a):
+        a[ind] = val/t
+
+    actual = []
+    for entry in data:
+        # Vars for equation
+        A   = 0.0
+        dA  = 0.0
+        B   = 0.0
+        dB  = 0.0
+        C  = 0.0
+        dC = 0.0
+
+        # To reformat data
+        A_arr = []
+        B_arr = []
+        C_arr = []
+        for ind, j in enumerate(entry):
+            A_arr.append(j[0])
+            B_arr.append(j[1])
+            #C_arr.append(j[2])
+            
+            
+            # Use 1-dist from perfect
+            p = ind/10
+            perfect = (1-p) * j[0] + (p) * j[1]
+            C_arr.append(1 - abs(j[2] - perfect))
+            #dC_arr.append(0)
+            #print(abs(j[2] - perfect))
+            
+
+        # Find averages
+        A = sum(A_arr)/len(A_arr)
+        B = sum(B_arr)/len(B_arr)
+        C = sum(C_arr)/len(C_arr)
+
+        # Find delats
+        # https://stats.stackexchange.com/questions/48948
+        dA = (max(A_arr) - min(A_arr)) / math.pow(len(A_arr), 2)
+        dB = (max(B_arr) - min(B_arr)) / math.pow(len(B_arr), 2)
+        dC = (max(C_arr) - min(C_arr)) / math.pow(len(C_arr), 2)
+
+        k = [A,B,C,dA,dB,dC]
+
+        val = np.dot(np.asarray(a), np.asarray(k))
+        actual.append(round(val, 4))
+    return actual
+        
+# https://stackoverflow.com/questions/32791911
+def keep_efficient(pts):
+    'returns Pareto efficient row subset of pts'
+    # sort points by decreasing sum of coordinates
+    pts = pts[pts.sum(1).argsort()[::-1]]
+    # initialize a boolean mask for undominated points
+    # to avoid creating copies each iteration
+    undominated = np.ones(pts.shape[0], dtype=bool)
+    for i in range(pts.shape[0]):
+        # process each point in turn
+        n = pts.shape[0]
+        if i >= n:
+            break
+        # find all points not dominated by i
+        # since points are sorted by coordinate sum
+        # i cannot dominate any points in 1,...,i-1
+        undominated[i+1:n] = (pts[i+1:] > pts[i]).any(1) 
+        # keep points undominated so far
+        pts = pts[undominated[:n]]
+    return pts
+
 names, data = load_data()
-
-plot_dat(data)
-
-
-
-#print(names)
-#print(data)
-#plot_data(names,data)
-
-#print(names)
-
-#a = calc_s(data)
-#print(a)
-
+delta = uncer(data)
+print('---------')
+per   = pareto(data)
+print(per)
 b = calc_s_mean(data)
-print(b)
-exit()
+
+# Fill to correct shape
+for i in range(5):
+    for j in range(i):
+        delta.insert(5*i+j,0.0)
+        b.insert(5*i+j,0.0)
+        per.insert(5*i+j,0.0)
 
 d = np.asarray(b)
 d = np.reshape(d,(5,5))
+
+delta = np.asarray(delta)
+delta = np.reshape(delta,(5,5))
+
+per = np.asarray(per)
+per = np.reshape(per,(5,5))
+
+# Fill 0 vals
+for i in range(5):
+    for j in range(5):
+        d[j][i] = d[i][j]
+        delta[j][i] = delta[i][j]
+        per[j][i] = per[i][j]
 
 t = copy.deepcopy(d)
 
 for ind,val in enumerate(d):
     for ind2,val2 in enumerate(d):
         t[ind][ind2] = (d[ind][ind2] + d[ind2][ind]) / 2.0
-print(t)
 
-c = 0
-for i in b:
-    print(i)
-    c += 1
-    if c > 4:
-        c = 0
-        print('')
+print("--------------")
+print(d)
+print(delta)
+print(per)
+for ind, val in enumerate(d):
+    print('')
+    for ind2, val2 in enumerate(val):
+        print(str(d[ind][ind2]) + " ± " + str(delta[ind][ind2]))
 
 #c = calc_auc(data)
 #print(c)

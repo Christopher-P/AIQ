@@ -278,31 +278,28 @@ class Loader():
         data = []
 
         # For each x,y,train,test
-        for ind, val in enumerate(A[0:2]):
+        for ind, val in enumerate(range(2)):
             dset_x = []
             dset_y = []
 
+            l = min(len(A[ind]), len(B[ind]))
+
             # For each sample
-            for ind2,val2 in enumerate(val):
+            for ind2,val2 in enumerate(range(l)):
                 r = random.random()
 
                 # For x's
                 if r < p:
-                    dset_x.append(A[ind][ind2])
+                    dset_x.append(list(A[ind][ind2]) + [0] * len(B[ind][ind2] + [0]))
                 else:
-                    dset_x.append(B[ind][ind2])
+                    dset_x.append([0] * len(A[ind][ind2]) + list(B[ind][ind2] + [1]))
+
 
                 # For y's
                 if r < p:
                     dset_y.append(list(A[ind+2][ind2]) + [0] * len(B[ind+2][ind2]))
                 else:
                     dset_y.append([0] * len(A[ind+2][ind2]) + list(B[ind+2][ind2]))
-
-                # Set marker pixel
-                if r < p:
-                    dset_x[-1][0] = 1.0
-                else:
-                    dset_x[-1][0] = 0.0
 
             # Append set of samples
             data.append(np.asarray(dset_x))
