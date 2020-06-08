@@ -6,3 +6,6 @@ _vizdoom/
 _vizdoom.ini
 *.tar
 AIQ/test_suite/otb-data/*
+
+jiant/
+jiant_data/
