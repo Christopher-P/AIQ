@@ -81,11 +81,10 @@ def main():
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
     dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cart]
 
-    nodes  = int(random.random() * 32) + 1
-    layers = int(random.random() *  5) + 1
-
     for j in range(50):
         for i in range(5):
+            nodes = int(random.random() * 32) + 1
+            layers = int(random.random()*5) + 1
             results, tp, ntp  = run_it(dats[i], nodes, layers)
             log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
 
