@@ -61,12 +61,12 @@ def run_it(A, nodes, layers):
     return results, tp, ntp
 
 def log_it(time, results):
-    with open('data/' + time + '.csv', 'a', newline='') as csvfile:
+    with open('data/results.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
 
-def main(pos):
+def main():
     time = str(datetime.datetime.now())
 
     ###Will run main code
@@ -78,31 +78,18 @@ def main(pos):
     tl.cart   = tl.load_cartpole()
 
 
-    names = ['MNIST', 'FMNIST', 'C10', 'C100', 'C']
+    names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
     dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cart]
 
     nodes  = int(random.random() * 32) + 1
     layers = int(random.random() *  5) + 1
 
-    if True:
-        # Data comes from np-plot.py
-        for i in range(0,11):
-            p = i / 10.0
-            tl.C = tl.join(tl.m, tl.m, p)
-            results, tp, ntp  = run_it(tl.m, tl.m, tl.C, nodes, layers)
-            log_it(time, ['MNIST','MNIST'] + [nodes, layers, tp, ntp, p] + results)
-
-    else:
-        # Data comes from np-plot.py
-        for i in range(0,11):
-            p = i / 10.0
-            tl.C = tl.join(tl.m, tl.fm, p)
-            results, tp, ntp  = run_it(tl.m, tl.fm, tl.C, nodes, layers)
-            log_it(time, ['MNIST','FMNIST'] + [nodes, layers, tp, ntp, p] + results)
+    for i in range(50):
+        results, tp, ntp  = run_it(dats[i], nodes, layers)
+        log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
 
     return None
 
 if __name__ == '__main__':
     ## Parse args here
-    pos = int(sys.argv[1])
-    main(pos)
+    main()
