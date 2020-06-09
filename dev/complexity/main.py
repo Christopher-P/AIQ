@@ -84,9 +84,10 @@ def main():
     nodes  = int(random.random() * 32) + 1
     layers = int(random.random() *  5) + 1
 
-    for i in range(50):
-        results, tp, ntp  = run_it(dats[i], nodes, layers)
-        log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
+    for j in range(50):
+        for i in range(5):
+            results, tp, ntp  = run_it(dats[i], nodes, layers)
+            log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
 
     return None
 
