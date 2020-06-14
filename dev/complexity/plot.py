@@ -40,7 +40,7 @@ for name in results.keys():
     
     # Linear regression
     # Ax + B
-    regressor = LinearRegression()
+    regressor = SVR(kernel='rbf', C=100, gamma=0.1, epsilon=.1)
 
     regressor.fit(x_data, y_data) #training the algorithm
 
@@ -59,10 +59,14 @@ for name in results.keys():
     print('Coefficient of determination: %.2f'
       % metrics.r2_score(y_data, pred))
 
-    print(x_data, y_data)
+    #print(x_data, y_data)
 
-    plt.plot(x_data, y_data, '-r', x_data, pred, '-b')
+    plt.scatter(x_data, y_data)
+    plt.scatter(x_data, pred)
     plt.show()
 
+    point = np.reshape(np.asarray([1.0]), (-1,1))
+    print(regressor.predict(point))
+    print('----')
 
 
