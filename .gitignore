@@ -14,3 +14,6 @@ dev/similarity/p-test/cart_data
 
 dev/jiant/data/*
 dev/jiant_data/*
+
+# We want to track our custom data scripts
+!dev/jiant/tasks/tasks.py
