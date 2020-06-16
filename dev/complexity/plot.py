@@ -24,34 +24,38 @@ with open('data/results.csv', newline='') as csvfile:
         if row[0] not in results:
             results[row[0]] = []
 
+        print(row)
         results[row[0]].append(datum)
-
+k = []
 for name in results.keys():
     # get TP
     x_data = []
     # SCORE
     y_data = []
     for i in results[name]:
-        x_data.append(i[2])
-        y_data.append(i[4])
+        x_data.append(i[4])
+        y_data.append(i[2])
 
     # Reshape because we have one feature
     x_data = np.reshape(np.asarray(x_data),(-1, 1))   
+
+    # Log the y_data (its too big
+    y_data = np.log(y_data)
     
     # Linear regression
     # Ax + B
-    regressor = SVR(kernel='rbf', C=100, gamma=0.1, epsilon=.1)
+    regressor = SVR(kernel='linear', C=10, gamma=5.0, epsilon=0.1)
 
     regressor.fit(x_data, y_data) #training the algorithm
 
-    print(name)
     #To retrieve the intercept:
     #print(regressor.intercept_)
     #For retrieving the slope:
     #print(regressor.coef_)
 
     pred = regressor.predict(x_data)
-    #print(pred, y_data)
+
+    print('Name: {0}'.format(name))
 
     print('Mean squared error: %.2f'
       % metrics.mean_squared_error(y_data, pred))
@@ -66,7 +70,28 @@ for name in results.keys():
     plt.show()
 
     point = np.reshape(np.asarray([1.0]), (-1,1))
-    print(regressor.predict(point))
+    k.append(regressor.predict(point)[0])
+
+
+    print('TP-log-0.95: %.2f'
+      % (k[-1]))
+
     print('----')
 
+s = sum(k)
+for ind, val in enumerate(k):
+    k[ind] = val/s
+
+    print(round(k[ind],4))
+
+e = [16436.015873511333,
+45807.61072698963,
+103565.54283482285,
+102674.11866437038,
+90.15641091228197]
+
+e_s = sum(e)
+for ind, val in enumerate(e):
+    e[ind] = val/e_s
+    print(round(e[ind],4))
 

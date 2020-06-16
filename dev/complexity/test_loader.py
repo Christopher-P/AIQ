@@ -8,6 +8,7 @@ from os import listdir
 from os.path import isfile, join
 
 import numpy as np
+from sklearn.preprocessing import normalize
 
 import random
 
@@ -207,9 +208,15 @@ class Loader():
         x = np.load('cart_x.npy')
         y = np.load('cart_y.npy')
 
+        # Norm the data
+        x = x / np.linalg.norm(x)
+
         # Correct shape
         x = np.reshape(x, (60000, 32, 32, 1))
         y = np_utils.to_categorical(y, 2)
+
+
+
 
         print(x.shape)
         print(y.shape)
