@@ -17,3 +17,4 @@ dev/jiant_data/*
 
 # We want to track our custom data scripts
 !dev/jiant/tasks/tasks.py
+!aiq.yml
