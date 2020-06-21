@@ -3966,8 +3966,8 @@ class ReallyNominalName(SingleClassificationTask):
         killw = kw 
 
         # Setup local variables
-        yaml_path = "/home/chris/aiq/dev/jiant/jiant/config/aiq.yml"
-        data_path = "/home/chris/aiq/dev/jiant/data/"
+        yaml_path = "/home/pereyda/aiq/dev/jiant/jiant/config/aiq.yml"
+        data_path = "/home/pereyda/aiq/dev/jiant/data/"
 
         #name_map = {"cola": "CoLATask", "cola2": "CoLAAnalysisTask", 
         #            "mnli": "MultiNLIHypothesisOnlyTask", "sst": "SSTTask", "stt": "SciTailTask"}
