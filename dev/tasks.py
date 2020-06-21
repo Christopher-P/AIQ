@@ -3969,10 +3969,15 @@ class ReallyNominalName(SingleClassificationTask):
         yaml_path = "/home/chris/aiq/dev/jiant/jiant/config/aiq.yml"
         data_path = "/home/chris/aiq/dev/jiant/data/"
 
-        name_map = {"cola": "CoLATask", "cola2": "CoLAAnalysisTask", 
-                    "mnli": "MultiNLIHypothesisOnlyTask", "sst": "SSTTask", "stt": "SciTailTask"}
-        data_map = {"cola": "CoLA", "cola2": "CoLA", "mnli": "MNLI", "sst": "SST-2", 
-                    "stt": "SciTailV1.1/tsv_format"}
+        #name_map = {"cola": "CoLATask", "cola2": "CoLAAnalysisTask", 
+        #            "mnli": "MultiNLIHypothesisOnlyTask", "sst": "SSTTask", "stt": "SciTailTask"}
+        #data_map = {"cola": "CoLA", "cola2": "CoLA", "mnli": "MNLI", "sst": "SST-2", 
+        #            "stt": "SciTailV1.1/tsv_format"}
+
+        # Only include superglue benchmarks
+        name_map = {"copa": "COPATask", "boolq": "BooleanQuestionTask", "cb": "CommitmentTask", "rte": "RTETask",
+                    "wic": "WiCTask", "wsc": "WinogradCoreferenceTask"}
+        data_map = {"copa": "COPA", "boolq": "BoolQ", "cb": "CB", "rte": "RTE", "wic": "WiC", "wsc": "WSC"}
 
         # Read yaml file contents
         with open(yaml_path, 'r') as f:
