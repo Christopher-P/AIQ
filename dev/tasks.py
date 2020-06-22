@@ -1922,6 +1922,8 @@ class RTETask(PairClassificationTask):
     """ Task class for Recognizing Textual Entailment 1, 2, 3, 5 """
 
     def __init__(self, path, max_seq_len, name, **kw):
+        global killw
+        kw = killw
         super().__init__(name, n_classes=2, **kw)
         self.path = path
         self.max_seq_len = max_seq_len
@@ -2725,6 +2727,8 @@ class CommitmentTask(PairClassificationTask):
 
     def __init__(self, path, max_seq_len, name, **kw):
         """ We use three F1 trackers, one for each class to compute multi-class F1 """
+        global killw
+        kw = killw
         super().__init__(name, n_classes=3, **kw)
         self.path = path
         self.max_seq_len = max_seq_len
@@ -2797,6 +2801,8 @@ class WiCTask(PairClassificationTask):
     """ Task class for Words in Context. """
 
     def __init__(self, path, max_seq_len, name, **kw):
+        global killw
+        kw = killw
         super().__init__(name, n_classes=2, **kw)
         self.path = path
         self.max_seq_len = max_seq_len
@@ -3111,6 +3117,8 @@ class COPATask(MultipleChoiceTask):
     """ Task class for Choice of Plausible Alternatives Task.  """
 
     def __init__(self, path, max_seq_len, name, **kw):
+        global killw
+        kw = killw
         super().__init__(name, **kw)
         self.path = path
         self.max_seq_len = max_seq_len
@@ -3381,6 +3389,8 @@ class HellaSwagTask(MultipleChoiceTask):
 @register_task("winograd-coreference", rel_path="WSC")
 class WinogradCoreferenceTask(SpanClassificationTask):
     def __init__(self, path, **kw):
+        global killw
+        kw = killw
         self._files_by_split = {"train": "train.jsonl", "val": "val.jsonl", "test": "test.jsonl"}
         self.num_spans = 2
         super().__init__(
@@ -3425,6 +3435,8 @@ class BooleanQuestionTask(PairClassificationTask):
     """Task class for Boolean Questions Task."""
 
     def __init__(self, path, max_seq_len, name, **kw):
+        global killw
+        kw = killw
         super().__init__(name, n_classes=2, **kw)
         self.path = path
         self.max_seq_len = max_seq_len
