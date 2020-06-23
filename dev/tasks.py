@@ -743,6 +743,8 @@ class CoLATask(SingleClassificationTask):
 @register_task("cola-analysis", rel_path="CoLA/")
 class CoLAAnalysisTask(SingleClassificationTask):
     def __init__(self, path, max_seq_len, name, **kw):
+        global killw
+        kw = killw
         super(CoLAAnalysisTask, self).__init__(name, n_classes=2, **kw)
         self.path = path
         self.max_seq_len = max_seq_len
@@ -3960,14 +3962,71 @@ class SentenceOrderTask(PairClassificationTask):
         example_counts = {}
         for split, split_path in self.files_by_split.items():
             example_counts[split] = sum(1 for _ in self.get_data_iter(split_path))
-        self.example_counts = example_counts
+        self.example_counts = example_count
+
 
 ## Custom chris test
+import itertools
+class CustomChrisTask(Task):
+    """ Generic sentence pair classification """
+
+    def __init__(self, name, n_classes, **kw):
+        super().__init__(name, **kw)
+        assert n_classes > 0
+        self.n_classes = n_classes
+        self.scorer1 = CategoricalAccuracy()
+        self.scorers = [self.scorer1]
+        self.val_metric = "%s_accuracy" % self.name
+        self.val_metric_decreases = False
+
+    def get_metrics(self, reset=False):
+        """Get metrics specific to the task"""
+        acc = self.scorer1.get_metric(reset)
+        return {"accuracy": acc}
+
+    def process_split(
+        self, split, indexers, model_preprocessing_interface
+    ) -> Iterable[Type[Instance]]:
+        """ Process split text into a list of AllenNLP Instances. """
+
+        #print("Process split")
+        #print(split[0], indexers, model_preprocessing_interface)
+        global A
+        global B
+
+        instances_A = A.process_split(split[0], indexers, model_preprocessing_interface)
+        instances_B = B.process_split(split[1], indexers, model_preprocessing_interface)
+        
+        data_a = []
+        for key in instances_A:
+            data_a.append(key)
+        data_b = []
+        for key in instances_B:
+            data_b.append(key)
+        data_c = []
+        for i in range( min(len(data_a), len(data_b)) ):
+            if random.random() < 0.5:
+                data_c.append(data_a[i])
+            else:
+                data_c.append(data_b[i])
+
+        return iter(data_c)
+
+    def update_metrics(self, out, batch):
+        global A 
+        A.update_metrics(out,batch)
+
+    def _custom_chris_forward(self, batch, task, predict):
+        global A   
+        return str(type(A).__name__)
+
 import yaml
 import csv
 killw = 1
+A = None
+B = None
 @register_task("custom-test-one", rel_path='Custom')
-class ReallyNominalName(SingleClassificationTask):
+class ReallyNominalName(CustomChrisTask):
 
     def __init__(self, path, max_seq_len, name, **kw):
         # Call super constructor
@@ -3978,8 +4037,8 @@ class ReallyNominalName(SingleClassificationTask):
         killw = kw 
 
         # Setup local variables
-        yaml_path = "/home/pereyda/aiq/dev/jiant/jiant/config/aiq.yml"
-        data_path = "/home/pereyda/aiq/dev/jiant/data/"
+        yaml_path = "/home/chris/aiq/dev/jiant/jiant/config/aiq.yml"
+        data_path = "/home/chris/aiq/dev/jiant/data/"
 
         #name_map = {"cola": "CoLATask", "cola2": "CoLAAnalysisTask", 
         #            "mnli": "MultiNLIHypothesisOnlyTask", "sst": "SSTTask", "stt": "SciTailTask"}
@@ -4021,9 +4080,12 @@ class ReallyNominalName(SingleClassificationTask):
         self.A = eval(test_A)
         self.B = eval(test_B)
 
-        self.scorer1 = Correlation("matthews")
-        self.scorer2 = CategoricalAccuracy()
-        self.scorers = [self.scorer1, self.scorer2]
+        # Set global a,b
+        global A
+        global B
+        A = self.A
+        B = self.B
+        self.n_choices = 2
 
         return None
 
@@ -4042,41 +4104,52 @@ class ReallyNominalName(SingleClassificationTask):
         B_te_data  = self.B.test_data_text
         B_val_data = self.B.train_data_text
 
+        self.train_data_text = [A_tr_data, B_tr_data]
+        self.test_data_text  = [A_te_data, B_te_data]
+        self.val_data_text   = [A_val_data, B_val_data]
+
+        self.sentences = self.train_data_text[0] + self.val_data_text[0] 
+
+        '''
         C_tr_data  = []
         C_te_data  = []
         C_val_data = []
 
         C_data = [C_tr_data, C_te_data, C_val_data]
 
+        print(len(A_tr_data), len(A_te_data), len(A_val_data))
+        print(len(B_tr_data), len(B_te_data), len(B_val_data))
+
+        print(A_tr_data[0])
+        print(B_tr_data[0])
+
         # p = A:B , p = 0 is max A, p = 1 is max B
         for ind, test in enumerate([[A_tr_data, B_tr_data], 
                                     [A_te_data, B_te_data], 
                                     [A_val_data, B_val_data]]):
 
-            # Each test has 3-4 parts for tokenization
-            for ind2 in range(len(test[0])):
+            # Get the min length
+            min_length = min(len(test[0]), len(test[1]))
+            d = []
+            # go through each instance now
+            for ind3 in range(min_length):
+                # Roll for p
+                if random() < self.proportion:
+                    # Select from B
+                    left = 1
+                else:
+                    # Select from A
+                    left = 0
 
-                # Get the min length
-                min_length = min(len(test[0][ind2]), len(test[1][ind2]))
-                d = []
-                # go through each instance now
-                for ind3 in range(min_length):
-                    # Roll for p
-                    if random() < self.proportion:
-                        left = 1
-                    else:
-                        left = 0
-
-                    # select based off of left
-                    d.append(test[left][ind2][ind3])
-                C_data[ind].append(d)
+                # select based off of left
+                d.append(test[left][ind3])
+            C_data[ind] = d
 
         self.train_data_text = C_data[0]
-        self.val_data_text   = C_data[1]
-        self.test_data_text  = C_data[2]
+        self.test_data_text  = C_data[1]
+        self.val_data_text   = C_data[2]
 
-        print(np.asarray(C_data[0][1]).shape)
-        print(np.asarray(A_tr_data[1]).shape)
+        print(len(C_data[0]), len(C_data[1]), len(C_data[2]))
 
         h1 = hash(str(C_data[0]))
         h2 = hash(str(A_tr_data))
@@ -4086,18 +4159,6 @@ class ReallyNominalName(SingleClassificationTask):
 
         # Need to construct sentences from the above data
         # Can be put in a seperate method, just do here for now
-        self.sentences = self.train_data_text[0] + self.val_data_text[0]
-
-    def update_metrics(self, out, batch):
-        logits = out["logits"]
-        labels = out["labels"]
-        logits, labels = logits.detach(), labels.detach()
-        _, preds = logits.max(dim=1)
-        self.scorer1(preds, labels)
-        self.scorer2(logits, labels)
-        return None
-
-    def get_metrics(self, reset=False):
-        return {"mcc": self.scorer1.get_metric(reset), "accuracy": self.scorer2.get_metric(reset)}
-
+        self.sentences = C_data[0][0] + C_data[2][0]
+        '''
 ## End chris custom test
