@@ -27,8 +27,6 @@ def gen_model(data,nodes,layers):
         model.add(Conv2D(nodes, (3, 3), activation='relu'))
 
     model.add(Flatten())
-
-    model.add(Dense(nodes, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss=keras.losses.categorical_crossentropy,
@@ -71,15 +69,11 @@ def main():
 
     ###Will run main code
     tl      = Loader()
-    tl.m    = tl.load_mnist()
-    tl.fm   = tl.load_fmnist()
-    tl.c10   = tl.load_cifar10()
-    tl.c100   = tl.load_cifar100()
     tl.cart   = tl.load_cartpole()
 
 
-    names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
-    dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cart]
+    names = ['CARTPOLE']
+    dats = [tl.cart]
 
     for j in range(50):
         for i in range(5):
