@@ -1,4 +1,6 @@
 import random
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -20,12 +22,21 @@ data = [tl.m, tl.fm, tl.c10, tl.c100, tl.cart]
 
 for A in data:
     A_part = A[0]
-    A_part = np.reshape(A_part, (len(A_part),32,32))
+    length = A[2][2].shape[0]
+    A_part = np.reshape(A_part, (len(A_part), 32, 32))
     s_A = 0.0
 
+    #a_zeros = np.zeros((len(A_part), 32, 32 + length))
+    #a_zeros[:len(A_part), :32, :32] = A_part
+    #a_zeros[:len(A_part), :32, 32:32 + length] = A[2]
+
+    mml =  math.log(length,2)
+
     for ind, val in enumerate(A_part):
+        if ind % 1000 == 0:
+            print(ind)
         entr_img  = entropy(val, disk(1))
-        s_A += np.mean(entr_img)
+        s_A = s_A + np.mean(entr_img) + mml
 
     print(s_A)
 exit()

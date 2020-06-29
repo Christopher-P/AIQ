@@ -2,11 +2,40 @@ import csv
 
 import numpy as np
 
-from sklearn.svm import SVR
-from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR, SVC
+from sklearn.covariance import ShrunkCovariance
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LinearRegression, SGDRegressor
 from sklearn import metrics
 
 import matplotlib.pyplot as plt
+
+
+def area_under_curve(model):
+    # Get 100 data points
+    x = np.arange(0, 1, 0.001)
+    x = np.reshape(x,(-1, 1))
+
+    # Get y prediction 
+    y = regressor.predict(x)
+
+    # Do math
+    AuC = 0.0
+    for ind, val in enumerate(x[1:]):
+        y1 = y[ind]
+        y2 = y[ind-1]
+
+        if y1 < 0 or y2 < 0:
+            continue
+        width = 0.01
+        square   = width * min(y1, y2) 
+        triangle = 0.5 * width * abs(y1 - y2)
+
+        box = square + triangle
+
+        AuC += box
+
+    return AuC
 
 with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -24,10 +53,15 @@ with open('data/results.csv', newline='') as csvfile:
         if row[0] not in results:
             results[row[0]] = []
 
-        print(row)
+        #print(row)
+        if row[0] == 'CARTPOLE' and datum[-1] < 0.6:
+            continue
         results[row[0]].append(datum)
 k = []
+fig, axs = plt.subplots(2, 3)
+c = 0
 for name in results.keys():
+    continue
     # get TP
     x_data = []
     # SCORE
@@ -44,9 +78,15 @@ for name in results.keys():
     
     # Linear regression
     # Ax + B
-    regressor = SVR(kernel='linear', C=10, gamma=5.0, epsilon=0.1)
+    #regressor = SVR(kernel='linear', C=10, gamma=5.0, epsilon=0.1)
 
-    regressor.fit(x_data, y_data) #training the algorithm
+    #regressor.fit(x_data, y_data) #training the algorithm
+
+    parameters = {'kernel':['rbf', 'linear', 'poly'], 'C' :[0.0001, 0.01, 10, 100],
+                  'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
+    regressor = GridSearchCV(SVR(), parameters)
+
+    regressor.fit(x_data, y_data)
 
     #To retrieve the intercept:
     #print(regressor.intercept_)
@@ -65,30 +105,48 @@ for name in results.keys():
 
     #print(x_data, y_data)
 
-    plt.scatter(x_data, y_data)
-    plt.scatter(x_data, pred)
-    plt.show()
+    axs[c % 2, c % 3].scatter(x_data, y_data)
+    axs[c % 2, c % 3].scatter(x_data, pred)
+    axs[c % 2, c % 3].set_xlabel('Accuracy')
+    axs[c % 2, c % 3].set_ylabel('log(TP)')
+    axs[c % 2, c % 3].set_title(name)
 
     point = np.reshape(np.asarray([1.0]), (-1,1))
     k.append(regressor.predict(point)[0])
 
 
-    print('TP-log-0.95: %.2f'
+    print('TP-log-1.0: %.2f'
       % (k[-1]))
 
-    print('----')
+    print("AuC:", str(round(area_under_curve(regressor), 4)))
 
+    print('----')
+    c = c + 1
+
+plt.show()
 s = sum(k)
 for ind, val in enumerate(k):
     k[ind] = val/s
 
     print(round(k[ind],4))
 
-e = [16436.015873511333,
-45807.61072698963,
-103565.54283482285,
-102674.11866437038,
-90.15641091228197]
+e = [88.0205,
+85.1328,
+136.8024,
+194.6641,
+15.1936]
+
+e_s = sum(e)
+for ind, val in enumerate(e):
+    e[ind] = val/e_s
+    print(round(e[ind],4))
+
+
+e = [182532.4206179811,
+211904.015471518,
+269661.94757943094,
+434866.9281534464,
+50090.15641089917]
 
 e_s = sum(e)
 for ind, val in enumerate(e):
