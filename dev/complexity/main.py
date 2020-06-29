@@ -23,9 +23,6 @@ def gen_model(data,nodes,layers):
     model.add(Conv2D(nodes, (3, 3), activation='relu',
               input_shape=input_shape,data_format='channels_last'))
 
-    for i in range(layers - 1):
-        model.add(Conv2D(nodes, (3, 3), activation='relu'))
-
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
 
