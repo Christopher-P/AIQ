@@ -20,8 +20,8 @@ def gen_model(data,nodes,layers):
     num_classes = data[3][0].shape[0]
 
     model = Sequential()
-    model.add(Conv2D(nodes, (3, 3), activation='relu',
-              input_shape=input_shape,data_format='channels_last'))
+    model.add(Dense(nodes, activation='relu',
+              input_shape=input_shape))
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
