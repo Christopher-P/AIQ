@@ -72,8 +72,8 @@ def main():
     names = ['CARTPOLE']
     dats = [tl.cart]
 
-    for j in range(50):
-        for i in range(5):
+    for j in range(500):
+        for i in range(1):
             nodes = int(random.random() * 32) + 1
             layers = int(random.random()*5) + 1
             results, tp, ntp  = run_it(dats[i], nodes, layers)
