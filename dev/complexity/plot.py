@@ -37,6 +37,52 @@ def area_under_curve(model):
 
     return AuC
 
+# Bin data according to mean
+def box_data(data):
+    number_boxes = 20 + 1
+    new_data = dict()
+
+    # Process by names
+    for name in data.keys():
+        # get score
+        x_data = []
+        # TP
+        y_data = []
+        for i in data[name]:
+            x_data.append(i[4])
+            y_data.append(i[2])
+        
+        # Find min/max score
+        min_s = min(x_data)
+        max_s = max(x_data)
+
+        a = np.arange(min_s, max_s, (max_s - min_s)/number_boxes)
+        
+        for ind, val in enumerate(x_data):
+            x_sum = 0
+            y_sum = 0
+            count = 0
+            for ind2, val2 in enumerate(a[0:len(a)-1]):
+                if x_data[ind] >= a[ind2] and x_data[ind] < a[ind2+1]:
+                    x_sum += x_data[ind]
+                    y_sum += y_data[ind]
+                    count += 1
+            # Check for non zero count
+            if count == 0:
+                continue
+
+            # Get averages and save it
+            x_avg = x_sum / count
+            y_avg = y_sum / count
+
+            # Check if it already exists
+            if name not in new_data:
+                new_data[name] = []
+
+            new_data[name].append([x_avg, y_avg])
+
+    return new_data
+
 with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     # Name, nodes, layers, TP, NTP, score
@@ -57,18 +103,23 @@ with open('data/results.csv', newline='') as csvfile:
         if row[0] == 'CARTPOLE' and datum[-1] < 0.6:
             continue
         results[row[0]].append(datum)
+
+# Bin the data
+results = box_data(results)
+#print(results)
+
 k = []
 fig, axs = plt.subplots(2, 3)
 c = 0
 for name in results.keys():
-    continue
     # get TP
     x_data = []
     # SCORE
     y_data = []
+
     for i in results[name]:
-        x_data.append(i[4])
-        y_data.append(i[2])
+        x_data.append(i[0])
+        y_data.append(i[1])
 
     # Reshape because we have one feature
     x_data = np.reshape(np.asarray(x_data),(-1, 1))   
