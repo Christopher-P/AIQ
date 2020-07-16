@@ -12,8 +12,10 @@ import matplotlib.pyplot as plt
 
 
 def area_under_curve(model):
+    width_const = 0.001
+
     # Get 100 data points
-    x = np.arange(0, 1, 0.001)
+    x = np.arange(0, 1, width_const)
     x = np.reshape(x,(-1, 1))
 
     # Get y prediction 
@@ -27,7 +29,7 @@ def area_under_curve(model):
 
         if y1 < 0 or y2 < 0:
             continue
-        width = 0.01
+        width = width_const
         square   = width * min(y1, y2) 
         triangle = 0.5 * width * abs(y1 - y2)
 
@@ -81,7 +83,7 @@ def box_data(data):
 
             new_data[name].append([x_avg, y_avg])
 
-    return new_data
+    return new_data, std
 
 with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -105,12 +107,13 @@ with open('data/results.csv', newline='') as csvfile:
         results[row[0]].append(datum)
 
 # Bin the data
-results = box_data(results)
+#results = box_data(results)
 #print(results)
 
 k = []
 fig, axs = plt.subplots(2, 3)
 c = 0
+e = []
 for name in results.keys():
     # get TP
     x_data = []
@@ -118,14 +121,14 @@ for name in results.keys():
     y_data = []
 
     for i in results[name]:
-        x_data.append(i[0])
-        y_data.append(i[1])
+        x_data.append(i[2])
+        y_data.append(i[4])
 
     # Reshape because we have one feature
     x_data = np.reshape(np.asarray(x_data),(-1, 1))   
 
     # Log the y_data (its too big
-    y_data = np.log(y_data)
+    x_data = np.log(x_data)
     
     # Linear regression
     # Ax + B
@@ -133,16 +136,11 @@ for name in results.keys():
 
     #regressor.fit(x_data, y_data) #training the algorithm
 
-    parameters = {'kernel':['rbf', 'linear', 'poly'], 'C' :[0.0001, 0.01, 10, 100],
+    parameters = {'kernel':['rbf', 'linear', 'poly', 'sigmoid'], 'C' :[0.0001, 0.01, 10, 100],
                   'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
     regressor = GridSearchCV(SVR(), parameters)
 
     regressor.fit(x_data, y_data)
-
-    #To retrieve the intercept:
-    #print(regressor.intercept_)
-    #For retrieving the slope:
-    #print(regressor.coef_)
 
     pred = regressor.predict(x_data)
 
@@ -169,7 +167,9 @@ for name in results.keys():
     print('TP-log-1.0: %.2f'
       % (k[-1]))
 
-    print("AuC:", str(round(area_under_curve(regressor), 4)))
+    e.append(round(area_under_curve(regressor), 4))
+
+    print("AuC:", str(e[-1]))
 
     print('----')
     c = c + 1
@@ -181,11 +181,7 @@ for ind, val in enumerate(k):
 
     print(round(k[ind],4))
 
-e = [88.0205,
-85.1328,
-136.8024,
-194.6641,
-15.1936]
+
 
 e_s = sum(e)
 for ind, val in enumerate(e):
@@ -203,4 +199,22 @@ e_s = sum(e)
 for ind, val in enumerate(e):
     e[ind] = val/e_s
     print(round(e[ind],4))
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# construct some data like what you have:
+x = np.random.randn(100, 5)
+mins = x.min(0)
+maxes = x.max(0)
+means = x.mean(0)
+std = x.std(0)
+
+# create stacked errorbars:
+plt.errorbar(np.arange(5), means, std, fmt='ok', lw=3)
+plt.errorbar(np.arange(5), means, [means - mins, maxes - means],
+             fmt='.k', ecolor='gray', lw=1)
+plt.xlim(-1, 5)
+
+plt.show()
 
