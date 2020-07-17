@@ -24,6 +24,9 @@ def gen_model(data,nodes,layers):
     model.add(Dense(nodes, activation='relu',
               input_shape=input_shape))
 
+    for i in range(layers - 1):
+        model.add(Dense(nodes, activation='relu'))
+
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
 
