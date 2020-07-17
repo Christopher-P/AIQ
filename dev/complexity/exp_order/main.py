@@ -14,6 +14,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Input
 from keras.layers import Conv2D, MaxPooling2D
+from keras.optimizers import Adam
 from keras import backend as K
 
 import datetime
@@ -21,16 +22,19 @@ import sys
 
 import gym
 from rl.agents import SARSAAgent, DQNAgent
-from rl.policy import EpsGreedyQPolicy
+from rl.policy import EpsGreedyQPolicy, BoltzmannQPolicy
 from rl.memory import EpisodeParameterMemory, SequentialMemory
 
-def gen_model(env_obs, env_act,nodes,layers):
+def gen_model(env_obs, env_act, nodes,layers):
     input_shape = env_obs
     num_classes = env_act
 
     model = Sequential()
     model.add(Dense(nodes, activation='relu',
               input_shape=(1,input_shape)))
+
+    for i in range(layers - 1):
+        model.add(Dense(nodes, activation='relu'))
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
@@ -51,31 +55,41 @@ def run_it(env, nodes, layers):
     nb_step = 50000
     nb_eps  = 100
     try:
-        env_obs = env.observation_space.shape
+        env_obs = env.observation_space.n
     except:
-        env_obs = env.action_space.n
+        try:
+            env_obs = env.observation_space.shape[0]
+        except:
+            env_obs = env.observation_space.shape
     try:
         env_act = env.action_space.n
     except:
         env_act = env.action_space.shape
 
+    print(env_obs, env_act)
+
     # Create model with random params, get TP and NTP 
     model, tp, ntp = gen_model(env_obs, env_act, nodes, layers)
 
     # Setup policy/memory
-    policy = BoltzmannQPolicy()
-    memory = SequentialMemory(limit=50000, window_length=50)
-
+    #policy = BoltzmannQPolicy()
+    #memory = SequentialMemory(limit=50000, window_length=50)
+    policy = EpsGreedyQPolicy()
+    
     # Setup RL agent
-    dqn = DQNAgent(model=self.model, nb_actions=10, memory=memory, nb_steps_warmup=1000,
-                       target_model_update=1e-2, policy=policy)
-    dqn.compile(Adam(lr=.00025), metrics=['mae'])
+    #dqn = DQNAgent(model=model, nb_actions=env_act, memory=memory, nb_steps_warmup=1000,
+    #                   target_model_update=1e-2, policy=policy)
+    #dqn.compile(Adam(lr=.00025), metrics=['mae'])
+    sarsa = SARSAAgent(model=model, policy=policy, nb_actions=env_act)
+    sarsa.compile('adam', metrics = ['mse'])
 
     # Run training
-    dqn.fit(env, nb_steps=nb_step, visualize=False, verbose=1)
+    #dqn.fit(env, nb_steps=nb_step, visualize=False, verbose=1)
+    sarsa.fit(env, nb_steps=nb_step, visualize=False, verbose=1)
 
     # Run testing
-    scores = dqn.test(env, nb_episodes=nb_eps, visualize=False)
+    #scores = dqn.test(env, nb_episodes=nb_eps, visualize=False)
+    scores = sarsa.test(env, nb_episodes=nb_eps, visualize= False)
 
     # Grab score data
     results = np.mean(scores.history['episode_reward'])
