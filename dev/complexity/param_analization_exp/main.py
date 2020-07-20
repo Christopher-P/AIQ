@@ -92,18 +92,21 @@ def main():
     # Overide gym
     from cartpole import CartPoleEnv
 
-    for j in range(200):
+    for i in range(50):
         # Vary params:
-        gravity = 9.8 / 10 * j 
+        #gravity = 9.8 / 4 * j 
 
         # Number of random samples per param
         samples = 50
 
         # Create inst with custom gravity
-        env = CartPoleEnv(gravity)
+        #env = CartPoleEnv(gravity)
         #env = gym.make('CartPole-v0')
 
-        for i in range(samples):
+        for j in range(20):
+            gravity = 9.8 / 4.0 * j
+            env = CartPoleEnv(gravity)
+
             # get random network params
             nodes  = int(random.random() * 32) + 1
             layers = int(random.random() * 5) + 1
