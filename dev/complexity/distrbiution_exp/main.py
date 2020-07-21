@@ -1,7 +1,5 @@
 import random
-random.seed(123)
 import numpy as np
-np.random.seed(123)
 
 from sklearn.datasets import make_blobs
 from sklearn.model_selection import train_test_split
@@ -46,12 +44,15 @@ def gen_model(data,nodes,layers):
     return model, trainable_count, non_trainable_count
 
 
-def gen_data():
+def gen_data(dist):
+    # Dist ranges [0,1]
+    dist = dist / 2.0
     n_samples = 50000
     n_bins = 2
     n_features = 10
 
-    centers = [list(np.random.uniform(size=n_features)), list(np.random.uniform(size=n_features))]
+    centers = [list(np.random.uniform(low=0.5+dist, high=0.5+dist, size=n_features)),
+               list(np.random.uniform(low=0.5-dist, high=0.5-dist, size=n_features))]
     X, y = make_blobs(n_samples=n_samples, centers=centers, n_features=n_features, shuffle=True)
 
     # split train, test for calibration
@@ -72,7 +73,7 @@ def gen_data():
 def run_it(A, nodes, layers):
 
     # Experiment Vars
-    epochs = 36
+    epochs = 12
     batch_size = 32
 
     results = []
@@ -89,18 +90,26 @@ def run_it(A, nodes, layers):
     return results, tp, ntp
 
 def main():
-    for j in range(500):
-        # Generate data / package it
-        X_train, X_test, y_train, y_test, centers = gen_data()
-        data = [ X_train, X_test, y_train, y_test]
+    # Test points
+    points = 20
 
-        # Gen random network params
-        nodes = int(random.random() * 32) + 1
-        layers = int(random.random()*5) + 1
+    # Samples per point
+    samples = 50
+    for i in range(samples):
+        for j in range(points):
+            # Generate data / package it
+            X_train, X_test, y_train, y_test, centers = gen_data(j/points)
+            data = [ X_train, X_test, y_train, y_test]
 
-        results, tp, ntp  = run_it(data, nodes, layers)
-        log_it([centers, nodes, layers, tp, ntp] + results)
+            # Gen random network params
+            nodes  = int(random.random() * 32) + 1
+            layers = int(random.random() * 5) + 1
+
+            results, tp, ntp  = run_it(data, nodes, layers)
+            log_it([centers, nodes, layers, tp, ntp] + results)
         
+    sns.distplot(l)
+    plt.show()
 
 if __name__=="__main__": 
     main()

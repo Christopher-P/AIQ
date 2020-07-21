@@ -10,6 +10,7 @@ from sklearn import metrics
 
 import matplotlib.pyplot as plt
 
+import ast
 
 def area_under_curve(model):
     width_const = 0.001
@@ -87,24 +88,21 @@ def box_data(data):
 
 with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    # Name, nodes, layers, TP, NTP, score
+    # centers, nodes, layers, TP, NTP, score
     results = dict()
     for row in spamreader:
         datum  = []
-        datum.append(int(row[1]))
-        datum.append(int(row[2]))
+        centers = ast.literal_eval(row[0])
+        dist = np.linalg.norm(np.asarray(centers[0]) - np.asarray(centers[1]))
+
         datum.append(int(row[3]))
-        datum.append(int(row[4]))
         datum.append(float(row[5]))
         
         # Check if it already exists
-        if row[0] not in results:
-            results[row[0]] = []
+        if dist not in results:
+            results[dist] = []
 
-        #print(row)
-        if row[0] == 'CARTPOLE' and datum[-1] < 0.6:
-            continue
-        results[row[0]].append(datum)
+        results[dist].append(datum)
 
 # Bin the data
 #results = box_data(results)
@@ -114,6 +112,13 @@ k = []
 fig, axs = plt.subplots(2, 3)
 c = 0
 e = []
+
+AuC = []
+mse = []
+
+# Print distance
+#print(results.keys())
+
 for name in results.keys():
     # get TP
     x_data = []
@@ -121,8 +126,8 @@ for name in results.keys():
     y_data = []
 
     for i in results[name]:
-        x_data.append(i[4])
-        y_data.append(i[2])
+        x_data.append(i[1])
+        y_data.append(i[0])
 
     # Reshape because we have one feature
     x_data = np.reshape(np.asarray(x_data),(-1, 1))   
@@ -138,7 +143,7 @@ for name in results.keys():
 
     parameters = {'kernel':['rbf', 'linear', 'poly', 'sigmoid'], 'C' :[0.0001, 0.01, 10, 100],
                   'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
-    regressor = GridSearchCV(SVR(), parameters)
+    regressor = GridSearchCV(SVR(max_iter=1000), parameters)
 
     regressor.fit(x_data, y_data)
 
@@ -149,10 +154,10 @@ for name in results.keys():
     print('Mean squared error: %.2f'
       % metrics.mean_squared_error(y_data, pred))
 
+    mse.append(round(metrics.mean_squared_error(y_data, pred),4))
+
     print('Coefficient of determination: %.2f'
       % metrics.r2_score(y_data, pred))
-
-    #print(x_data, y_data)
 
     axs[c % 2, c % 3].scatter(x_data, y_data)
     axs[c % 2, c % 3].scatter(x_data, pred)
@@ -168,11 +173,18 @@ for name in results.keys():
       % (k[-1]))
 
     e.append(round(area_under_curve(regressor), 4))
+    AuC.append(e[-1])
 
     print("AuC:", str(e[-1]))
 
     print('----')
     c = c + 1
+
+print('AuC')
+print(AuC)
+
+print('mse')
+print(mse)
 
 plt.show()
 s = sum(k)
