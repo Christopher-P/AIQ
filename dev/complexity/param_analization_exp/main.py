@@ -103,9 +103,9 @@ def main():
         #env = CartPoleEnv(gravity)
         #env = gym.make('CartPole-v0')
 
-        for j in range(20):
-            gravity = 9.8 / 4.0 * j
-            env = CartPoleEnv(gravity)
+        for j in range(1, 21):
+            pole = (1.0 / 4.0 * j)
+            env = CartPoleEnv(pole)
 
             # get random network params
             nodes  = int(random.random() * 32) + 1
@@ -116,7 +116,7 @@ def main():
 
             # Save exp
             print(name, results)
-            log_it([name, gravity] + [nodes, layers, tp, ntp] + [results])
+            log_it([name, pole] + [nodes, layers, tp, ntp] + [results])
 
     return None
 
