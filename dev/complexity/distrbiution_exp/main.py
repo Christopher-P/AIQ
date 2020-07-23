@@ -91,10 +91,11 @@ def run_it(A, nodes, layers):
 
 def main():
     # Test points
-    points = 20
+    # 20 -> 6 cause first 6 have way tooo much variance
+    points = 6
 
     # Samples per point
-    samples = 50
+    samples = 500
     for i in range(samples):
         for j in range(points):
             # Generate data / package it
