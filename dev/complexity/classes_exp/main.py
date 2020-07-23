@@ -10,7 +10,6 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 
 import random
-random.seed(123)
 import numpy as np
 
 import datetime
@@ -67,27 +66,27 @@ def log_it(results):
 
 def main():
     tl      = Loader()
-    tl.C100 = tl.load_cifar100()
+    name = 'CIFAR'
 
-    names = ['CIFAR']
-    dats = [tl.C100]
+    # get j from parameters
+    for j in range(10):
 
-    for j in range(1000):
-        for i in range(1):
-            # num of classes --> 10,20,30,...,100
-            classes = (j % 10 + 1) * 10
-            tl.cifar = tl.load_cifar100(classes)
-            dats = [tl.cifar]
-            # get random network params
-            nodes  = int(random.random() * 32) + 1
-            layers = int(random.random() * 5) + 1
-            # Run exp
-            results, tp, ntp  = run_it(dats[i], nodes, layers)
-            # Save exp
-            log_it([names[i], classes] + [nodes, layers, tp, ntp] + results)
+        # num of classes --> 10,20,30,...,100
+        classes = (j % 10 + 1) * 10
+        dats = tl.load_cifar100(classes)
+
+        # get random network params
+        nodes  = int(random.random() * 32) + 1
+        layers = int(random.random() * 5) + 1
+
+        # Run exp
+        results, tp, ntp  = run_it(dats, nodes, layers)
+
+        # Save exp
+        log_it([name, classes] + [nodes, layers, tp, ntp] + results)
 
     return None
 
 if __name__ == '__main__':
-    ## Parse args here
     main()
+

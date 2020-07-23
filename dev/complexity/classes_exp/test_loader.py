@@ -29,6 +29,13 @@ class Loader():
         x_train = np.dot(x_train, rgb_convert)/255
         x_test  = np.dot(x_test , rgb_convert)/255
 
+        # Set classes to random classes
+        mapping = np.random.permutation(100)
+        for ind,val in enumerate(y_train):
+            y_train[ind][0] = mapping[val[0]]  
+        for ind,val in enumerate(y_test):
+            y_test[ind][0] = mapping[val[0]]    
+
         # Filter out classes above classes parameter
         # - train
         x_tmp = []
