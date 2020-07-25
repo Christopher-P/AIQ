@@ -92,22 +92,20 @@ def run_it(A, nodes, layers):
 def main():
     # Test points
     # 20 -> 6 cause first 6 have way tooo much variance
-    points = 6
+    points = 20
 
     # Samples per point
-    samples = 500
-    for i in range(samples):
-        for j in range(points):
-            # Generate data / package it
-            X_train, X_test, y_train, y_test, centers = gen_data(j/points)
-            data = [ X_train, X_test, y_train, y_test]
+    for j in range(points):
+        # Generate data / package it
+        X_train, X_test, y_train, y_test, centers = gen_data(j/points)
+        data = [ X_train, X_test, y_train, y_test]
 
-            # Gen random network params
-            nodes  = int(random.random() * 32) + 1
-            layers = int(random.random() * 5) + 1
+        # Gen random network params
+        nodes  = int(random.random() * 32) + 1
+        layers = int(random.random() * 5) + 1
 
-            results, tp, ntp  = run_it(data, nodes, layers)
-            log_it([centers, nodes, layers, tp, ntp] + results)
+        results, tp, ntp  = run_it(data, nodes, layers)
+        log_it([centers, nodes, layers, tp, ntp] + results)
         
     sns.distplot(l)
     plt.show()
