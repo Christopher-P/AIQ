@@ -7,6 +7,7 @@ from sklearn.covariance import ShrunkCovariance
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression, SGDRegressor
 from sklearn import metrics
+from sklearn.preprocessing import StandardScaler
 
 import matplotlib.pyplot as plt
 
@@ -109,7 +110,7 @@ with open('data/results.csv', newline='') as csvfile:
 #print(results)
 
 k = []
-fig, axs = plt.subplots(2, 3)
+fig, axs = plt.subplots(4, 5)
 c = 0
 e = []
 
@@ -134,14 +135,14 @@ for name in results.keys():
 
     # Log the y_data (its too big
     y_data = np.log(y_data)
-    
+
     # Linear regression
     # Ax + B
     #regressor = SVR(kernel='linear', C=10, gamma=5.0, epsilon=0.1)
 
     #regressor.fit(x_data, y_data) #training the algorithm
 
-    parameters = {'kernel':['rbf', 'linear', 'poly', 'sigmoid'], 'C' :[0.0001, 0.01, 10, 100],
+    parameters = {'kernel':['rbf', 'linear', 'sigmoid'], 'C' :[0.0001, 0.01, 10, 100],
                   'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
     regressor = GridSearchCV(SVR(max_iter=100000), parameters)
 
@@ -159,11 +160,11 @@ for name in results.keys():
     print('Coefficient of determination: %.2f'
       % metrics.r2_score(y_data, pred))
 
-    axs[c % 2, c % 3].scatter(x_data, y_data)
-    axs[c % 2, c % 3].scatter(x_data, pred)
-    axs[c % 2, c % 3].set_xlabel('Accuracy')
-    axs[c % 2, c % 3].set_ylabel('log(TP)')
-    axs[c % 2, c % 3].set_title(name)
+    axs[int(c/5), c % 5].scatter(x_data, y_data)
+    axs[int(c/5), c % 5].scatter(x_data, pred)
+    axs[int(c/5), c % 5].set_xlabel('Accuracy')
+    axs[int(c/5), c % 5].set_ylabel('log(TP)')
+    axs[int(c/5), c % 5].set_title(round(name, 3))
 
     point = np.reshape(np.asarray([1.0]), (-1,1))
     k.append(regressor.predict(point)[0])
@@ -185,48 +186,6 @@ print(AuC)
 
 print('mse')
 print(mse)
-
-plt.show()
-s = sum(k)
-for ind, val in enumerate(k):
-    k[ind] = val/s
-
-    print(round(k[ind],4))
-
-
-
-e_s = sum(e)
-for ind, val in enumerate(e):
-    e[ind] = val/e_s
-    print(round(e[ind],4))
-
-
-e = [182532.4206179811,
-211904.015471518,
-269661.94757943094,
-434866.9281534464,
-50090.15641089917]
-
-e_s = sum(e)
-for ind, val in enumerate(e):
-    e[ind] = val/e_s
-    print(round(e[ind],4))
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-# construct some data like what you have:
-x = np.random.randn(100, 5)
-mins = x.min(0)
-maxes = x.max(0)
-means = x.mean(0)
-std = x.std(0)
-
-# create stacked errorbars:
-plt.errorbar(np.arange(5), means, std, fmt='ok', lw=3)
-plt.errorbar(np.arange(5), means, [means - mins, maxes - means],
-             fmt='.k', ecolor='gray', lw=1)
-plt.xlim(-1, 5)
 
 plt.show()
 
