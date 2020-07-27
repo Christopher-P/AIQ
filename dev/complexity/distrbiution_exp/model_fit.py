@@ -142,7 +142,7 @@ for name in results.keys():
 
     #regressor.fit(x_data, y_data) #training the algorithm
 
-    parameters = {'kernel':['rbf', 'linear', 'sigmoid', 'poly'], 'C' :[0.0001, 0.01, 10, 100],
+    parameters = {'kernel':['linear'], 'C' :[0.0001, 0.01, 10, 100],
                   'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
     regressor = GridSearchCV(SVR(max_iter=100000), parameters)
 
