@@ -86,7 +86,7 @@ def box_data(data):
 
     return new_data, std
 
-with open('data/results.csv', newline='') as csvfile:
+with open('data/force.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     # CartPole, grav, nodes, layers, TP, NTP, score
     results = dict()
@@ -116,6 +116,7 @@ mse = []
 
 # Print grav
 #print(results.keys())
+#exit()
 
 for name in results.keys():
     # get TP
@@ -139,9 +140,9 @@ for name in results.keys():
 
     #regressor.fit(x_data, y_data) #training the algorithm
 
-    parameters = {'kernel':['rbf', 'linear', 'poly', 'sigmoid'], 'C' :[0.0001, 0.01, 10, 100],
+    parameters = {'kernel':['linear'], 'C' :[0.0001, 0.01, 10, 100],
                   'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
-    regressor = GridSearchCV(SVR(max_iter=1000), parameters)
+    regressor = GridSearchCV(SVR(max_iter=100000), parameters)
 
     regressor.fit(x_data, y_data)
 
