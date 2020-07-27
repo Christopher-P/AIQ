@@ -32,8 +32,7 @@ def gen_model(data,nodes,layers):
 
     model.add(Dense(2))
     model.add(Activation('linear'))
-
-    model.compile(loss=keras.losses.categorical_crossentropy,
+    model.compile(loss=keras.losses.binary_crossentropy,
                   optimizer=keras.optimizers.Adadelta(),
                   metrics=['accuracy'])
 
@@ -73,7 +72,7 @@ def gen_data(dist):
 def run_it(A, nodes, layers):
 
     # Experiment Vars
-    epochs = 12
+    epochs = 36
     batch_size = 32
 
     results = []
