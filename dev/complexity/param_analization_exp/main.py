@@ -104,7 +104,7 @@ def main():
         #env = gym.make('CartPole-v0')
 
         for j in range(1, 21):
-            pole = (1.0 / 4.0 * j)
+            pole = float(j)
             env = CartPoleEnv(pole)
 
             # get random network params
