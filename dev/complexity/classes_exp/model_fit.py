@@ -85,7 +85,7 @@ def box_data(data):
 
     return new_data, std
 
-with open('data/results.csv', newline='') as csvfile:
+with open('data/random.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     # CIFAR, #classes, nodes, layers, TP, NTP, score
     results = dict()
@@ -103,6 +103,8 @@ with open('data/results.csv', newline='') as csvfile:
 # Bin the data
 #results = box_data(results)
 #print(results)
+
+print('Data Loaded...')
 
 k = []
 fig, axs = plt.subplots(2, 3)
@@ -133,9 +135,9 @@ for name in results.keys():
 
     #regressor.fit(x_data, y_data) #training the algorithm
 
-    parameters = {'kernel':['rbf', 'linear', 'poly', 'sigmoid'], 'C' :[0.0001, 0.01, 10, 100],
+    parameters = {'kernel':['linear'], 'C' :[0.0001, 0.01, 10, 100],
                   'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
-    regressor = GridSearchCV(SVR(), parameters)
+    regressor = GridSearchCV(SVR(max_iter=100000), parameters)
 
     regressor.fit(x_data, y_data)
 
