@@ -27,8 +27,8 @@ plt.errorbar(np.arange(10, 110, step=10), auc, yerr=[standard_error, standard_er
              fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
 
 # Trendline
-x = np.arange(10, 110, step=10)
-z = np.polyfit(x, auc, 2)
+x = np.arange(10, 110, step=1)
+z = np.polyfit(np.arange(10, 110, step=10), auc, 2)
 p = np.poly1d(z)
 plt.plot(x, p(x), color='black')
 

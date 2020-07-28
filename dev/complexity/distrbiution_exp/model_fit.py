@@ -55,7 +55,7 @@ def box_data(data):
         for i in data[name]:
             x_data.append(i[4])
             y_data.append(i[2])
-        
+      
         # Find min/max score
         min_s = min(x_data)
         max_s = max(x_data)
@@ -98,7 +98,10 @@ with open('data/results.csv', newline='') as csvfile:
 
         datum.append(int(row[3]))
         datum.append(float(row[5]))
-        
+
+        if float(row[5]) < 0.45:
+            continue
+
         # Check if it already exists
         if dist not in results:
             results[dist] = []
