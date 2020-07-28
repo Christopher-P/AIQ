@@ -107,7 +107,7 @@ with open('data/random.csv', newline='') as csvfile:
 print('Data Loaded...')
 
 k = []
-fig, axs = plt.subplots(2, 3)
+fig, axs = plt.subplots(2, 5)
 c = 0
 e = []
 
@@ -153,11 +153,11 @@ for name in results.keys():
     print('Coefficient of determination: %.2f'
       % metrics.r2_score(y_data, pred))
 
-    axs[c % 2, c % 3].scatter(x_data, y_data)
-    axs[c % 2, c % 3].scatter(x_data, pred)
-    axs[c % 2, c % 3].set_xlabel('Accuracy')
-    axs[c % 2, c % 3].set_ylabel('log(TP)')
-    axs[c % 2, c % 3].set_title(name)
+    axs[int(c/5), c % 5].scatter(x_data, y_data)
+    axs[int(c/5), c % 5].scatter(x_data, pred)
+    axs[int(c/5), c % 5].set_xlabel('Accuracy')
+    axs[int(c/5), c % 5].set_ylabel('log(TP)')
+    axs[int(c/5), c % 5].set_title(name)
 
     point = np.reshape(np.asarray([1.0]), (-1,1))
     k.append(regressor.predict(point)[0])

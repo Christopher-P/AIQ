@@ -15,7 +15,7 @@ distance = [0.0, 0.1581138830084191, 0.31622776601683805, 0.4743416490252568, 0.
 
 print(len(auc), len(mse), len(distance))
 
-x = over
+x = distance
 number_of_domains = len(auc)
 
 # Normalize everything to sum=1
@@ -45,7 +45,7 @@ plt.plot(x, p(x), color='black')
 #plt.scatter(x, over, color='red')
 
 # Formatting
-plt.xlim(0.0, 1.0)
+plt.xlim(-0.1, 3.1)
 plt.ylim(0, 0.2)
 plt.xlabel('Cluster Overlap')
 plt.ylabel('Complexity')
