@@ -76,8 +76,8 @@ def main():
     dats = [tl.mnist, tl.fmnist, tl.c10, tl.c100, tl.cart]
 
     for j in range(500):
-        layers = int(random.random() * 5) + 1
-        nodes  = int(random.random() * 32) + 1
+        layers = int(random.random() * 3) + 1
+        nodes  = int(random.random() * 12) + 1
         for i in range(5):
             results, tp, ntp  = run_it(dats[i], nodes, layers)
             log_it([names[i], nodes, layers, tp, ntp] + results)
