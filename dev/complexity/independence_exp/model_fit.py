@@ -7,9 +7,11 @@ from sklearn.covariance import ShrunkCovariance
 from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression, SGDRegressor
 from sklearn import metrics
+from sklearn.preprocessing import StandardScaler
 
 import matplotlib.pyplot as plt
-
+from statistics import stdev
+import ast
 
 def area_under_curve(model):
     width_const = 0.001
@@ -51,9 +53,9 @@ def box_data(data):
         # TP
         y_data = []
         for i in data[name]:
-            x_data.append(i[1])
-            y_data.append(i[0])
-        
+            x_data.append(i[4])
+            y_data.append(i[2])
+      
         # Find min/max score
         min_s = min(x_data)
         max_s = max(x_data)
@@ -85,35 +87,61 @@ def box_data(data):
 
     return new_data, std
 
-with open('data/random.csv', newline='') as csvfile:
+with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
-    # CIFAR, #classes, nodes, layers, TP, NTP, score
+    # centers, nodes, layers, TP, NTP, score
     results = dict()
+    c = 0
+    datum  = []
+    avg = 0
     for row in spamreader:
-        datum  = []
-        datum.append(int(row[4]))
-        datum.append(float(row[6]))
+        TP = int(row[3])
+        score = float(row[5])
 
-        # Check if it already exists
-        if row[1] not in results:
-            results[row[1]] = []
+        datum.append(score)
+        avg = avg + TP
 
-        results[row[1]].append(datum)
+        if c >= 4:        
+            c = 0
+            TP = avg
+            # Check if it already exists
+            if TP not in results:
+                results[TP] = []
 
-# Bin the data
-#results = box_data(results)
-#print(results)
+            results[TP].append(datum)
+            datum  = []
+        else:
+            c = c + 1
 
-print('Data Loaded...')
+TPS = []
+stds = []
+means = []
 
-k = []
-fig, axs = plt.subplots(2, 5)
-c = 0
-e = []
+for TP in results.keys():
+    for sample in results[TP]:
+        # Const complexity from calibration
+        comps = [0.1693, 0.1638, 0.2632, 0.3745, 0.0292]
 
-AuC = []
-mse = []
+        # Multiply element wise
+        #scores = np.multiply(comps, sample)
+        scores = sample
+        print(comps, sample)
+        
+        TPS.append(np.log(TP))
+        stds = stdev(scores) * 1.96           
+        means.append(np.sum(scores))
+
+        plt.scatter([np.log(TP)] * 5, scores)
+
+
+plt.scatter(TPS, means, marker='x')
+
+plt.show()
+exit()
 for name in results.keys():
+    # Const complexity from calibration
+    comps = [0.1693, 0.1638, 0.2632, 0.3745, 0.0292]
+
     # get TP
     x_data = []
     # SCORE
@@ -128,7 +156,7 @@ for name in results.keys():
 
     # Log the y_data (its too big
     y_data = np.log(y_data)
-    
+
     # Linear regression
     # Ax + B
     #regressor = SVR(kernel='linear', C=10, gamma=5.0, epsilon=0.1)
@@ -155,10 +183,9 @@ for name in results.keys():
 
     axs[int(c/5), c % 5].scatter(x_data, y_data)
     axs[int(c/5), c % 5].scatter(x_data, pred)
-    axs[int(c/5), c % 5].set_xticks((0.0, 0.5))
     axs[int(c/5), c % 5].set_xlabel('Accuracy')
     axs[int(c/5), c % 5].set_ylabel('log(TP)')
-    axs[int(c/5), c % 5].set_title(name)
+    axs[int(c/5), c % 5].set_title(round(name, 3))
 
     point = np.reshape(np.asarray([1.0]), (-1,1))
     k.append(regressor.predict(point)[0])
@@ -180,34 +207,6 @@ print(AuC)
 
 print('mse')
 print(mse)
-
-plt.show()
-s = sum(k)
-for ind, val in enumerate(k):
-    k[ind] = val/s
-
-    print(round(k[ind],4))
-
-
-
-e_s = sum(e)
-for ind, val in enumerate(e):
-    e[ind] = val/e_s
-    print(round(e[ind],4))
-
-
-e = [182532.4206179811,
-211904.015471518,
-269661.94757943094,
-434866.9281534464,
-50090.15641089917]
-
-e_s = sum(e)
-for ind, val in enumerate(e):
-    e[ind] = val/e_s
-    print(round(e[ind],4))
-
-
 
 plt.show()
 

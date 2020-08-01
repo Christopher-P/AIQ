@@ -22,6 +22,8 @@ for ind in range(5):
     auc[ind] = auc[ind]/sum_auc
     entropy[ind] = entropy[ind]/sum_entropy
 
+print(auc)
+
 # Find SE from mse (RMSE functionally equaivalent to STDEV)
 standard_error = []
 for i in range(5):
