@@ -95,8 +95,9 @@ def main():
 
     # Samples per point
     for j in range(points):
+        p = 0.75 + j/100
         # Generate data / package it
-        X_train, X_test, y_train, y_test, centers = gen_data(j/points)
+        X_train, X_test, y_train, y_test, centers = gen_data(p)
         data = [ X_train, X_test, y_train, y_test]
 
         # Gen random network params
