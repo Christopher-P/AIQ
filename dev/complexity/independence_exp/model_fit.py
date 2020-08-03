@@ -95,8 +95,10 @@ with open('data/results.csv', newline='') as csvfile:
     datum  = []
     avg = 0
     for row in spamreader:
-        TP = int(row[3])
-        score = float(row[5])
+        nodes  = int(row[1])
+        layers = int(row[2])
+        TP     = int(row[3])
+        score  = float(row[5])
 
         datum.append(score)
         avg = avg + TP
