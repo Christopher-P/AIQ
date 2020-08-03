@@ -165,6 +165,7 @@ for name in results.keys():
 
     axs[int(c/5), c % 5].scatter(x_data, y_data)
     axs[int(c/5), c % 5].scatter(x_data, pred)
+    axs[int(c/5), c % 5].set_xlim(0.0, 1.0)
     axs[int(c/5), c % 5].set_xlabel('Accuracy')
     axs[int(c/5), c % 5].set_ylabel('log(TP)')
     axs[int(c/5), c % 5].set_title(round(name, 3))
