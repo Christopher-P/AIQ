@@ -87,7 +87,7 @@ def box_data(data):
 
     return new_data, std
 
-with open('data/results.csv', newline='') as csvfile:
+with open('data/results_2.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     # centers, nodes, layers, TP, NTP, score
     results = dict()
@@ -99,8 +99,13 @@ with open('data/results.csv', newline='') as csvfile:
         datum.append(int(row[3]))
         datum.append(float(row[5]))
 
-        if float(row[5]) < 0.45:
-            continue
+        # Score limit
+        #if float(row[5]) < 0.45:
+        #    continue
+
+        # TP limit
+        #if np.log(int(row[3])) < 4.0:
+        #    continue
 
         # Check if it already exists
         if dist not in results:
@@ -123,7 +128,12 @@ mse = []
 # Print distance
 #print(results.keys())
 
-for name in results.keys():
+# Do sort names here
+names = list(results.keys())
+names = sorted(names)
+#print(names)
+
+for name in names:
     # get TP
     x_data = []
     # SCORE
@@ -165,7 +175,7 @@ for name in results.keys():
 
     axs[int(c/5), c % 5].scatter(x_data, y_data)
     axs[int(c/5), c % 5].scatter(x_data, pred)
-    axs[int(c/5), c % 5].set_xlim(0.0, 1.0)
+    axs[int(c/5), c % 5].set_xlim(0.2, 1.0)
     axs[int(c/5), c % 5].set_xlabel('Accuracy')
     axs[int(c/5), c % 5].set_ylabel('log(TP)')
     axs[int(c/5), c % 5].set_title(round(name, 3))
