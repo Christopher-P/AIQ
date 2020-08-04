@@ -11,11 +11,11 @@ from sklearn import metrics
 import matplotlib.pyplot as plt
 
 
-def area_under_curve(model):
+def area_under_curve(model, data):
     width_const = 0.001
 
     # Get 100 data points
-    x = np.arange(0, 1, width_const)
+    x = np.arange(min(data)[0], max(data)[0], width_const)
     x = np.reshape(x,(-1, 1))
 
     # Get y prediction 
@@ -36,6 +36,9 @@ def area_under_curve(model):
         box = square + triangle
 
         AuC += box
+
+    # Scale by size
+    AuC = AuC / abs(min(data)[0] - max(data)[0])
 
     return AuC
 
@@ -114,6 +117,7 @@ k = []
 fig, axs = plt.subplots(2, 3)
 c = 0
 e = []
+AuCs = []
 for name in results.keys():
     # get TP
     x_data = []
@@ -167,12 +171,15 @@ for name in results.keys():
     print('TP-log-1.0: %.2f'
       % (k[-1]))
 
-    e.append(round(area_under_curve(regressor), 4))
+    e.append(round(area_under_curve(regressor, x_data), 4))
+    AuCs.append(e[-1])
 
     print("AuC:", str(e[-1]))
 
     print('----')
     c = c + 1
+
+print('AuCs:', AuCs)
 
 plt.show()
 s = sum(k)

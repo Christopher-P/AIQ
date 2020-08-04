@@ -12,11 +12,11 @@ import matplotlib.pyplot as plt
 
 import ast
 
-def area_under_curve(model):
+def area_under_curve(model, data):
     width_const = 0.001
 
     # Get 100 data points
-    x = np.arange(0, 1, width_const)
+    x = np.arange(min(data)[0], max(data)[0], width_const)
     x = np.reshape(x,(-1, 1))
 
     # Get y prediction 
@@ -37,6 +37,9 @@ def area_under_curve(model):
         box = square + triangle
 
         AuC += box
+
+    # Scale by size
+    AuC = AuC / abs(min(data)[0] - max(data)[0])
 
     return AuC
 
@@ -86,7 +89,7 @@ def box_data(data):
 
     return new_data, std
 
-with open('data/force.csv', newline='') as csvfile:
+with open('data/grav.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     # CartPole, grav, nodes, layers, TP, NTP, score
     results = dict()
@@ -171,7 +174,7 @@ for name in results.keys():
     print('TP-log-1.0: %.2f'
       % (k[-1]))
 
-    e.append(round(area_under_curve(regressor), 4))
+    e.append(round(area_under_curve(regressor, x_data), 4))
     AuC.append(e[-1])
 
     print("AuC:", str(e[-1]))

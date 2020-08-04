@@ -87,7 +87,7 @@ def box_data(data):
 
     return new_data, std
 
-with open('data/results_2.csv', newline='') as csvfile:
+with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     # centers, nodes, layers, TP, NTP, score
     results = dict()
