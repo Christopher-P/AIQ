@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 # Generated from plot.py
-auc = [9.4758, 9.3245, 9.5148, 10.5729, 11.9271]
+auc = [8.802, 8.513, 13.68, 19.466, 1.519]
 mse = [0.62, 0.64, 1.31, 0.75, 1.99]
 
 # Generated from entropy.py
@@ -44,7 +44,7 @@ plt.xlim(-0.5, 4.5)
 plt.xticks(np.arange(5), ["MNIST", "FMNIST", "C10", "C100", "CARTPOLE"])
 plt.ylim(0, 0.5)
 plt.xlabel('Domains')
-plt.ylabel('Complexity')
+plt.ylabel('Complexity / Entropy')
 
 # Save to file
 plt.savefig('Entropies.png')

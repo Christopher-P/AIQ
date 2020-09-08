@@ -8,14 +8,17 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression, SGDRegressor
 from sklearn import metrics
 
+from statistics import variance, mean, stdev
+import copy
+
 import matplotlib.pyplot as plt
 
 
-def area_under_curve(model, data):
-    width_const = 0.001
+def area_under_curve(model, data, ran_min):
+    width_const = 0.0001
 
     # Get 100 data points
-    x = np.arange(min(data)[0], max(data)[0], width_const)
+    x = np.arange(min(data), max(data), width_const)
     x = np.reshape(x,(-1, 1))
 
     # Get y prediction 
@@ -38,55 +41,12 @@ def area_under_curve(model, data):
         AuC += box
 
     # Scale by size
-    AuC = AuC / abs(min(data)[0] - max(data)[0])
+    #AuC = AuC / (abs(min(data) - max(data)))
+    #AuC = AuC / min(data)
+    #print(variance(data))
+    #AuC = AuC / (mean(data) * variance(data))
 
     return AuC
-
-# Bin data according to mean
-def box_data(data):
-    number_boxes = 20 + 1
-    new_data = dict()
-
-    # Process by names
-    for name in data.keys():
-        # get score
-        x_data = []
-        # TP
-        y_data = []
-        for i in data[name]:
-            x_data.append(i[4])
-            y_data.append(i[2])
-        
-        # Find min/max score
-        min_s = min(x_data)
-        max_s = max(x_data)
-
-        a = np.arange(min_s, max_s, (max_s - min_s)/number_boxes)
-        
-        for ind, val in enumerate(x_data):
-            x_sum = 0
-            y_sum = 0
-            count = 0
-            for ind2, val2 in enumerate(a[0:len(a)-1]):
-                if x_data[ind] >= a[ind2] and x_data[ind] < a[ind2+1]:
-                    x_sum += x_data[ind]
-                    y_sum += y_data[ind]
-                    count += 1
-            # Check for non zero count
-            if count == 0:
-                continue
-
-            # Get averages and save it
-            x_avg = x_sum / count
-            y_avg = y_sum / count
-
-            # Check if it already exists
-            if name not in new_data:
-                new_data[name] = []
-
-            new_data[name].append([x_avg, y_avg])
-
-    return new_data, std
 
 with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -109,16 +69,18 @@ with open('data/results.csv', newline='') as csvfile:
             continue
         results[row[0]].append(datum)
 
-# Bin the data
-#results = box_data(results)
-#print(results)
-
 k = []
 fig, axs = plt.subplots(2, 3)
 c = 0
 e = []
 AuCs = []
+
+random_mins = {"MNIST":0.1, "FMNIST":0.1, "C10":0.1, "C100":0.01, "CARTPOLE":0.5}
+
 for name in results.keys():
+    # Get random min values
+    ran_min = random_mins[name]
+
     # get TP
     x_data = []
     # SCORE
@@ -127,6 +89,8 @@ for name in results.keys():
     for i in results[name]:
         x_data.append(i[4])
         y_data.append(i[2])
+
+    x_data_nominal = copy.deepcopy(x_data)
 
     # Reshape because we have one feature
     x_data = np.reshape(np.asarray(x_data),(-1, 1))   
@@ -171,7 +135,7 @@ for name in results.keys():
     print('TP-log-1.0: %.2f'
       % (k[-1]))
 
-    e.append(round(area_under_curve(regressor, x_data), 4))
+    e.append(round(area_under_curve(regressor, x_data_nominal, ran_min), 4))
     AuCs.append(e[-1])
 
     print("AuC:", str(e[-1]))
@@ -181,7 +145,7 @@ for name in results.keys():
 
 print('AuCs:', AuCs)
 
-plt.show()
+#plt.show()
 s = sum(k)
 for ind, val in enumerate(k):
     k[ind] = val/s
@@ -206,22 +170,4 @@ e_s = sum(e)
 for ind, val in enumerate(e):
     e[ind] = val/e_s
     print(round(e[ind],4))
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-# construct some data like what you have:
-x = np.random.randn(100, 5)
-mins = x.min(0)
-maxes = x.max(0)
-means = x.mean(0)
-std = x.std(0)
-
-# create stacked errorbars:
-plt.errorbar(np.arange(5), means, std, fmt='ok', lw=3)
-plt.errorbar(np.arange(5), means, [means - mins, maxes - means],
-             fmt='.k', ecolor='gray', lw=1)
-plt.xlim(-1, 5)
-
-plt.show()
 

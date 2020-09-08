@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 import ast
 
-def area_under_curve(model):
+def area_under_curve(model, data):
     width_const = 0.001
 
     # Get 100 data points
@@ -38,6 +38,8 @@ def area_under_curve(model):
         box = square + triangle
 
         AuC += box
+
+    AuC = AuC / (max(data) - min(data))
 
     return AuC
 
@@ -143,6 +145,8 @@ for name in names:
         x_data.append(i[1])
         y_data.append(i[0])
 
+    x_data_ori = x_data
+
     # Reshape because we have one feature
     x_data = np.reshape(np.asarray(x_data),(-1, 1))   
 
@@ -187,7 +191,8 @@ for name in names:
     print('TP-log-1.0: %.2f'
       % (k[-1]))
 
-    e.append(round(area_under_curve(regressor), 4))
+    aruc = area_under_curve(regressor, x_data_ori)
+    e.append(round(aruc, 4))
     AuC.append(e[-1])
 
     print("AuC:", str(e[-1]))

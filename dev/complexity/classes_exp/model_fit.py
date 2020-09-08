@@ -9,13 +9,14 @@ from sklearn.linear_model import LinearRegression, SGDRegressor
 from sklearn import metrics
 
 import matplotlib.pyplot as plt
-
+import copy
+from statistics import mean, variance, stdev
 
 def area_under_curve(model, data):
     width_const = 0.001
 
     # Get 100 data points
-    x = np.arange(min(data)[0], max(data)[0], width_const)
+    x = np.arange(min(data), max(data), width_const)
     x = np.reshape(x,(-1, 1))
 
     # Get y prediction 
@@ -38,8 +39,11 @@ def area_under_curve(model, data):
         AuC += box
 
     # Scale by size
-    AuC = AuC / abs(min(data)[0] - max(data)[0])
-
+    #AuC = AuC / (abs( min(data) - max(data) ) * stdev(data))
+    #print(stdev(data))
+    #AuC = AuC / (mean(data) * variance(data))
+    #AuC = AuC / mean(data)
+    AuC = AuC / (max(data))
     return AuC
 
 # Bin data according to mean
@@ -125,6 +129,8 @@ for name in results.keys():
     for i in results[name]:
         x_data.append(i[1])
         y_data.append(i[0])
+    
+    x_data_nominal = copy.deepcopy(x_data)
 
     # Reshape because we have one feature
     x_data = np.reshape(np.asarray(x_data),(-1, 1))   
@@ -170,7 +176,7 @@ for name in results.keys():
     print('TP-log-1.0: %.2f'
       % (k[-1]))
 
-    e.append(round(area_under_curve(regressor, x_data), 4))
+    e.append(round(area_under_curve(regressor, x_data_nominal), 4))
     AuC.append(e[-1])
 
     print("AuC:", str(e[-1]))

@@ -79,45 +79,35 @@ def clean(TP, means):
 
     return list(tps), y, stds
 
+
+def sum_norm(data):
+    sum_data = sum(data)
+    for ind, val in enumerate(data):
+        data[ind] = val/sum_data
+    return data
+
 # Overall Plot
 TPS = []
 means = []
 stds = []
 once = 0
-'''
+
 # Many dots plot
 for TP in results.keys():
     for sample in results[TP]:
         # Const complexity from calibration
-        comps = [0.1693, 0.1638, 0.2632, 0.3745, 0.0292]
+        comps = [8.802, 8.513, 13.68, 19.466, 1.519]
 
         # Multiply element wise
         #scores = np.multiply(comps, sample)
-        scores = sample
+        sample = np.subtract(1, sample)        
+
+        # Find dot product
+        scores = np.divide(np.dot(comps, sample), 
+                           np.linalg.norm(comps) * np.linalg.norm(sample))
         
         TPS.append(TP)        
-        means.append(np.sum(scores))
-        markers = ['x'] * 5
-
-        x = [TP] * 5
-        y = scores
-        s = ['8', 's', 'p', 'D', 'X']
-        col = ['red','green','blue', 'brown','orange']
-        label = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
-        for _s, c, _x, _y, _l in zip(s, col, x, y, label):
-            if once < 5:
-                plt.scatter(_x, _y, marker=_s, c=c, label=_l)
-                once = once + 1
-            else:
-                plt.scatter(_x, _y, marker=_s, c=c)
-        #plt.scatter([TP] * 5, scores, marker=markers)
-plt.legend()
-plt.xlabel('nodes * layers')
-plt.ylabel('SCORE')
-plt.show()
-
-
-'''
+        means.append(scores)
 
 # Clean data
 x, y, std = clean(TPS, means)
@@ -128,29 +118,26 @@ x, y, std = clean(TPS, means)
 plt.errorbar(x, y, yerr=[std, std],
              fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1, label='Mean/Error')
 
-'''
 # Trendline
-z = np.polyfit(np.exp(x), np.exp(y), 1)
-print(z)
+z = np.polyfit(x, y, 1)
 p = []
+print(z)
 for i in x:
-    k = np.log(z[1]) * np.log(i * z[0])
+    k = z[0] * i + z[1]
     p.append(k)
 
 plt.plot(x, p, color='black')
-'''
 
-def binding(x,kd,bmax):
-    return (bmax*x)/(x+kd)
-param=sp.optimize.curve_fit(binding, x,y)
-
-plt.plot(np.arange(36), binding(np.arange(36),*param[0]), color='orange', label='TrendLine')
+#plt.plot(np.arange(36), binding(np.arange(36),*param[0]), color='orange', label='TrendLine')
 
 # Single points plot
 plt.scatter(TPS, means, marker='x', label='Scores')
 plt.legend(loc='lower right')
 plt.xlabel('nodes * layers')
-plt.ylabel('AIQ')
+plt.ylabel('Complexity Fit')
 plt.show()
+
+print(np.corrcoef(TPS[4:], means[4:]))
+
 
 
