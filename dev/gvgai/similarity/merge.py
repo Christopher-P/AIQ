@@ -1,4 +1,6 @@
 #!usr/bin/env python3
+import random
+import numpy as np
 
 
 # This class takes in two open ai gym envs and creates a new one from them merged
@@ -11,18 +13,12 @@ class Merged:
         self.p = p
 
         # Proccess test params
-        self.instA_in = self.instA.get_header().input_dim
-        self.instA_out = self.instA.get_header().output_dim
-        self.instB_in = self.instB.get_header().input_dim
-        self.instB_out = self.instB.get_header().output_dim
-
-        self.max_in = max(self.instA_in, self.instB_in)
-        self.max_out = max(self.instA_out, self.instB_out)
-        self.header = header(self.instA.get_header().env_name + "=" +
-                             self.instB.get_header().env_name,
-                             self.max_in,
-                             self.max_out,
-                             -1, "empty", True, -200, 200)
+        self.max_in = max(len(self.instA.actions), len(self.instB.actions))
+        dim = []
+        for dims in range(3):
+            dim.append(max(self.instA.observation_space.shape[dims], self.instB.observation_space.shape[dims]))
+        self.max_out = dim
+        self.last_out = np.zeros(self.max_out)
 
     # random sampling
     def select(self):
@@ -33,20 +29,12 @@ class Merged:
             self.inst = self.instB
 
     def output_format(self, out):
-        if len(out) < self.max_out[0]:
-            result = np.zeros(self.max_out[0])
-            result[0:len(out)] = out
-            # print(out, result)
-            return result
-        else:
-            return out
+        self.last_out = np.zeros(self.max_out)
+        self.last_out[:out.shape[0], :out.shape[1], :out.shape[2]] = out
+        return self.last_out
 
     def input_format(self, inp):
-        # print(inp,self.inst.get_header().input_dim)
-        if inp > self.inst.get_header().input_dim - 1:
-            return self.inst.get_header().input_dim - 1
-        else:
-            return inp
+        return inp % self.max_in
 
     def reset(self):
         self.select()
@@ -61,7 +49,7 @@ class Merged:
     def act(self, action):
         action = self.input_format(action)
         # print(self.inst.act(action))
-        obs, r, done, info = self.inst.act(action)
+        obs, r, done, info = self.inst.step(action)
         obs = self.output_format(obs)
         return obs, r, done, info
 
