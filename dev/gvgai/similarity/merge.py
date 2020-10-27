@@ -29,7 +29,7 @@ class Merged:
             self.inst = self.instB
 
     def output_format(self, out):
-        self.last_out = np.zeros(self.max_out)
+        self.last_out = np.zeros(self.max_out, dtype=np.uint8)
         self.last_out[:out.shape[0], :out.shape[1], :out.shape[2]] = out
         return self.last_out
 
