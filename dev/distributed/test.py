@@ -4,8 +4,8 @@ import pika
 credentials = pika.PlainCredentials('chris', 'TdS3g8opiqi9DA7gi')
 parameters = pika.ConnectionParameters('10.218.111.4',
                                        5672,
-                                       '/',
-                                       credentials)
+                                       'demo',
+                                       credentials, socket_timeout=20)
 
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()

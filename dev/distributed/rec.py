@@ -5,7 +5,7 @@ def main():
     credentials = pika.PlainCredentials('chris', 'TdS3g8opiqi9DA7gi')
     parameters = pika.ConnectionParameters('10.218.111.4',
                                            5672,
-                                           '/',
+                                           'demo',
                                            credentials)
 
     connection = pika.BlockingConnection(parameters)
