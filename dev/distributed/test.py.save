@@ -2,10 +2,10 @@
 import pika
 
 credentials = pika.PlainCredentials('chris', 'TdS3g8opiqi9DA7gi')
-parameters = pika.ConnectionParameters('10.218.111.4',
+parameters = pika.ConnectionParameters(,
                                        5672,
                                        '/',
-                                       credentials, socket_timeout=20)
+                                       credentials)
 
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
