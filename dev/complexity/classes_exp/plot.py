@@ -10,16 +10,14 @@ mse = [0.5618, 0.5782, 0.5974, 0.6064, 0.6081, 0.7243, 0.6826, 0.6723, 0.6453, 0
 number_of_domains = 10
 
 # Normalize everything to sum=1
-sum_mse = sum(mse)
-sum_auc = sum(auc)
-for ind in range(number_of_domains):
-    mse[ind] = mse[ind]/sum_mse
-    auc[ind] = auc[ind]/sum_auc
+tmp = max(auc)*len(auc)
+auc = [float(i)/max(auc) for i in auc]
+mse = [float(i)/tmp for i in mse]
     
 # Find SE from mse (RMSE functionally equaivalent to STDEV)
 standard_error = []
 for i in range(number_of_domains):
-    standard_error.append(1.96 * math.sqrt(mse[i]) * (1/sum_mse) / math.sqrt(1000))
+    standard_error.append(1.96 * math.sqrt(mse[i]))
 
 # create stacked errorbars:
 # Main bars

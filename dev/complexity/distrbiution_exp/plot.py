@@ -18,22 +18,20 @@ distance = [0.0, 0.1581138830084191, 0.31622776601683805, 0.4743416490252568, 0.
 print(len(auc), len(mse), len(distance))
 
 # Change here for dif x-axis
-x = over
-#x = distance
+#x = over
+x = distance
 
 number_of_domains = len(auc)
 
 # Normalize everything to sum=1
-sum_mse = sum(mse)
-sum_auc = sum(auc)
-for ind in range(number_of_domains):
-    mse[ind] = mse[ind]/sum_mse
-    auc[ind] = auc[ind]/sum_auc
+tmp = max(auc)*max(mse)*len(auc)
+auc = [float(i)/max(auc) for i in auc]
+mse = [float(i)/tmp for i in mse]
 
 # Find SE from mse (RMSE functionally equaivalent to STDEV)
 standard_error = []
 for i in range(number_of_domains):
-    standard_error.append(1.96 * math.sqrt(mse[i])  / math.sqrt(1000))
+    standard_error.append(1.96 * math.sqrt(mse[i]))
 
 means = np.asarray(auc)
 
@@ -51,8 +49,6 @@ plt.plot(x, p(x), color='black')
 
 # Formatting
 #plt.xlim(-0.1, 3.1)
-plt.xlim(0.0, 1.0)
-plt.ylim(0, 0.1)
 plt.xlabel('Cluster Overlap')
 plt.ylabel('Complexity')
 

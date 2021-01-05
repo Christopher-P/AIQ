@@ -14,6 +14,7 @@ entropy = [182532.4206179811,
 50090.15641089917]
 
 # Normalize everything to sum=1
+'''
 sum_mse = sum(mse)
 sum_auc = sum(auc)
 sum_entropy = sum(entropy)
@@ -21,13 +22,22 @@ for ind in range(5):
     mse[ind] = mse[ind]/sum_mse
     auc[ind] = auc[ind]/sum_auc
     entropy[ind] = entropy[ind]/sum_entropy
-
+'''
+# Normalize everything to 0,1
+entropy = [float(i)/max(entropy) for i in entropy]
+tmp = max(auc)*max(mse)*len(auc)
+auc = [float(i)/max(auc) for i in auc]
+mse = [float(i)/tmp for i in mse]
 print(auc)
+print(sum(auc))
+
+p = np.corrcoef(entropy, auc)
+print(p)
 
 # Find SE from mse (RMSE functionally equaivalent to STDEV)
 standard_error = []
 for i in range(5):
-    standard_error.append(1.96 * math.sqrt(mse[i]) / math.sqrt(1000))
+    standard_error.append(1.96 * math.sqrt(mse[i]))
 
 means = np.asarray(auc)
 
@@ -42,7 +52,7 @@ plt.scatter(np.arange(5), entropy, color='r', marker=',')
 plt.legend(['Entropic Prediction', 'Empirical Prediction'])
 plt.xlim(-0.5, 4.5)
 plt.xticks(np.arange(5), ["MNIST", "FMNIST", "C10", "C100", "CARTPOLE"])
-plt.ylim(0, 0.5)
+plt.ylim(0, 1.5)
 plt.xlabel('Domains')
 plt.ylabel('Complexity / Entropy')
 
