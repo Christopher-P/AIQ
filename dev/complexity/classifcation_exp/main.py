@@ -2,6 +2,7 @@
 
 from test_loader import Loader
 import csv 
+import time
 
 import keras
 from keras.models import Sequential
@@ -55,11 +56,13 @@ def run_it(A, nodes, layers):
     
     return results, tp, ntp
 
-def log_it(time, results):
-    with open('data/results.csv', 'a', newline='') as csvfile:
+
+def log_it(name, results):
+    with open('data/' + str(name) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
+
 
 def main():
     time = str(datetime.datetime.now())
@@ -67,20 +70,27 @@ def main():
     ###Will run main code
     tl      = Loader()
     tl.cart   = tl.load_cartpole()
+    tl.mnist = tl.load_mnist()
+    tl.fmnist = tl.load_fmnist()
+    tl.cifar10 = tl.load_cifar10()
+    tl.cifar100 = tl.load_cifar100()
 
+    names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
+    dats = [tl.mnist, tl.fmnist, tl.cifar10, tl.cifar100, tl.cart]
 
-    names = ['CARTPOLE']
-    dats = [tl.cart]
-
-    for j in range(500):
-        for i in range(1):
-            nodes = int(random.random() * 32) + 1
-            layers = int(random.random()*5) + 1
-            results, tp, ntp  = run_it(dats[i], nodes, layers)
-            log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
+    for i in range(len(dats)):
+        nodes = 32#int(random.random() * 32) + 1
+        layers = 5#int(random.random()*5) + 1
+        results, tp, ntp = run_it(dats[i], nodes, layers)
+        log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
 
     return None
 
+
 if __name__ == '__main__':
     ## Parse args here
+    start = time.time()
     main()
+    done = time.time()
+    elapsed = done - start
+    print(elapsed)
