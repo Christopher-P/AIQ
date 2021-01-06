@@ -37,6 +37,7 @@ def gen_model(data,nodes,layers):
 
     return model, trainable_count, non_trainable_count
 
+
 def run_it(A, nodes, layers):
 
     # Experiment Vars
@@ -47,10 +48,10 @@ def run_it(A, nodes, layers):
     for i in [A]:
         model, tp, ntp = gen_model(i, nodes, layers)
         model.fit(i[0], i[2],
-              batch_size=batch_size,
-              epochs=epochs,
-              verbose=1,
-              validation_data=(i[1], i[3]))
+                  batch_size=batch_size,
+                  epochs=epochs,
+                  verbose=0,
+                  validation_data=(i[1], i[3]))
         score = model.evaluate(i[1], i[3], verbose=0)
         results.append(score[1])
     
@@ -64,8 +65,16 @@ def log_it(name, results):
         spamwriter.writerow(results)
 
 
-def main():
-    time = str(datetime.datetime.now())
+def main(start):
+    # Number of samples (all domains)
+    samples = 10
+
+    # Get time for seed and file_name
+    time = str(start)
+
+    # Seed it
+    random.seed(start)
+    np.random.seed(int(start))
 
     ###Will run main code
     tl      = Loader()
@@ -78,11 +87,13 @@ def main():
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
     dats = [tl.mnist, tl.fmnist, tl.cifar10, tl.cifar100, tl.cart]
 
-    for i in range(len(dats)):
-        nodes = 32#int(random.random() * 32) + 1
-        layers = 5#int(random.random()*5) + 1
-        results, tp, ntp = run_it(dats[i], nodes, layers)
-        log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
+    for j in range(samples):
+        for i in range(len(dats)):
+            nodes = int(random.random() * 32) + 1
+            layers = int(random.random() * 5) + 1
+            results, tp, ntp = run_it(dats[i], nodes, layers)
+            print(time, [names[i]] + [nodes, layers, tp, ntp] + results)
+            log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
 
     return None
 
@@ -90,7 +101,7 @@ def main():
 if __name__ == '__main__':
     ## Parse args here
     start = time.time()
-    main()
+    main(start)
     done = time.time()
     elapsed = done - start
     print(elapsed)
