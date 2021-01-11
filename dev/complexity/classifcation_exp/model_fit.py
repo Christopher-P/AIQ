@@ -12,17 +12,19 @@ from statistics import variance, mean, stdev
 import copy
 
 import matplotlib.pyplot as plt
+from os import listdir
+from os.path import isfile, join
 
 
-def area_under_curve(model, data, ran_min):
+def area_under_curve(model, data):
     width_const = 0.0001
 
     # Get 100 data points
-    x = np.arange(min(data), max(data), width_const)
-    x = np.reshape(x,(-1, 1))
+    x = np.arange(0, 1, width_const)
+    x = np.reshape(x, (-1, 1))
 
     # Get y prediction 
-    y = regressor.predict(x)
+    y = model.predict(x)
 
     # Do math
     AuC = 0.0
@@ -48,6 +50,132 @@ def area_under_curve(model, data, ran_min):
 
     return AuC
 
+
+# Load data from data dir
+def load_data():
+    # Number of files per model
+    file_num = 10
+    file_counter = 0
+
+    # Get all file paths
+    data_path = './data/'
+    file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
+
+    # Holds data
+    data = list()
+    results = dict()
+
+    # Open every file
+    for file_name in file_names:
+        with open(data_path + file_name, newline='') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in reader:
+                # Name, nodes, layers, TP, NTP, score
+                datum = list()
+                datum.append(int(row[1]))
+                datum.append(int(row[2]))
+                datum.append(int(row[3]))
+                datum.append(int(row[4]))
+                datum.append(float(row[5]))
+
+                # Check if name already exists
+                if row[0] not in results:
+                    results[row[0]] = []
+
+                # Remove outliers (about random)
+                if row[0] == "C100":
+                    if datum[4] < 0.02:
+                        continue
+                else:
+                    if datum[4] < 0.15:
+                        continue
+
+                results[row[0]].append(datum)
+
+        file_counter = file_counter + 1
+        if file_counter >= file_num:
+            file_counter = 0
+            data.append(results)
+            results = dict()
+    data.append(results)
+
+    return data
+
+
+# Create a model to fit the data
+def create_model(name, data_sample):
+    # Use Score here
+    x_data = []
+    # Use Trainable Parameters here
+    y_data = []
+
+    for i in data_sample:
+        x_data.append(i[4])
+        y_data.append(i[2])
+
+    # Data copy
+    x_data_nominal = copy.deepcopy(x_data)
+
+    # Reshape because we have one feature
+    x_data = np.reshape(np.asarray(x_data), (-1, 1))
+
+    # Log the y_data (its too big)
+    y_data = np.log(y_data)
+
+    # Do some hyper param searching here
+    parameters = {'kernel': ['rbf', 'linear', 'poly', 'sigmoid'], 'C': [0.0001, 0.01, 10, 100],
+                  'gamma': [0.00001, 0.1, 10, 100], 'epsilon': [0.00001, 0.1, 10, 100]}
+    regressor = GridSearchCV(SVR(max_iter=100000), parameters)
+
+    # Fit model
+    regressor.fit(x_data, y_data)
+
+    # Check accuracy of trained on data
+    pred = regressor.predict(x_data)
+
+    print('Name: {0}'.format(name))
+
+    print('Mean squared error: %.2f'
+          % metrics.mean_squared_error(y_data, pred))
+
+    print('Coefficient of determination: %.2f'
+          % metrics.r2_score(y_data, pred))
+
+    area_under = round(area_under_curve(regressor, x_data_nominal), 4)
+
+    print("AuC:", str(area_under))
+
+    print('----')
+
+    plt.scatter(x_data, y_data)
+    plt.scatter(x_data, pred)
+    plt.show()
+
+    return area_under
+
+
+# Store AuC and name to csv for plotting
+def log_results(name, AuC):
+    with open('results_model_fit.csv', 'a', newline='') as csvfile:
+        spamwriter = csv.writer(csvfile, delimiter=',',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        spamwriter.writerow((name, AuC))
+    return None
+
+
+def main():
+    # Get data from data file
+    data = load_data()
+
+    # Go through each inst of data
+    for sample in data:
+        for key in sample.keys():
+            AuC = create_model(key, sample[key])
+            log_results(key, AuC)
+
+    return None
+
+'''
 with open('data/results.csv', newline='') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
     # Name, nodes, layers, TP, NTP, score
@@ -170,4 +298,7 @@ e_s = sum(e)
 for ind, val in enumerate(e):
     e[ind] = val/e_s
     print(round(e[ind],4))
+'''
 
+if __name__ == "__main__":
+    main()

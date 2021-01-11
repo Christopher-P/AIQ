@@ -16,13 +16,17 @@ import numpy as np
 import datetime
 import sys
 
-def gen_model(data,nodes,layers):
-    input_shape = (32,32,1)
+
+def gen_model(data, nodes, layers):
+    input_shape = (32, 32, 1)
     num_classes = data[3][0].shape[0]
 
     model = Sequential()
     model.add(Dense(nodes, activation='relu',
               input_shape=input_shape))
+
+    for i in range(layers - 1):
+        model.add(Dense(nodes, activation='relu'))
 
     model.add(Flatten())
     model.add(Dense(num_classes, activation='softmax'))
@@ -59,7 +63,7 @@ def run_it(A, nodes, layers):
 
 
 def log_it(name, results):
-    with open('data/' + str(name) + '.csv', 'a', newline='') as csvfile:
+    with open('data_2/' + str(name) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
