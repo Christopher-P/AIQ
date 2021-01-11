@@ -20,7 +20,7 @@ def area_under_curve(model, data):
     width_const = 0.0001
 
     # Get 100 data points
-    x = np.arange(min(data), max(data), width_const)
+    x = np.arange(0, 1, width_const)
     x = np.reshape(x, (-1, 1))
 
     # Get y prediction 
@@ -54,7 +54,7 @@ def area_under_curve(model, data):
 # Load data from data dir
 def load_data():
     # Number of files per model
-    file_num = 1
+    file_num = 10
     file_counter = 0
 
     # Get all file paths
@@ -66,10 +66,8 @@ def load_data():
     results = dict()
 
     # Open every file
-    #for file_name in file_names:
-    for file_names in ['prelim_results.csv']:
-        #with open(data_path + file_name, newline='') as csvfile:
-        with open(file_names, newline='') as csvfile:
+    for file_name in file_names:
+        with open(data_path + file_name, newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for row in reader:
                 # Name, nodes, layers, TP, NTP, score
@@ -125,9 +123,9 @@ def create_model(name, data_sample):
     y_data = np.log(y_data)
 
     # Do some hyper param searching here
-    parameters = {'kernel': ['poly'], 'C': [0.0001, 0.01, 10, 100],
+    parameters = {'kernel': ['rbf', 'linear', 'poly', 'sigmoid'], 'C': [0.0001, 0.01, 10, 100],
                   'gamma': [0.00001, 0.1, 10, 100], 'epsilon': [0.00001, 0.1, 10, 100]}
-    regressor = GridSearchCV(SVR(), parameters)
+    regressor = GridSearchCV(SVR(max_iter=100000), parameters)
 
     # Fit model
     regressor.fit(x_data, y_data)
