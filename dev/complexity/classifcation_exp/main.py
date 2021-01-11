@@ -63,7 +63,7 @@ def run_it(A, nodes, layers):
 
 
 def log_it(name, results):
-    with open('data/' + str(name) + '.csv', 'a', newline='') as csvfile:
+    with open('data_2/' + str(name) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
