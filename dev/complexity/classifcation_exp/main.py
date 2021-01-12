@@ -107,9 +107,8 @@ def main(start):
 
 if __name__ == '__main__':
     ## Parse args here
-    for i in range(200):
-        start = time.time()
-        main(start)
-        done = time.time()
-        elapsed = done - start
-        print(elapsed)
+    start = time.time()
+    main(start)
+    done = time.time()
+    elapsed = done - start
+    print(elapsed)
