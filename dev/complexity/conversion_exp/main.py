@@ -1,14 +1,23 @@
 #/usr/bin/env python3
 
-from test_loader import Loader
 import csv 
 import time
+
+import gym
 
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Input
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
+
+from keras.models import Sequential
+from keras.layers import Dense, Activation, Flatten
+from keras.optimizers import Adam
+
+from rl.agents.dqn import DQNAgent
+from rl.policy import BoltzmannQPolicy
+from rl.memory import SequentialMemory
 
 import random
 import numpy as np
@@ -17,9 +26,9 @@ import datetime
 import sys
 
 
-def gen_model(data, nodes, layers):
-    input_shape = (32, 32, 1)
-    num_classes = data[3][0].shape[0]
+def gen_model(nodes, layers):
+    input_shape = (1, 4)
+    num_classes = 2
 
     model = Sequential()
     model.add(Dense(nodes, activation='relu',
@@ -29,7 +38,7 @@ def gen_model(data, nodes, layers):
         model.add(Dense(nodes, activation='relu'))
 
     model.add(Flatten())
-    model.add(Dense(num_classes, activation='softmax'))
+    model.add(Dense(num_classes, activation='linear'))
 
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=keras.optimizers.Adadelta(),
@@ -42,28 +51,31 @@ def gen_model(data, nodes, layers):
     return model, trainable_count, non_trainable_count
 
 
-def run_it(A, nodes, layers):
+def run_it(nodes, layers):
 
     # Experiment Vars
-    epochs = 12
-    batch_size = 32
+    samples = 200000
+
+    ENV_NAME = 'CartPole-v0'
+    env = gym.make(ENV_NAME)
 
     results = []
-    for i in [A]:
-        model, tp, ntp = gen_model(i, nodes, layers)
-        model.fit(i[0], i[2],
-                  batch_size=batch_size,
-                  epochs=epochs,
-                  verbose=0,
-                  validation_data=(i[1], i[3]))
-        score = model.evaluate(i[1], i[3], verbose=0)
-        results.append(score[1])
-    
+    model, tp, ntp = gen_model(nodes, layers)
+    memory = SequentialMemory(limit=50000, window_length=1)
+    policy = BoltzmannQPolicy()
+    dqn = DQNAgent(model=model, nb_actions=2, memory=memory, nb_steps_warmup=10,
+                   target_model_update=1e-2, policy=policy)
+    dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+    dqn.fit(env, nb_steps=samples, visualize=False, verbose=1)
+    scores = dqn.test(env, nb_episodes=5, visualize=False)
+    results = sum(scores.history['episode_reward']) / len(scores.history['episode_reward'])
+    print(results)
+
     return results, tp, ntp
 
 
 def log_it(name, results):
-    with open('data_2/' + str(name) + '.csv', 'a', newline='') as csvfile:
+    with open('data/' + str(name) + '_cart.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
@@ -80,35 +92,24 @@ def main(start):
     random.seed(start)
     np.random.seed(int(start))
 
-    ###Will run main code
-    tl      = Loader()
-    tl.cart   = tl.load_cartpole()
-    tl.mnist = tl.load_mnist()
-    tl.fmnist = tl.load_fmnist()
-    tl.cifar10 = tl.load_cifar10()
-    tl.cifar100 = tl.load_cifar100()
-
-    print(len(tl.cart[0]))
-    exit()
-
-    names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
-    dats = [tl.mnist, tl.fmnist, tl.cifar10, tl.cifar100, tl.cart]
+    names = ['CARTPOLE']
 
     for j in range(samples):
-        for i in range(len(dats)):
+        for i in range(len(names)):
             nodes = int(random.random() * 32) + 1
             layers = int(random.random() * 5) + 1
-            results, tp, ntp = run_it(dats[i], nodes, layers)
-            print(time, [names[i]] + [nodes, layers, tp, ntp] + results)
-            log_it(time, [names[i]] + [nodes, layers, tp, ntp] + results)
+            results, tp, ntp = run_it(nodes, layers)
+            print(time, [names[i]] + [nodes, layers, tp, ntp] + [results])
+            log_it(time, [names[i]] + [nodes, layers, tp, ntp] + [results])
 
     return None
 
 
 if __name__ == '__main__':
     ## Parse args here
-    start = time.time()
-    main(start)
-    done = time.time()
-    elapsed = done - start
-    print(elapsed)
+    for i in range(200):
+        start = time.time()
+        main(start)
+        done = time.time()
+        elapsed = done - start
+        print(elapsed)
