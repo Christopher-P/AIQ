@@ -58,7 +58,7 @@ def load_data():
     file_counter = 0
 
     # Get all file paths
-    data_path = './data/'
+    data_path = './data_2/'
     file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
 
     # Holds data
@@ -97,7 +97,7 @@ def load_data():
             file_counter = 0
             data.append(results)
             results = dict()
-    data.append(results)
+    #data.append(results)
 
     return data
 
