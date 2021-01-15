@@ -1,37 +1,4 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@Christopher-P 
-Christopher-P
-/
-AIQ
-2
-8
-1
-Code
-Issues
-5
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-AIQ/dev/complexity/classifcation_exp/main.py.save
-@Christopher-P
-Christopher-P restrcuting and exp ready
-Latest commit ddc1f14 on Jul 17, 2020
- History
- 1 contributor
-96 lines (69 sloc)  2.56 KB
- 
-#/usr/bin/env python3
+#usr/bin/env python3
 
 from test_loader import Loader
 import csv 
@@ -127,16 +94,4 @@ def main():
 if __name__ == '__main__':
     ## Parse args here
     main()
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
 
