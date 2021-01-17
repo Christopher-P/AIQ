@@ -82,7 +82,7 @@ def main():
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
     dats = [tl.m, tl.fm, tl.c10, tl.c100, tl.cart]
 
-    for j in range(50):
+    for j in range(500):
         for i in range(len(names)):
             nodes = int(random.random() * 32) + 1
             layers = int(random.random() * 5) + 1
