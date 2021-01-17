@@ -205,11 +205,8 @@ class Loader():
         '''
 
         # Load from save
-        x = np.load('cart_x.npy')
+        x = np.load('cart_x_2.npy')
         y = np.load('cart_y.npy')
-
-        # Norm the data
-        x = x / np.linalg.norm(x)
 
         # Correct shape
         x = np.reshape(x, (60000, 32, 32, 1))

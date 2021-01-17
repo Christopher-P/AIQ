@@ -22,13 +22,15 @@ def gen_model(data, nodes, layers):
     num_classes = data[3][0].shape[0]
 
     model = Sequential()
-    model.add(Dense(nodes, activation='relu',
-              input_shape=input_shape))
+    model.add(Conv2D(nodes, (3, 3), activation='relu',
+                     input_shape=input_shape, data_format='channels_last'))
 
     for i in range(layers - 1):
-        model.add(Dense(nodes, activation='relu'))
+        model.add(Conv2D(nodes, (3, 3), activation='relu'))
 
     model.add(Flatten())
+
+    model.add(Dense(nodes, activation='relu'))
     model.add(Dense(num_classes, activation='softmax'))
 
     model.compile(loss=keras.losses.categorical_crossentropy,
@@ -43,7 +45,6 @@ def gen_model(data, nodes, layers):
 
 
 def run_it(A, nodes, layers):
-
     # Experiment Vars
     epochs = 12
     batch_size = 32
@@ -54,16 +55,16 @@ def run_it(A, nodes, layers):
         model.fit(i[0], i[2],
                   batch_size=batch_size,
                   epochs=epochs,
-                  verbose=0,
+                  verbose=1,
                   validation_data=(i[1], i[3]))
         score = model.evaluate(i[1], i[3], verbose=0)
         results.append(score[1])
-    
+
     return results, tp, ntp
 
 
 def log_it(name, results):
-    with open('data_2/' + str(name) + '.csv', 'a', newline='') as csvfile:
+    with open('data_3/' + str(name) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(results)
@@ -80,16 +81,13 @@ def main(start):
     random.seed(start)
     np.random.seed(int(start))
 
-    ###Will run main code
+    # Load all data sets required
     tl      = Loader()
     tl.cart   = tl.load_cartpole()
     tl.mnist = tl.load_mnist()
     tl.fmnist = tl.load_fmnist()
     tl.cifar10 = tl.load_cifar10()
     tl.cifar100 = tl.load_cifar100()
-
-    print(len(tl.cart[0]))
-    exit()
 
     names = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
     dats = [tl.mnist, tl.fmnist, tl.cifar10, tl.cifar100, tl.cart]
@@ -108,6 +106,7 @@ def main(start):
 if __name__ == '__main__':
     ## Parse args here
     start = time.time()
+    np.random.seed(int(start))
     main(start)
     done = time.time()
     elapsed = done - start

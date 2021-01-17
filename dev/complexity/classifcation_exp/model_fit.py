@@ -68,7 +68,7 @@ def load_data():
     # Open every file
     for file_name in file_names:
         #with open(data_path + file_name, newline='') as csvfile:
-        with open('./data/results.csv', newline='') as csvfile:
+        with open('prelim_results.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for row in reader:
                 # Name, nodes, layers, TP, NTP, score
@@ -83,6 +83,7 @@ def load_data():
                 if row[0] not in results:
                     results[row[0]] = []
 
+                '''
                 # Remove outliers (about random)
                 if row[0] == "C100":
                     if datum[4] < 0.02:
@@ -90,6 +91,7 @@ def load_data():
                 else:
                     if datum[4] < 0.15:
                         continue
+                '''
 
                 results[row[0]].append(datum)
 
@@ -126,9 +128,9 @@ def create_model(name, data_sample):
     y_data = np.log(y_data)
 
     # Do some hyper param searching here
-    parameters = {'kernel': ['rbf', 'linear', 'poly', 'sigmoid'], 'C': [0.0001, 0.01, 10, 100],
-                  'gamma': [0.00001, 0.1, 10, 100], 'epsilon': [0.00001, 0.1, 10, 100]}
-    regressor = GridSearchCV(SVR(max_iter=100000), parameters)
+    parameters = {'kernel':['rbf', 'linear', 'poly'], 'C' :[0.0001, 0.01, 10, 100],
+                  'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
+    regressor = GridSearchCV(SVR(), parameters)
 
     # Fit model
     regressor.fit(x_data, y_data)
