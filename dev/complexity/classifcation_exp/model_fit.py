@@ -54,11 +54,11 @@ def area_under_curve(model, data):
 # Load data from data dir
 def load_data():
     # Number of files per model
-    file_num = 1
+    file_num = 10
     file_counter = 0
 
     # Get all file paths
-    data_path = './data_2/'
+    data_path = './data_3/'
     file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
 
     # Holds data
@@ -67,8 +67,8 @@ def load_data():
 
     # Open every file
     for file_name in file_names:
-        #with open(data_path + file_name, newline='') as csvfile:
-        with open('prelim_results.csv', newline='') as csvfile:
+        with open(data_path + file_name, newline='') as csvfile:
+        #with open('prelim_results.csv', newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for row in reader:
                 # Name, nodes, layers, TP, NTP, score
@@ -100,9 +100,6 @@ def load_data():
             file_counter = 0
             data.append(results)
             results = dict()
-
-        break
-    #data.append(results)
 
     return data
 
