@@ -43,17 +43,18 @@ means = np.asarray(auc)
 
 # create stacked errorbars:
 # Main bars
-plt.errorbar(np.arange(5), means, yerr=[standard_error, standard_error],
-             fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
+#plt.errorbar(np.arange(5), means, yerr=[standard_error, standard_error],
+#             fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
 # Entropy points
 plt.scatter(np.arange(5), entropy, color='r', marker=',')
+plt.scatter(np.arange(5), means, color='black', marker='.')
 
 # Formatting
-plt.legend(['Entropic Prediction', 'Empirical Prediction'])
+plt.legend(['Entropic Prediction', 'Complexity Measure'])
 plt.xlim(-0.5, 4.5)
 plt.xticks(np.arange(5), ["MNIST", "FMNIST", "C10", "C100", "CARTPOLE"])
 plt.ylim(0, 1.5)
-plt.xlabel('Domains')
+plt.xlabel('Tasks')
 plt.ylabel('Complexity / Entropy')
 
 # Save to file
