@@ -25,12 +25,13 @@ for i in range(number_of_domains):
 
 # create stacked errorbars:
 # Main bars
-plt.errorbar(np.arange(10, 110, step=10), auc, yerr=[standard_error, standard_error],
-             fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
+#plt.errorbar(np.arange(10, 110, step=10), auc, yerr=[standard_error, standard_error],
+#             fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
 
 # Entropy points
 plt.scatter(np.arange(10, 110, step=10), entropy, color='r', marker=',')
-plt.legend(['Entropic Prediction', 'Empirical Prediction'])
+plt.scatter(np.arange(10, 110, step=10), auc, color='black', marker='.')
+plt.legend(['Entropic Prediction', 'Complexity Measure'])
 
 
 # Trendline 1
@@ -41,6 +42,7 @@ plt.plot(x, p(x), color='black')
 
 # Formatting
 plt.xlim(5, 105)
+plt.ylim(-0.05, 1.05)
 plt.xlabel('Classes')
 plt.ylabel('Complexity')
 

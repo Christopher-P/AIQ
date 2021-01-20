@@ -43,8 +43,7 @@ means = np.asarray(auc)
 
 # create stacked errorbars:
 # Main bars
-plt.errorbar(x, means, yerr=[standard_error, standard_error],
-             fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
+plt.scatter(np.arange(len(means)), means, color='black', marker='.')
 
 # Trendline
 z = np.polyfit(x, means, 2)
@@ -55,8 +54,8 @@ plt.plot(x, p(x), color='black')
 # Formatting
 plt.xlim(min(grav)-0.1, max(grav)+0.1)
 #plt.ylim(0.0, 0.1)
-plt.xlabel('Gravity')
+plt.xlabel('Force')
 plt.ylabel('Complexity')
 
 # Save to file
-plt.savefig('Gravity.png')
+plt.savefig('Force.png')
