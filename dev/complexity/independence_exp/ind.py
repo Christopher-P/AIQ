@@ -131,7 +131,7 @@ plt.plot(x, p, color='black')
 #plt.plot(np.arange(36), binding(np.arange(36),*param[0]), color='orange', label='TrendLine')
 
 # Single points plot
-plt.scatter(TPS, means, marker='x', label='Scores')
+plt.scatter(TPS, means, marker='x', label='Individual Fit')
 plt.legend(loc='lower right')
 plt.xlabel('nodes * layers')
 plt.ylabel('Complexity Fit')

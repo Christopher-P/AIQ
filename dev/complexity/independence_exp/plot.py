@@ -84,7 +84,7 @@ TPS = []
 means = []
 stds = []
 once = 0
-'''
+
 # Many dots plot
 for TP in results.keys():
     for sample in results[TP]:
@@ -106,18 +106,19 @@ for TP in results.keys():
         label = ['MNIST', 'FMNIST', 'C10', 'C100', 'CARTPOLE']
         for _s, c, _x, _y, _l in zip(s, col, x, y, label):
             if once < 5:
-                plt.scatter(_x, _y, marker=_s, c=c, label=_l)
+                #plt.scatter(_x, _y, marker=_s, c=c, label=_l)
                 once = once + 1
             else:
-                plt.scatter(_x, _y, marker=_s, c=c)
+                a =2
+                #plt.scatter(_x, _y, marker=_s, c=c)
         #plt.scatter([TP] * 5, scores, marker=markers)
-plt.legend()
-plt.xlabel('nodes * layers')
-plt.ylabel('SCORE')
-plt.show()
+#plt.legend()
+#plt.xlabel('nodes * layers')
+#plt.ylabel('SCORE')
+#plt.show()
 
 
-'''
+
 
 # Clean data
 x, y, std = clean(TPS, means)
@@ -128,9 +129,9 @@ x, y, std = clean(TPS, means)
 plt.errorbar(x, y, yerr=[std, std],
              fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1, label='Mean/Error')
 
-'''
+
 # Trendline
-z = np.polyfit(np.exp(x), np.exp(y), 1)
+z = np.polyfit(np.exp(x), np.exp(y), 2)
 print(z)
 p = []
 for i in x:
@@ -138,16 +139,21 @@ for i in x:
     p.append(k)
 
 plt.plot(x, p, color='black')
+
 '''
+
 
 def binding(x,kd,bmax):
     return (bmax*x)/(x+kd)
+
 param=sp.optimize.curve_fit(binding, x,y)
 
-plt.plot(np.arange(36), binding(np.arange(36),*param[0]), color='orange', label='TrendLine')
+plt.plot(np.arange(36), binding(np.arange(36), *param[0]), color='orange', label='TrendLine')
+'''
+
 
 # Single points plot
-plt.scatter(TPS, means, marker='x', label='Scores')
+plt.scatter(TPS, means, marker='x', label='Performance')
 plt.legend(loc='lower right')
 plt.xlabel('nodes * layers')
 plt.ylabel('AIQ')
