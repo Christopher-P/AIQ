@@ -54,11 +54,11 @@ def area_under_curve(model, data):
 # Load data from data dir
 def load_data():
     # Number of files per model
-    file_num = 10
+    file_num = 3
     file_counter = 0
 
     # Get all file paths
-    data_path = './data_3/'
+    data_path = './cart_data/'
     file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
 
     # Holds data
@@ -92,7 +92,8 @@ def load_data():
                     if datum[4] < 0.15:
                         continue
                 '''
-
+                if datum[4] == 200.0:
+                    continue
                 results[row[0]].append(datum)
 
         file_counter = file_counter + 1
@@ -111,6 +112,8 @@ def create_model(name, data_sample):
     # Use Trainable Parameters here
     y_data = []
 
+    print(len(data_sample))
+
     for i in data_sample:
         x_data.append(i[4])
         y_data.append(i[2])
@@ -125,9 +128,9 @@ def create_model(name, data_sample):
     y_data = np.log(y_data)
 
     # Do some hyper param searching here
-    parameters = {'kernel':['rbf', 'linear', 'poly'], 'C' :[0.0001, 0.01, 10, 100],
-                  'gamma': [0.00001,0.1, 10, 100], 'epsilon':[0.00001, 0.1, 10, 100]}
-    regressor = GridSearchCV(SVR(), parameters)
+    parameters = {'kernel': ['rbf', 'linear', 'poly'], 'C': [0.0001, 0.01, 10, 100],
+                  'gamma': [0.00001, 0.1, 10, 100], 'epsilon': [0.00001, 0.1, 10, 100]}
+    regressor = GridSearchCV(SVR(max_iter=100000), parameters)
 
     # Fit model
     regressor.fit(x_data, y_data)
@@ -172,6 +175,7 @@ def main():
     # Go through each inst of data
     for sample in data:
         for key in sample.keys():
+            print(key, sample[key])
             AuC = create_model(key, sample[key])
             log_results(key, AuC)
 
