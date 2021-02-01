@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 # Generated from plot.py
-auc = [8.802, 8.513, 13.68, 19.466, 1.519]
+auc = [8.802, 8.513, 13.68, 19.466, 1.519, 2.7612]
 mse = [0.62, 0.64, 1.31, 0.75, 1.99]
 
 # Generated from entropy.py
@@ -31,8 +31,8 @@ mse = [float(i)/tmp for i in mse]
 print(auc)
 print(sum(auc))
 
-p = np.corrcoef(entropy, auc)
-print(p)
+#p = np.corrcoef(entropy, auc)
+#print(p)
 
 # Find SE from mse (RMSE functionally equaivalent to STDEV)
 standard_error = []
@@ -47,15 +47,18 @@ means = np.asarray(auc)
 #             fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
 # Entropy points
 plt.scatter(np.arange(5), entropy, color='r', marker=',')
-plt.scatter(np.arange(5), means, color='black', marker='.')
+plt.scatter(np.arange(6), means, color='black', marker='.')
 
 # Formatting
 plt.legend(['Entropic Prediction', 'Complexity Measure'])
-plt.xlim(-0.5, 4.5)
-plt.xticks(np.arange(5), ["MNIST", "FMNIST", "C10", "C100", "CARTPOLE"])
+plt.xlim(-0.5, 5.5)
+plt.xticks(np.arange(6), ["MNIST", "FMNIST", "C10", "C100", "CARTPOLE", "CARTPOLE-RL"], rotation=12)
 plt.ylim(0, 1.5)
 plt.xlabel('Tasks')
 plt.ylabel('Complexity / Entropy')
 
+# Manuel editing needed to ensure x-label is not cutoff
+plt.show()
+
 # Save to file
-plt.savefig('Entropies.png')
+#plt.savefig('Entropies.png')
