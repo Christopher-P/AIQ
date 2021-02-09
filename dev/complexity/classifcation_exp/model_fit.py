@@ -54,11 +54,11 @@ def area_under_curve(model, data):
 # Load data from data dir
 def load_data():
     # Number of files per model
-    file_num = 3
+    file_num = 62
     file_counter = 0
 
     # Get all file paths
-    data_path = './cart_data/'
+    data_path = './data_2/'
     file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
 
     # Holds data
@@ -92,7 +92,7 @@ def load_data():
                     if datum[4] < 0.15:
                         continue
                 '''
-                if datum[4] == 200.0:
+                if datum[4] == 0.5:
                     continue
                 results[row[0]].append(datum)
 
@@ -152,9 +152,10 @@ def create_model(name, data_sample):
 
     print('----')
 
-    plt.scatter(x_data, y_data)
-    plt.scatter(x_data, pred)
-    plt.show()
+    if name == 'CARTPOLE':
+        plt.scatter(x_data, y_data)
+        plt.scatter(x_data, pred)
+        plt.show()
 
     return area_under
 
