@@ -27,6 +27,7 @@ for name in names:
     se.append(sem(data[name]))
     print(name, auc[-1])
     print(name, statistics.stdev(data[name]))
+    print(name, len(data[name]))
 
 # Generated from entropy.py
 entropy = [182532.4206179811,
@@ -37,11 +38,8 @@ entropy = [182532.4206179811,
 
 # Normalize everything to 0,1
 entropy = [float(i)/max(entropy) for i in entropy]
-#k = max(auc)
 auc = [float(i)/max(auc) for i in auc]
 
-for ind, val in enumerate(se):
-    se[ind] = val / 1.0 #k
 print(se)
 
 # create stacked errorbars:
@@ -59,6 +57,12 @@ plt.xticks(np.arange(6), ["MNIST", "FMNIST", "C10", "C100", "CARTPOLE", "CARTPOL
 plt.ylim(0, 1.5)
 plt.xlabel('Tasks')
 plt.ylabel('Complexity / Entropy')
+
+co = np.corrcoef(entropy, auc)
+print(co)
+
+co = np.corrcoef(entropy[0:-1], auc[0:-1])
+print(co)
 
 # Manuel editing needed to ensure x-label is not cutoff
 plt.show()

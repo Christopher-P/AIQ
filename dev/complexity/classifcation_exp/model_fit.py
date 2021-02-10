@@ -44,7 +44,7 @@ def area_under_curve(model, data):
 
     # Scale by size
     #AuC = AuC / (abs(min(data) - max(data)))
-    #AuC = AuC / min(data)
+    AuC = AuC / min(data)
     #print(variance(data))
     #AuC = AuC / (mean(data) * variance(data))
 
@@ -54,11 +54,11 @@ def area_under_curve(model, data):
 # Load data from data dir
 def load_data():
     # Number of files per model
-    file_num = 62
+    file_num = 19
     file_counter = 0
 
     # Get all file paths
-    data_path = './data_2/'
+    data_path = './cart_im_data/'
     file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
 
     # Holds data
@@ -94,6 +94,7 @@ def load_data():
                 '''
                 if datum[4] == 0.5:
                     continue
+
                 results[row[0]].append(datum)
 
         file_counter = file_counter + 1
@@ -130,7 +131,7 @@ def create_model(name, data_sample):
     # Do some hyper param searching here
     parameters = {'kernel': ['rbf', 'linear', 'poly'], 'C': [0.0001, 0.01, 10, 100],
                   'gamma': [0.00001, 0.1, 10, 100], 'epsilon': [0.00001, 0.1, 10, 100]}
-    regressor = GridSearchCV(SVR(max_iter=100000), parameters)
+    regressor = GridSearchCV(SVR(), parameters)
 
     # Fit model
     regressor.fit(x_data, y_data)

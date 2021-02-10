@@ -205,7 +205,7 @@ class Loader():
         '''
 
         # Load from save
-        x = np.load('cart_x_2.npy')
+        x = np.load('cart_x.npy')
         y = np.load('cart_y.npy')
 
         # Correct shape
