@@ -7,6 +7,14 @@ from scipy.stats import sem
 
 data = dict()
 
+max_val = -1
+with open('results_model_fit.csv', newline='') as csvfile:
+    reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+    for row in reader:
+        name = row[0]
+        if float(row[1]) > max_val:
+            max_val = float(row[1])
+
 with open('results_model_fit.csv', newline='') as csvfile:
     reader = csv.reader(csvfile, delimiter=',', quotechar='|')
     for row in reader:
@@ -16,7 +24,7 @@ with open('results_model_fit.csv', newline='') as csvfile:
         if name not in data.keys():
             data[name] = []
 
-        data[name].append(score)
+        data[name].append(score / max_val)
 
 # Generated from model_fit
 auc = []
@@ -24,7 +32,7 @@ se = []
 names = ["MNIST", "FMNIST", "C10", "C100", "CARTPOLE"]
 for name in names:
     auc.append(sum(data[name])/len(data[name]))
-    se.append(sem(data[name]))
+    se.append(statistics.stdev(data[name]))
     print(name, auc[-1])
     print(name, statistics.stdev(data[name]))
     print(name, len(data[name]))
@@ -41,6 +49,12 @@ entropy = [float(i)/max(entropy) for i in entropy]
 auc = [float(i)/max(auc) for i in auc]
 
 print(se)
+
+# This plots barchart
+plt.hist(data['FMNIST'], color='blue', edgecolor='black', bins=int(200))
+plt.show()
+
+# This will plot the main graphic
 
 # create stacked errorbars:
 # Main bars
