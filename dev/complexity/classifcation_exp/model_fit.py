@@ -54,11 +54,11 @@ def area_under_curve(model, data):
 # Load data from data dir
 def load_data():
     # Number of files per model
-    file_num = 19
+    file_num = 5
     file_counter = 0
 
     # Get all file paths
-    data_path = './cart_im_data/'
+    data_path = './data_3/'
     file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
 
     # Holds data
@@ -68,7 +68,56 @@ def load_data():
     # Open every file
     for file_name in file_names:
         with open(data_path + file_name, newline='') as csvfile:
-        #with open('prelim_results.csv', newline='') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for row in reader:
+                # Name, nodes, layers, TP, NTP, score
+                if row[0] == 'CARTPOLE':
+                    continue
+
+                datum = list()
+                datum.append(int(row[1]))
+                datum.append(int(row[2]))
+                datum.append(int(row[3]))
+                datum.append(int(row[4]))
+                datum.append(float(row[5]))
+
+                # Check if name already exists
+                if row[0] not in results:
+                    results[row[0]] = []
+
+                '''
+                # Remove outliers (about random)
+                if row[0] == "C100":
+                    if datum[4] < 0.02:
+                        continue
+                else:
+                    if datum[4] < 0.15:
+                        continue
+                '''
+                if datum[4] == 0.5:
+                    continue
+
+                results[row[0]].append(datum)
+
+        file_counter = file_counter + 1
+        if file_counter >= file_num:
+            file_counter = 0
+            data.append(results)
+            results = dict()
+
+    # Open every file
+    # Get all file paths
+    data_path = './cart_im_data/'
+    file_names = [f for f in listdir(data_path) if isfile(join(data_path, f))]
+
+    # Number of files per model
+    file_num = 5
+    file_counter = 0
+
+    results = dict()
+
+    for file_name in file_names:
+        with open(data_path + file_name, newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='|')
             for row in reader:
                 # Name, nodes, layers, TP, NTP, score
