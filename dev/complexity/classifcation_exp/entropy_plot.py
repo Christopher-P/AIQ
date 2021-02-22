@@ -24,7 +24,7 @@ with open('results_model_fit.csv', newline='') as csvfile:
         if name not in data.keys():
             data[name] = []
 
-        data[name].append(score / max_val)
+        data[name].append(score)
 
 # Generated from model_fit
 auc = []
@@ -50,18 +50,16 @@ auc = [float(i)/max(auc) for i in auc]
 
 print(se)
 
-# This plots barchart
-plt.hist(data['FMNIST'], color='blue', edgecolor='black', bins=int(200))
-plt.show()
-
 # This will plot the main graphic
 
+fig, axs = plt.subplots(2)
+fig.suptitle('Vertically stacked subplots')
 # create stacked errorbars:
 # Main bars
-plt.errorbar(np.arange(5), auc, yerr=[se, se],
+axs[0].errorbar(np.arange(5), auc, #yerr=[se, se],
              fmt='.k', ecolor='black', lw=1, capsize=4, capthick=1)
 # Entropy points
-plt.scatter(np.arange(5), entropy, color='r', marker=',')
+axs[1].scatter(np.arange(5), entropy, color='r', marker=',')
 #plt.scatter(np.arange(6), means, color='black', marker='.')
 
 # Formatting
