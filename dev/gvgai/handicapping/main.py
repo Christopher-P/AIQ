@@ -12,8 +12,8 @@ from merge import Merged
 from agent import NeuralNetwork
 
 
-def log_results(data):
-    with open('results.csv', 'a', newline='') as csvfile:
+def log_results(time, data):
+    with open(str(time) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(data)
     return None
@@ -21,9 +21,6 @@ def log_results(data):
 
 def evaluate(env_name_1, nodes, layers, seed):
     env_1 = gym.make(env_name_1)
-
-    #print(dir(env_1.env))
-    #print(env_1.env.actions)
 
     sample = NeuralNetwork(env_1, nodes, layers, seed=seed)
     a, tp, ntp = sample.train()
