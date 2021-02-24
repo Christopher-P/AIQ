@@ -24,10 +24,11 @@ def evaluate(env_name_1, nodes, layers, seed):
 
     sample = NeuralNetwork(env_1, nodes, layers, seed=seed)
     a, tp, ntp = sample.train()
-    score = a.history['episode_reward']
+    scores = a.history['episode_reward'][-5:]
+    results = sum(scores) / len(scores)
     steps = a.history['nb_steps']
 
-    return score, tp, ntp
+    return results, tp, ntp
 
 
 def main():
@@ -47,8 +48,8 @@ def main():
 
             # Evaluate the two envs
             score, tp, ntp = evaluate(i, nodes, layers, int(start))
-            print(start, [i] + [nodes, layers, tp, ntp] + score)
-            log_it(start, [i] + [nodes, layers, tp, ntp] + score)
+            print(print(start), [i] + [nodes, layers, tp, ntp] + score)
+            log_results(int(start), [i] + [nodes, layers, tp, ntp] + score)
 
     return None
 
