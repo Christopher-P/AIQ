@@ -48,7 +48,7 @@ def main():
 
             # Evaluate the two envs
             score, tp, ntp = evaluate(i, nodes, layers, int(start))
-            print(print(start), [i] + [nodes, layers, tp, ntp] + score)
+            print(int(start), [i] + [nodes, layers, tp, ntp] + score)
             log_results(int(start), [i] + [nodes, layers, tp, ntp] + score)
 
     return None
