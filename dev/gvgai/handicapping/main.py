@@ -13,7 +13,7 @@ from agent import NeuralNetwork
 
 
 def log_results(time, data):
-    with open(str(time) + '.csv', 'a', newline='') as csvfile:
+    with open('data' + str(time) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(data)
     return None
@@ -48,8 +48,8 @@ def main():
 
             # Evaluate the two envs
             score, tp, ntp = evaluate(i, nodes, layers, int(start))
-            print(int(start), [i] + [nodes, layers, tp, ntp] + score)
-            log_results(int(start), [i] + [nodes, layers, tp, ntp] + score)
+            print(int(start), [i] + [nodes, layers, tp, ntp] + [score])
+            log_results(int(start), [i] + [nodes, layers, tp, ntp] + [score])
 
     return None
 
