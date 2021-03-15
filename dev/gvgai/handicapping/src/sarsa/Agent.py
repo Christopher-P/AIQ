@@ -413,8 +413,7 @@ class Agent(AbstractPlayer):
         extended_state_features[partition_start:partition_end] = np.copy(state_features)
         return extended_state_features
 
-    def
-        (self, sso, elapsed_timer):
+    def result(self, sso, elapsed_timer):
         """
         Method used to perform actions in case of a game end.
         This is the last thing called when a level is played (the game is already in a terminal state).

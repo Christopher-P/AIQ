@@ -39,3 +39,5 @@ for game in games:
 
             sarsa.result(env.GVGAI.sso, None)
             print(str(episode) + " : done!")
+            print("Action " + str(action_id) + " tick " + str(t + 1) + " reward " + str(diffScore) + " win " + debug[
+                "winner"])
