@@ -22,7 +22,7 @@ def main():
         start = time.time()
 
         # List of envs to test
-        titles = ['testgame1', 'butterflies', 'aliens', 'boulderdash', 'chase', 'missilecommand', 'survivezombies', 'zelda']
+        titles = ['butterflies', 'chase', 'zelda', 'testgame1', 'aliens', 'boulderdash', 'missilecommand', 'survivezombies']
 
         for ind, val in enumerate(titles):
             titles[ind] = 'gvgai-' + str(val) + '-lvl0-v0'
@@ -37,13 +37,13 @@ def main():
 
             # Create sarsa Agent
             sarsa = Agent()
-            sarsa.init(env.GVGAI.sso, None, 1)
+            sarsa.init(env.GVGAI.sso, None, train_eps - 2)
 
             # Train agent
             for episode in range(train_eps):
                 env.reset()
                 is_done = False
-                while not is_done:
+                for t in range(2000):
                     # choose action based on trained policy
                     action_id = sarsa.act(env.GVGAI.sso, None)
                     if action_id == 'ACTION_ESCAPE':
@@ -61,7 +61,7 @@ def main():
                 env.reset()
                 reward = 0.0
                 is_done = False
-                while not is_done:
+                for t in range(2000):
                     # choose action based on trained policy
                     action_id = sarsa.act(env.GVGAI.sso, None)
                     if action_id == 'ACTION_ESCAPE':

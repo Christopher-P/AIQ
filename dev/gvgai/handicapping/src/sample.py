@@ -10,7 +10,7 @@ random.seed(12)
 import time
 
 # Predefined names referring to framework
-games = ['gvgai-butterflies', 'gvgai-testgame2', 'gvgai-testgame3']
+games = ['gvgai-testgame1', 'gvgai-testgame2', 'gvgai-testgame3']
 trainingLevels = ['lvl0-v0', 'lvl1-v0']
 testLevels = ['lvl2-v0', 'lvl3-v0', 'lvl4-v0']
 
@@ -23,9 +23,11 @@ for game in games:
         stateObs = env.reset()
         actions = env.unwrapped.get_action_meanings()
         start = time.time()
-
+        time.sleep(10)
         # Create sarsa Agent
         sarsa.init(env.GVGAI.sso, None)
+
+
 
         for episode in range(10):
             for t in range(2000):
@@ -41,3 +43,5 @@ for game in games:
             print(str(episode) + " : done!")
             print("Action " + str(action_id) + " tick " + str(t + 1) + " reward " + str(diffScore) + " win " + debug[
                 "winner"])
+
+        

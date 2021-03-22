@@ -273,6 +273,8 @@ class Agent(AbstractPlayer):
         for observation in sso.fromAvatarSpritesPositions:
             self.item_types.add(observation[0].itype)
 
+        print(self.item_types)
+
     def generate_dictionary(self):
         """
         Generates the dictionary of item type pairs by using the item types set.
@@ -395,8 +397,6 @@ class Agent(AbstractPlayer):
         # parameter by L2 norm of this feature vector. This is a very naive way to set an adaptive learning rate.
         if self.alpha is None:
             self.alpha = self.alpha_base/np.linalg.norm(features, ord=2)
-
-        print(features)
 
         return features
 
