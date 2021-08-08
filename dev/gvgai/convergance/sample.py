@@ -20,7 +20,7 @@ from rl.memory import SequentialMemory
 
 
 def log_results(time, data):
-    with open('data' + str(time) + '.csv', 'a', newline='') as csvfile:
+    with open('data/' + str(time) + '.csv', 'a', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         spamwriter.writerow(data)
     return None
@@ -31,7 +31,7 @@ def main():
         start = time.time()
 
         # List of envs to test
-        titles = ['butterflies', 'zelda', 'chase', 'testgame1', 'aliens', 'boulderdash', 'missilecommand', 'survivezombies']
+        titles = ['butterflies']
 
         for ind, val in enumerate(titles):
             titles[ind] = 'gvgai-' + str(val) + '-lvl0-v0'
@@ -53,7 +53,7 @@ def main():
             model.add(Flatten(input_shape=(4, obs_size)))
 
             # Variable network
-            for _ in range(layers):
+            for __ in range(layers):
                 model.add(Dense(nodes))
                 model.add(Activation('relu'))
 
@@ -74,14 +74,12 @@ def main():
             # Okay, now it's time to learn something! We visualize the training here for show, but this
             # slows down training quite a lot. You can always safely abort the training prematurely using
             # Ctrl + C.
-            dqn.fit(env, nb_steps=50000, visualize=False, verbose=1)
+            history = dqn.fit(env, nb_steps=500000, visualize=False, verbose=1)
 
             # Finally, evaluate our algorithm for 5 episodes.
-            history = dqn.test(env, nb_episodes=5, visualize=False)
-            results = history.history['episode_reward']
-            score = sum(results)/len(results)
-
-            log_results(int(start), [i, nodes, layers, score])
+            # history = dqn.test(env, nb_episodes=5, visualize=False)
+            log_results(int(start), [i, nodes, layers, len(history.history['episode_reward'])] +
+                         history.history['episode_reward'] + history.history['nb_steps'])
 
             # Clean hopefuly
             del memory
